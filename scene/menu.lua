@@ -4,12 +4,18 @@ local scene = composer.newScene()
 local constants = require("scene.const.constants")
 
 -- MENU LOCAL VAR
-local playBtn
+local playBtn, creditsBtn
 
 --------------------------------------------------------------
 
 local function onPlayBtnRelease()
 	composer.gotoScene("scene.game", "fade", 500 )
+	return true	-- indicates successful touch
+end
+
+
+local function onCreditsBtnRelease()
+	composer.gotoScene("scene.credits", "fade", 500 )
 	return true	-- indicates successful touch
 end
 
@@ -54,6 +60,18 @@ function scene:create( event )
   )
 	playBtn.x = display.contentCenterX
 	playBtn.y = display.contentHeight - 125
+
+	-- create a widget button (which will loads level1.lua on release)
+  creditsBtn = widget.newButton(
+    {
+        width = buttonWidth,
+        height = buttonHeight,
+        defaultFile = "credits.png",
+        onEvent = onCreditsBtnRelease	-- event listener function
+    }
+  )
+	creditsBtn.x = display.contentCenterX
+	creditsBtn.y = display.contentHeight - 55
 
 	-- all display objects must be inserted into group
 	sceneGroup:insert( background )
