@@ -1,63 +1,76 @@
 local composer = require( "composer" )
-local physics = require "physics"
-local widget = require "widget"
-local grid = require("scene.widg.grid")
-local ply = require("scene.widg.player")
-local constants = require("scene.const.constants")
 
-function printPairs(grid)
-  for k,v in pairs(grid) do
-    print( k,v )
-  end
-end
+local scene = composer.newScene()
 
-------------------------------------------------------------------- EXTRA FUNCTIONS
-local function initLevelSettings()
+-- -----------------------------------------------------------------------------------
+-- Code outside of the scene event functions below will only be executed ONCE unless
+-- the scene is removed entirely (not recycled) via "composer.removeScene()"
+-- -----------------------------------------------------------------------------------
 
-end
----------------------------------------------------------------------------------------
 
+
+
+-- -----------------------------------------------------------------------------------
+-- Scene event functions
+-- -----------------------------------------------------------------------------------
+
+-- create()
 function scene:create( event )
 
+    local sceneGroup = self.view
+    -- Code here runs when the scene is first created but has not yet appeared on screen
+
 end
 
+
+-- show()
 function scene:show( event )
 
+    local sceneGroup = self.view
+    local phase = event.phase
+
+    if ( phase == "will" ) then
+        -- Code here runs when the scene is still off screen (but is about to come on screen)
+
+    elseif ( phase == "did" ) then
+        -- Code here runs when the scene is entirely on screen
+
+    end
 end
 
+
+-- hide()
 function scene:hide( event )
-	local sceneGroup = self.view
-	local phase = event.phase
 
-	if event.phase == "will" then
-		-- Called when the scene is on screen and is about to move off screen
-		--
-		-- INSERT code here to pause the scene
-		-- e.g. stop timers, stop animation, unload sounds, etc.)
-		-- physics.stop()
-	elseif phase == "did" then
-		-- Called when the scene is now off screen
-	end
+    local sceneGroup = self.view
+    local phase = event.phase
 
+    if ( phase == "will" ) then
+        -- Code here runs when the scene is on screen (but is about to go off screen)
+
+    elseif ( phase == "did" ) then
+        -- Code here runs immediately after the scene goes entirely off screen
+
+    end
 end
 
+
+-- destroy()
 function scene:destroy( event )
 
-	-- Called prior to the removal of scene's "view" (sceneGroup)
-	--
-	-- INSERT code here to cleanup the scene
-	-- e.g. remove display objects, remove touch listeners, save state, etc.
+    local sceneGroup = self.view
+    -- Code here runs prior to the removal of scene's view
 
 end
 
----------------------------------------------------------------------------------
 
--- Listener setup
+-- -----------------------------------------------------------------------------------
+-- Scene event function listeners
+-- -----------------------------------------------------------------------------------
 scene:addEventListener( "create", scene )
 scene:addEventListener( "show", scene )
 scene:addEventListener( "hide", scene )
 scene:addEventListener( "destroy", scene )
-
------------------------------------------------------------------------------------------
+-- -----------------------------------------------------------------------------------
 
 return scene

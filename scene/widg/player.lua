@@ -19,18 +19,16 @@ local function createMarginsForPlayableScreen()
 end
 
 local function updateTreePeeBar(peeBar, peeLevel)
+  print("updateTreePeeBar FUNCTION")
   peePerc = peeLevel / maxPeeLevel
+  print('maxPeeLevel '..maxPeeLevel)
+  print('peeLevel '..peeLevel)
+  print('peePerc '..peePerc)
   peeBar:setProgress(peePerc) -- percentage
 end
 
-local function decreasePeeBar(peeBar, peeLevel)
-  peeLevel = peeLevel - vanishingPee
-  updateTreePeeBar(peeBar, peeLevel)
-  return peeLevel
-end
-
 local function playerCollision(self, event)
-  print("collision")
+  -- print("collision")
   if (event.phase == "began" ) then
     if event.other.type == 'tree' then
       collidedWith = event.other
@@ -56,6 +54,7 @@ function M.new(gridRows, gridCols, lvl)
   playerSheetOptions = constants.playerSheetOptions
   playerBodyOptions = constants.playerBodyOptions
   peeStream = constants.levelVars[lvl].peeStream
+  vanishingPee = constants.levelVars[lvl].vanishingPee
 
   createMarginsForPlayableScreen()
   centerHoriz = math.floor(gridRows/2)
@@ -97,11 +96,14 @@ function M.new(gridRows, gridCols, lvl)
   end
 
   function player:pee()
-    peeAnimation = 'pee'..lastDirection
-    player:setSequence(peeAnimation)
-    print(collidedWith.peeLevel)
-    collidedWith.peeLevel = collidedWith.peeLevel + peeStream
-    updateTreePeeBar(collidedWith.peeBar, collidedWith.peeLevel)
+    -- if there is no collidedWith Object exit because you're not close to a tree
+    if (collidedWith.peeLevel) then
+      collidedWith.peeLevel = collidedWith.peeLevel + peeStream
+      peeAnimation = 'pee'..lastDirection
+      player:setSequence(peeAnimation)
+      updateTreePeeBar(collidedWith.peeBar, collidedWith.peeLevel)
+      return collidedWith
+    end
   end
 
   return player
