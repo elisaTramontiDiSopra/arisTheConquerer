@@ -77,6 +77,7 @@ function scene:create( event )
 	sceneGroup:insert( background )
 	sceneGroup:insert( titleLogo )
 	sceneGroup:insert( playBtn )
+	sceneGroup:insert( creditsBtn )
 end
 
 function scene:show( event )

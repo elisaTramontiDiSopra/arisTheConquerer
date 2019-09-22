@@ -9,7 +9,7 @@ local constants = require("scene.const.constants")
 
 -- SCENE
 local lvl, timerSeconds
-local player, buttonPressed
+local player, buttonPressed, collidedWith
 local buttonPressed = {Down = false, Up = false, Left = false, Right = false}
 
 local scene = composer.newScene()
@@ -67,7 +67,6 @@ local function initLevelSettings()
     }
   )
 
-
   obstacleTile = constants.levelVars[lvl].obstacleTile
   treeTile = constants.levelVars[lvl].treeTile
   pathTile = constants.levelVars[lvl].pathTile
@@ -75,15 +74,18 @@ local function initLevelSettings()
   --totalLevelTrees = levelVars[lvl].trees
   --peeStream = levelVars [lvl].peeStream
   --[[ maxPeeLevel = constants.levelVars[lvl].maxPeeLevel
-  minPeeLevel = constants.levelVars[lvl].minPeeLevel
-  vanishingPee = constants.levelVars[lvl].vanishingPee ]]
+  minPeeLevel = constants.levelVars[lvl].minPeeLevel ]]
+
+  -- pee vars
+  maxPeeLevel = constants.levelVars[lvl].maxPeeLevel
+  vanishingPee = constants.levelVars[lvl].vanishingPee
+  print('vanishingPee '..vanishingPee)
 end
 
 -- TIMER CREATION AND UPDATE
 local function createTimer()
   -- visualize text with a random text inside
   timerText = display.newText( "00:00", display.contentWidth - 50, display.contentHeight - 30, native.systemFont, 18 )
-  --timerText:setFillColor( 1, 1, 1 )
   timerBar = widget.newProgressView(
     {sheet = timerBarSheet,
       fillOuterLeftFrame = 1, fillOuterMiddleFrame = 2, fillOuterRightFrame = 3,
@@ -94,7 +96,6 @@ local function createTimer()
     }
   )
   timerBar:setProgress(1.0)
-
 end
 
 local function updateTime()
@@ -126,21 +127,33 @@ local function move(event)
   end
 end
 
---[[ local function updateTreePeeBar(peeBar, peeLevel)
-  peePerc = peeLevel / maxPeeLevel
-  peeBar:setProgress(peePerc) -- percentage
+local function test()
+  print('test')
 end
 
-local function decreasePeeBar(peeBar, peeLevel)
-  peeLevel = peeLevel - vanishingPee
-  updateTreePeeBar(peeBar, peeLevel)
-  return peeLevel
-end ]]
+local function decreasePeeInAllBars()
+  print('decrease')
+  for key, value in pairs(gridTree) do
+    treeRow = gridTree[key].row
+    treeCol = gridTree[key].col
+    peeLevel = gridMatrix[treeRow][treeCol].peeLevel
+    if (peeLevel > 0) then
+      peeLevel = peeLevel - vanishingPee
+      peePerc = peeLevel / maxPeeLevel
+      -- set new values in the table and for the bar
+      gridMatrix[treeRow][treeCol].peeLevel = peeLevel
+      --[[ print('maxPeeLevel '..maxPeeLevel)
+      print('peeLevel '..peeLevel)
+      print('peePerc '..peePerc) ]]
+      --gridMatrix[treeRow][treeCol].peeBar:setProgress(0.01)
+    end
+  end
+end
 
 local function pee()
-  player:pee()
+  collidedWith = player:pee()
+  --countDownPeeTimer = timer.performWithDelay( 1000, test, 3)
 end
-
 
 local function createUI()
   upBtn = display.newRect(display.contentWidth - 2 * padButtonDimension, display.contentHeight - 3 * padButtonDimension, padButtonDimension, padButtonDimension)
@@ -163,7 +176,6 @@ local function createUI()
   rightBtn:setFillColor(0, 0, 0)
   rightBtn:addEventListener("touch", move)
 
-    -- peeBtn = display.newRect(playableScreenWidth/2 + padButtonDimension/2, playableScreenHeight - padButtonDimension, padButtonDimension, padButtonDimension)
   peeBtn = display.newCircle(display.contentWidth / 2, display.contentHeight / 2, padButtonDimension, padButtonDimension / 1.5)
   peeBtn:setFillColor(0)
   peeBtn.alpha = 0.3
@@ -171,13 +183,12 @@ local function createUI()
   peeBtn:addEventListener("touch",pee)
 end
 
-
 local function frameUpdate()
   if timerSeconds == 0 then
     --checkIfLevelIsPassed()
   end
 
-  player.rotation = 0 -- to prevent player from rotating if walking on an obstacle angle
+  --player.rotation = 0 -- to prevent player from rotating if walking on an obstacle angle
 
   if buttonPressed['Down'] == true and player.y <
     (gridRows * heightFrame) - heightFrame/2 then
@@ -204,11 +215,6 @@ local function frameUpdate()
   end
 end
 
---[[ local function frameUpdate()
-  if timerSeconds == 0 then
-    --checkIfLevelIsPassed()
-  end
-end ]]
 ---------------------------------------------------------------------------------------
 
 
@@ -226,21 +232,26 @@ function scene:create( event )
 	-- e.g. add display objects to 'sceneGroup', add touch listeners, etc.
 	local sceneGroup = self.view
   physics.start()
+  physics.setGravity(0,0)
+
 
   -- init game vars
   initLevelSettings()
 
   -- create the grid
-  gridMatrix = grid.new(gridRows, gridCols, lvl)
-  printPairs(gridMatrix)
+  twoGrids = grid.new(gridRows, gridCols, lvl)
+  gridMatrix = twoGrids.gridMatrix  -- because I returned the two values in the object
+  gridTree = twoGrids.gridTree      -- because I returned the two values in the object
 
   -- create the player
   player = ply.new(gridRows, gridCols, lvl)
-  print(player.isBodyActive)
 
   -- create the timer
   createTimer()
   local countDownTimer = timer.performWithDelay( 1000, updateTime, timerSeconds)
+
+  -- decrease pee levels in trees for all the game
+  local countDownPee = timer.performWithDelay( 1000, decreasePeeInAllBars, timerSeconds)
 
   -- create the ui
   createUI()
@@ -260,9 +271,9 @@ function scene:show( event )
 		--
 		-- INSERT code here to make the scene come alive
 		-- e.g. start timers, begin animation, play audio, etc.
-    physics.start()
-    physics.setGravity( 0,0 )
+
     Runtime:addEventListener("enterFrame", frameUpdate) -- if the move buttons are pressed MOVE!
+
     --Runtime:addEventListener("gyroscope", onGyroscopeUpdate)
 
 	end

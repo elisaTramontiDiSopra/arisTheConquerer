@@ -1,3 +1,5 @@
+-- grid.lua creates the grid but doesn't do anything else
+
 local M = {}
 local physics = require "physics"
 local widget = require "widget"
@@ -7,6 +9,7 @@ local constants = require("scene.const.constants")
 local gridMatrix = {}
 local obstacleGrid = {}
 local treeGrid = {}
+local toReturn = {}
 local marginX, marginY = 0, 0
 local gridGroup --to insert it on the scene
 
@@ -146,6 +149,7 @@ function M.new(gridRows, gridCols, lvl)
   peeBarFrameHeight = constants.peeBarFrameHeight
   peeBarSrc = constants.peeBarSrc
   peeBarOptions = constants.peeBarOptions
+  vanishingPee = constants.vanishingPee
 
   createMarginsForPlayableScreen()
   centerHoriz = math.floor(gridRows/2)
@@ -232,39 +236,16 @@ function M.new(gridRows, gridCols, lvl)
       --printPairs(gridMatrix[localRow][localCol])
       physics.addBody(gridMatrix[localRow][localCol], "static")
 
-      print(gridMatrix[localRow][localCol].isBodyActive)
-
-
       -- add the current tree to a tree table to decrease the peeLevel in auto function
       table.insert(treeGrid, {row = localRow, col = localCol, number = actualTrees})
 
     end
   end
 
-  local function updateTreePeeBar(peeBar, peeLevel)
-    peePerc = peeLevel / maxPeeLevel
-    peeBar:setProgress(peePerc) -- percentage
-  end
+  toReturn.gridMatrix = gridMatrix
+  toReturn.gridTree = treeGrid
 
-  local function decreasePeeBar(peeBar, peeLevel)
-    peeLevel = peeLevel - vanishingPee
-    updateTreePeeBar(peeBar, peeLevel)
-    return peeLevel
-  end
-
-  -- called every 500ms to decrease the peeLevel on trees
-  local function updatePeeLevels(event)
-    for t = 1, totalLevelTrees do
-      localRow = treeGrid[t].row
-      localCol = treeGrid[t].col
-      peeBar = gridMatrix[localRow][localCol].peeBar
-      peeLevel = gridMatrix[localRow][localCol].peeLevel
-      peeLvl = decreasePeeBar(peeBar, peeLevel)
-      gridMatrix[localRow][localCol].peeLevel = peeLvl --update with the new peeLevel
-    end
-  end
-
-  return gridMatrix
+  return toReturn
 end
 
 return M -- create M returns the instance
