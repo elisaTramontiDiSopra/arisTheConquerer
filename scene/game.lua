@@ -131,8 +131,12 @@ local function test()
   print('test')
 end
 
+function updatePeeBar(peeLevel, peeBar)
+  peePerc = peeLevel / maxPeeLevel
+  peeBar:setProgress(peePerc) -- percentage
+end
+
 local function decreasePeeInAllBars()
-  print('decrease')
   for key, value in pairs(gridTree) do
     treeRow = gridTree[key].row
     treeCol = gridTree[key].col
@@ -142,10 +146,7 @@ local function decreasePeeInAllBars()
       peePerc = peeLevel / maxPeeLevel
       -- set new values in the table and for the bar
       gridMatrix[treeRow][treeCol].peeLevel = peeLevel
-      --[[ print('maxPeeLevel '..maxPeeLevel)
-      print('peeLevel '..peeLevel)
-      print('peePerc '..peePerc) ]]
-      --gridMatrix[treeRow][treeCol].peeBar:setProgress(0.01)
+      updatePeeBar(peeLevel, gridMatrix[treeRow][treeCol].peeBar)
     end
   end
 end
