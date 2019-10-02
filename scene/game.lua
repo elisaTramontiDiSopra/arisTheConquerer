@@ -3,7 +3,6 @@ local physics = require "physics"
 local widget = require "widget"
 local grid = require("scene.widg.grid")
 local ply = require("scene.widg.player")
-local tmr = require("scene.widg.timer")
 local ui = require("scene.widg.ui")
 local constants = require("scene.const.constants")
 
@@ -50,21 +49,7 @@ local function initLevelSettings()
   timerSeconds = constants.levelVars[lvl].timerSeconds     -- seconds to decrease
   totalTimerSeconds = constants.levelVars[lvl].timerSeconds -- to compute the perc for the timer bar
 
-  -- visualize text with a random text inside
-  timerText = display.newText( "00:00", display.contentWidth - 50, display.contentHeight, native.systemFont, 18 )
-  timerText:setFillColor( 1, 1, 1 )
-  timerText.seconds = timerSeconds
-
   timerBarSheet = graphics.newImageSheet(timerBarSrc, timerBarOptions)
-  timerBar = widget.newProgressView(
-    {sheet = timerBarSheet,
-      fillOuterLeftFrame = 1, fillOuterMiddleFrame = 2, fillOuterRightFrame = 3,
-      fillOuterWidth = timerBarFrameWidth, fillOuterHeight = timerBarFrameHeight,
-      fillInnerLeftFrame = 4, fillInnerMiddleFrame = 5, fillInnerRightFrame = 6,
-      fillWidth = timerBarFrameWidth, fillHeight = timerBarFrameHeight,
-      left = marginX, top = display.contentHeight - 10, width = playableScreenWidth, isAnimated = true
-    }
-  )
 
   -- vars to calculate if level is passed
   totalLevelTrees = constants.levelVars[lvl].totalLevelTrees
@@ -80,9 +65,9 @@ local function initLevelSettings()
 end
 
 -- TIMER CREATION AND UPDATE
-local function createTimer()
+local function createTimer(sceneGroup)
   -- visualize text with a random text inside
-  timerText = display.newText( "00:00", display.contentWidth - 50, display.contentHeight - 30, native.systemFont, 18 )
+  timerText = display.newText( "00:00", display.contentWidth - 50, display.contentHeight + 8, "fonts/8-BitMadness.ttf", 26 )
   timerBar = widget.newProgressView(
     {sheet = timerBarSheet,
       fillOuterLeftFrame = 1, fillOuterMiddleFrame = 2, fillOuterRightFrame = 3,
@@ -93,6 +78,8 @@ local function createTimer()
     }
   )
   timerBar:setProgress(1.0)
+  sceneGroup:insert( timerBar )
+  sceneGroup:insert( timerText )
 end
 
 local function checkIfLevelIsPassed()
@@ -289,9 +276,7 @@ function scene:show( event )
 	if phase == "will" then
     -- Called when the scene is still off screen and is about to move on screen
 	elseif phase == "did" then
-		-- Called when the scene is now on screen
-		--
-		-- INSERT code here to make the scene come alive
+		-- Called when the scene is now on screen INSERT code here to make the scene come alive
 		-- e.g. start timers, begin animation, play audio, etc.
 
     Runtime:addEventListener("enterFrame", frameUpdate) -- if the move buttons are pressed MOVE!
@@ -331,8 +316,6 @@ function scene:destroy( event )
   grid = nil
   package.loaded[ply] = nil
   ply = nil
-  package.loaded[tmr] = nil
-  tmr = nil
   package.loaded[constants] = nil
   constants = nil
 end
