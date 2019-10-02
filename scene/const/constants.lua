@@ -47,9 +47,9 @@ local M = {
   },
   -- level vars
   levelVars = {
-    { lvl = 1, timerSeconds = 15, pathTracerMoves = 200,
+    { lvl = 1, timerSeconds = 5, pathTracerMoves = 200,
       obstacleTile = 'flower', treeTile = 'tree', pathTile = 'path',
-      totalLevelTrees = 5, minPeeLevel = 0.2, maxPeeLevel = 100, peeStream = 6, vanishingPee = 2
+      totalLevelTrees = 1, minPeeLevel = 5, maxPeeLevel = 100, peeStream = 6, vanishingPee = 2
     }
   }
 }

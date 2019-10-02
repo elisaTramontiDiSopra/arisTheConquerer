@@ -24,22 +24,25 @@ local function createMarginsForPlayableScreen()
 end
 
 -- create the single tile with all the properties
-local function createSingleTile(classTile, row, col)
+local function createSingleTile(classTile, row, col, graphicGroup)
     -- xPos = col * widthFrame,
     -- yPos = i * heightFrame, (row - 1 to allign correctly on screen to 0, 0)
-    xPos = col * widthFrame
-    yPos = (row - 1) * heightFrame
-    myImage = display.newImage(obstaclesSrc..classTile..'.png')
-    myImage.anchorX = anchorXPoint
-    myImage.anchorY = anchorYPoint
-    myImage.x = xPos + marginX
-    myImage.y = yPos + marginY
-    myImage.row = row
-    myImage.col = col
-    myImage.obstacle = 1
-    myImage.name = 'cell_'..row..'-'..col
-    myImage.type = classTile
-    return myImage
+  xPos = col * widthFrame
+  yPos = (row - 1) * heightFrame
+  myImage = display.newImage(graphicGroup, obstaclesSrc..classTile..'.png')
+  myImage.anchorX = anchorXPoint
+  myImage.anchorY = anchorYPoint
+  myImage.x = xPos + marginX
+  myImage.y = yPos + marginY
+  myImage.row = row
+  myImage.col = col
+  myImage.obstacle = 1
+  myImage.name = 'cell_'..row..'-'..col
+  myImage.type = classTile
+
+  -- graphicGroup:insert(myImage)
+
+  return myImage
 end
 
 local function destroySingleTile(tile)
@@ -48,14 +51,14 @@ local function destroySingleTile(tile)
 end
 
 -- Create the walking path in a graphic way (TO BE DEFINED BEFORE THE WALKING ALGORITHM)
-local function openPath(rowNumber, colNumber)
+local function openPath(rowNumber, colNumber, graphicGroup)
   -- choose the random tile and save it in the grid to remember it
   randomPath = pathTile..math.random(4)
   -- remove old tile
   gridMatrix[rowNumber][colNumber]:removeSelf()
   gridMatrix[rowNumber][colNumber] = nil
   -- create the new image and save it on the grid
-  cell = createSingleTile(randomPath, rowNumber, colNumber)
+  cell = createSingleTile(randomPath, rowNumber, colNumber, graphicGroup)
   gridMatrix[rowNumber][colNumber] = cell
   gridMatrix[rowNumber][colNumber].obstacle = 0  -- set as path
   gridMatrix[rowNumber][colNumber].type = 'path'
@@ -63,7 +66,6 @@ end
 
 -- function to determine if a cell is reachable, needed for transformObstaclesIntoTrees
 local function checkIfReachable(r, c)
-  --print('r '..r..' c '..c)
   r0 = r - 1
   r1 = r + 1
   c0 = c - 1
@@ -105,7 +107,7 @@ end
 
 local function visualizeTreePeeBar(xPos, yPos)
   -- auto change of position based on general anchor point of the project
-  print(anchorXPoint)
+  --print(anchorXPoint)
   if anchorXPoint == 1 then
     xPos = xPos - widthFrame + 10
     yPos = yPos - 2*heightFrame + heightFrame/2
@@ -131,7 +133,9 @@ end
 
 -------------------------------------
 
-function M.new(gridRows, gridCols, lvl)
+function M.new(gridRows, gridCols, lvl, graphicGroup)
+
+  print(graphicGroup)
 
   -- init vars
   anchorXPoint = constants.anchorXPoint
@@ -160,14 +164,14 @@ function M.new(gridRows, gridCols, lvl)
     gridMatrix[i] = {} -- create a new row
     for j = 1, gridCols do
       tile = obstacleTile..math.random(4)
-      gridMatrix[i][j] = createSingleTile(tile, i, j)
+      gridMatrix[i][j] = createSingleTile(tile, i, j, graphicGroup)
     end
   end
 
   -- Random walking algorithm, clearing the path (start from the center)
   pathGridX = centerHoriz
   pathGridY = centerVert
-  openPath(pathGridX, pathGridY) -- free the central cell
+  openPath(pathGridX, pathGridY, graphicGroup) -- free the central cell
   for count = 1, pathTracerMoves, 1 do
     -- 1 choose a random number between 1 and 4 (the 4 directions)
     randomDirection = math.random(4)
@@ -180,7 +184,7 @@ function M.new(gridRows, gridCols, lvl)
     elseif (randomDirection == 4 and pathGridY < gridCols) then -- moveDown
       pathGridY = pathGridY + 1
     end
-    openPath(pathGridX,pathGridY)
+    openPath(pathGridX,pathGridY, graphicGroup)
   end
 
   -- Count the ramaining obstacles, add body to them and eventually select and create random trees
@@ -188,9 +192,7 @@ function M.new(gridRows, gridCols, lvl)
     for j = 1, gridCols do
       if (gridMatrix[i][j].obstacle == 1) then
         tile = obstacleTile..math.random(4)
-        --cell = createSingleTile(tile, i, j) -- all obstacles have grass background
-        --table.insert(obstacleGrid, cell)
-        gridMatrix[i][j] = createSingleTile(tile, i, j) -- all obstacles have grass background
+        gridMatrix[i][j] = createSingleTile(tile, i, j, graphicGroup) -- all obstacles have grass background
         table.insert(obstacleGrid, gridMatrix[i][j])
         physics.addBody(gridMatrix[i][j], "static")
       end
@@ -218,7 +220,7 @@ function M.new(gridRows, gridCols, lvl)
       destroySingleTile(gridMatrix[localRow][localCol])
       gridMatrix[localRow][localCol] = nil
 
-      cell = createSingleTile(randomTree, localRow, localCol)
+      cell = createSingleTile(randomTree, localRow, localCol, graphicGroup)
       obstacleGrid[randomCell] = cell
       gridMatrix[localRow][localCol] = cell
 
@@ -233,7 +235,6 @@ function M.new(gridRows, gridCols, lvl)
       gridMatrix[localRow][localCol].actualTrees = actualTrees --tree number
       gridMatrix[localRow][localCol].peeBar = peeBar
 
-      --printPairs(gridMatrix[localRow][localCol])
       physics.addBody(gridMatrix[localRow][localCol], "static")
 
       -- add the current tree to a tree table to decrease the peeLevel in auto function
