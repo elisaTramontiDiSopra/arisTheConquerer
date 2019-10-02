@@ -10,7 +10,6 @@ local constants = require("scene.const.constants")
 local lvl, timerSeconds
 local player, buttonPressed, collidedWith
 local buttonPressed = {Down = false, Up = false, Left = false, Right = false}
-local uiGroup
 local scene = composer.newScene()
 
 
@@ -20,7 +19,15 @@ function printPairs(grid)
   end
 end
 
+function resetScene()
+  --buttonPressed = {Down = false, Up = false, Left = false, Right = false}
+  --timerSeconds = nil
+  gridTree = nil
+  gridMatrix = nil
 
+
+  --composer.remove("scene")
+end
 
 ------------------------------------------------------------------- EXTRA FUNCTIONS
 local function initLevelSettings()
@@ -59,6 +66,8 @@ local function initLevelSettings()
   treeTile = constants.levelVars[lvl].treeTile
   pathTile = constants.levelVars[lvl].pathTile
 
+  playerSpeed = constants.playerSpeed
+
   -- pee vars
   maxPeeLevel = constants.levelVars[lvl].maxPeeLevel
   vanishingPee = constants.levelVars[lvl].vanishingPee
@@ -92,16 +101,14 @@ local function checkIfLevelIsPassed()
       conqueredTrees = conqueredTrees + 1
     end
   end
-  print('conqueredTrees '..conqueredTrees)
-  print('totalLevelTrees '..totalLevelTrees)
+  --print('conqueredTrees '..conqueredTrees)
+  --print('totalLevelTrees '..totalLevelTrees)
   if conqueredTrees < totalLevelTrees then
+    resetScene()
+    composer.removeScene("scene")
     composer.gotoScene("scene.loser", "fade", 500 )
-    composer.removeScene(scene);
-    return true	-- indicates successful touch
   else
-    --composer.gotoScene("scene.winner", "fade", 500 )
-    --return true	-- indicates successful touch
-	  composer.gotoScene("scene.credits", "fade", 500 )
+	  composer.gotoScene("scene.winner", "fade", 500 )
   end
 end
 
@@ -146,7 +153,11 @@ local function decreasePeeInAllBars()
   for key, value in pairs(gridTree) do
     treeRow = gridTree[key].row
     treeCol = gridTree[key].col
+    print(treeRow)
+    print(treeCol)
     peeLevel = gridMatrix[treeRow][treeCol].peeLevel
+    print('peeLevel '..peeLevel)
+
     if (peeLevel > 0) then
       peeLevel = peeLevel - vanishingPee
       peePerc = peeLevel / maxPeeLevel
@@ -163,10 +174,6 @@ local function pee()
 end
 
 local function createUI(sceneGroup)
-
-  print("sceneGroup")
-  print(sceneGroup)
-  print("sceneGroup")
 
   upBtn = display.newRect(display.contentWidth - 2 * padButtonDimension, display.contentHeight - 3 * padButtonDimension, padButtonDimension, padButtonDimension)
   upBtn:setFillColor(0, 0, 0)
@@ -234,9 +241,21 @@ end
 local screenW, screenH, halfW = display.actualContentWidth, display.actualContentHeight, display.contentCenterX
 
 function scene:create( event )
+  print("create")
+  -- Enable auto-recycle on scene change
+  composer.recycleOnSceneChange = true
 
-  -- init vars
-  playerSpeed = constants.playerSpeed
+  if (gridTree) then
+    print("gridTree")
+    print(gridTree[1])
+  end
+
+  if (gridMatrix) then
+    print("gridMatrix")
+    print(gridMatrix[1])
+  end
+
+
 
 	-- Called when the scene's view does not exist.
 	-- INSERT code here to initialize the scene
@@ -252,6 +271,12 @@ function scene:create( event )
   twoGrids = grid.new(gridRows, gridCols, lvl, sceneGroup)
   gridMatrix = twoGrids.gridMatrix  -- because I returned the two values in the object
   gridTree = twoGrids.gridTree      -- because I returned the two values in the object
+
+  print("gridTree AFTER") --GRID TREE DOESN'T CHANGE
+  print(gridTree[1])
+
+    print("gridMatrix AAAAAAAAAFTER")
+    print(gridMatrix[1])
 
   -- create the player
   player = ply.new(gridRows, gridCols, lvl)

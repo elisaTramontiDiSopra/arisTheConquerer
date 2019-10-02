@@ -105,7 +105,7 @@ local function checkIfIsATree(cell)
   end
 end
 
-local function visualizeTreePeeBar(xPos, yPos)
+local function visualizeTreePeeBar(xPos, yPos, graphicGroup)
   -- auto change of position based on general anchor point of the project
   --print(anchorXPoint)
   if anchorXPoint == 1 then
@@ -117,7 +117,7 @@ local function visualizeTreePeeBar(xPos, yPos)
   end
 
   peeBarSheet = graphics.newImageSheet(peeBarSrc, peeBarOptions)
-  peerBar = widget.newProgressView(
+  peeBar = widget.newProgressView(
     {sheet = peeBarSheet,
       fillOuterLeftFrame = 1, fillOuterMiddleFrame = 2, fillOuterRightFrame = 3,
       fillOuterWidth = peeBarFrameWidth, fillOuterHeight = peeBarFrameHeight,
@@ -127,15 +127,19 @@ local function visualizeTreePeeBar(xPos, yPos)
     }
   )
 
-  peerBar:setProgress(0.0)
-  return peerBar
+  peeBar:setProgress(0.0)
+  graphicGroup:insert(peeBar)
+  return peeBar
 end
 
 -------------------------------------
 
 function M.new(gridRows, gridCols, lvl, graphicGroup)
-
-  print(graphicGroup)
+  -- reset grids
+  gridMatrix = nil
+  treeGrid = nil
+  gridMatrix = {}
+  treeGrid = {}
 
   -- init vars
   anchorXPoint = constants.anchorXPoint
@@ -225,7 +229,8 @@ function M.new(gridRows, gridCols, lvl, graphicGroup)
       gridMatrix[localRow][localCol] = cell
 
       -- add the pee loading bar
-      peeBar = visualizeTreePeeBar(localCol * widthFrame, localRow * heightFrame + heightFrame / 2, actualTrees)
+      --peeBar = visualizeTreePeeBar(localCol * widthFrame, localRow * heightFrame + heightFrame / 2, actualTrees)
+      peeBar = visualizeTreePeeBar(localCol * widthFrame, localRow * heightFrame + heightFrame / 2, graphicGroup)
 
       -- set the current cell as tree
       gridMatrix[localRow][localCol].type = 'tree'
