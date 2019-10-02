@@ -1,5 +1,4 @@
 local composer = require( "composer" )
-
 local scene = composer.newScene()
 
 -- -----------------------------------------------------------------------------------
@@ -7,23 +6,29 @@ local scene = composer.newScene()
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
 
-
+local function goBackToHome()
+	composer.gotoScene("scene.menu", "fade", 500 )
+end
 
 
 -- -----------------------------------------------------------------------------------
 -- Scene event functions
 -- -----------------------------------------------------------------------------------
 
--- create()
 function scene:create( event )
+  local sceneGroup = self.view
 
-    local sceneGroup = self.view
-    -- Code here runs when the scene is first created but has not yet appeared on screen
+	-- display a background image
+	local background = display.newImageRect("credits.jpg", display.actualContentWidth, display.actualContentHeight )
+	background.anchorX = 0
+	background.anchorY = 0
+	background.x = 0 + display.screenOriginX
+    background.y = 0 + display.screenOriginY
 
+	-- all display objects must be inserted into group
+	sceneGroup:insert( background )
 end
 
-
--- show()
 function scene:show( event )
 
     local sceneGroup = self.view
@@ -33,13 +38,12 @@ function scene:show( event )
         -- Code here runs when the scene is still off screen (but is about to come on screen)
 
     elseif ( phase == "did" ) then
-        -- Code here runs when the scene is entirely on screen
+      -- Code here runs when the scene is entirely on screen
+      local countDownTimer = timer.performWithDelay( 5000, goBackToHome)
 
     end
 end
 
-
--- hide()
 function scene:hide( event )
 
     local sceneGroup = self.view
@@ -54,8 +58,6 @@ function scene:hide( event )
     end
 end
 
-
--- destroy()
 function scene:destroy( event )
 
     local sceneGroup = self.view
