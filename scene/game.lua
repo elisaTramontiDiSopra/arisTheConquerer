@@ -293,6 +293,9 @@ function scene:show( event )
 		-- Called when the scene is now on screen INSERT code here to make the scene come alive
 		-- e.g. start timers, begin animation, play audio, etc.
 
+    -- randomly play bark sounds during the game
+    audio.play( barkSound, {channel = 2})
+
     Runtime:addEventListener("enterFrame", frameUpdate) -- if the move buttons are pressed MOVE!
     --Runtime:addEventListener("gyroscope", onGyroscopeUpdate)
 

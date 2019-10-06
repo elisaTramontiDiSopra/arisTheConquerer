@@ -22,6 +22,12 @@ end
 
 
 function scene:create( event )
+  -- immidiately fade audio
+	audio.fadeOut( { channel=1, time=500 } )
+
+	winSound = audio.loadSound( "audio/win2.mp3" )
+	loseSound = audio.loadSound( "audio/lose.mp3" )
+
   -- init vars
   buttonSrc = constants.buttonSrc
   buttonWidth = constants.buttonWidth
@@ -33,10 +39,12 @@ function scene:create( event )
   local winOrLose = composer.getVariable('winOrLose')
   if winOrLose == 'win' then
     bgUrl = "win.jpg"
-    buttonUrl = 'next.png'
+		buttonUrl = 'next.png'
+		soundName = winSound
   else
     bgUrl = "lose.jpg"
     buttonUrl = 'replay.png'
+		soundName = loseSound
   end
 
 	-- display a background image
@@ -84,6 +92,7 @@ function scene:show( event )
 		-- Called when the scene is still off screen and is about to move on screen
 	elseif phase == "did" then
 		-- Called when the scene is now on screen
+		audio.play( soundName,{ channel = 3, loops = 0} )
 	end
 end
 
