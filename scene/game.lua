@@ -4,6 +4,7 @@ local widget = require "widget"
 local grid = require("scene.widg.grid")
 local ply = require("scene.widg.player")
 local ui = require("scene.widg.ui")
+local progress = require("scene.widg.progress")
 local constants = require("scene.const.constants")
 
 -- SCENE
@@ -19,21 +20,18 @@ function printPairs(grid)
   end
 end
 
-function resetScene()
-  --buttonPressed = {Down = false, Up = false, Left = false, Right = false}
-  --timerSeconds = nil
-  gridTree = nil
-  gridMatrix = nil
-
-
-  --composer.remove("scene")
+------------------------------------------------------------------- EXTRA FUNCTIONS
+local function loadLevel()
+  lvl = progress.load()
+  lvl = 4
+  if (lvl) then
+    print("level "..lvl)
+  else
+    print("C'e' qualche problema con il caricamento del livello salvato")
+  end
 end
 
-------------------------------------------------------------------- EXTRA FUNCTIONS
 local function initLevelSettings()
-
-  -- get level var
-  lvl = composer.getVariable("level")
 
   -- find the grid dimensions
   gridCols = math.floor(display.actualContentWidth / constants.widthFrame)
@@ -101,15 +99,24 @@ local function checkIfLevelIsPassed()
       conqueredTrees = conqueredTrees + 1
     end
   end
-  --print('conqueredTrees '..conqueredTrees)
-  --print('totalLevelTrees '..totalLevelTrees)
+
   if conqueredTrees < totalLevelTrees then
-    resetScene()
+    composer.setVariable('winOrLose', 'lose' )
+  else
+    composer.setVariable('winOrLose', 'win' )
+    lvl = lvl + 1
+    --progress.save(lvl)
+  end
+  composer.gotoScene("scene.nextLevel", "fade", 500 )
+
+  --[[ if conqueredTrees < totalLevelTrees then
     composer.removeScene("scene")
     composer.gotoScene("scene.loser", "fade", 500 )
   else
+    lvl = lvl + 1
+    --progress.save(lvl)
 	  composer.gotoScene("scene.winner", "fade", 500 )
-  end
+  end ]]
 end
 
 local function updateTime()
@@ -153,10 +160,7 @@ local function decreasePeeInAllBars()
   for key, value in pairs(gridTree) do
     treeRow = gridTree[key].row
     treeCol = gridTree[key].col
-    print(treeRow)
-    print(treeCol)
     peeLevel = gridMatrix[treeRow][treeCol].peeLevel
-    print('peeLevel '..peeLevel)
 
     if (peeLevel > 0) then
       peeLevel = peeLevel - vanishingPee
@@ -241,21 +245,11 @@ end
 local screenW, screenH, halfW = display.actualContentWidth, display.actualContentHeight, display.contentCenterX
 
 function scene:create( event )
-  print("create")
   -- Enable auto-recycle on scene change
   composer.recycleOnSceneChange = true
 
-  if (gridTree) then
-    print("gridTree")
-    print(gridTree[1])
-  end
-
-  if (gridMatrix) then
-    print("gridMatrix")
-    print(gridMatrix[1])
-  end
-
-
+  -- load level
+  loadLevel()
 
 	-- Called when the scene's view does not exist.
 	-- INSERT code here to initialize the scene
@@ -268,18 +262,13 @@ function scene:create( event )
   initLevelSettings()
 
   -- create the grid
+  print("lvl "..lvl)
   twoGrids = grid.new(gridRows, gridCols, lvl, sceneGroup)
   gridMatrix = twoGrids.gridMatrix  -- because I returned the two values in the object
   gridTree = twoGrids.gridTree      -- because I returned the two values in the object
 
-  print("gridTree AFTER") --GRID TREE DOESN'T CHANGE
-  print(gridTree[1])
-
-    print("gridMatrix AAAAAAAAAFTER")
-    print(gridMatrix[1])
-
   -- create the player
-  player = ply.new(gridRows, gridCols, lvl)
+  player = ply.new(gridRows, gridCols, lvl, sceneGroup)
 
   -- create the timer
   createTimer(sceneGroup)
@@ -290,7 +279,7 @@ function scene:create( event )
 
   -- create the ui
   createUI(sceneGroup)
-  sceneGroup:insert(player)
+  --sceneGroup:insert(player)
 
 end
 
