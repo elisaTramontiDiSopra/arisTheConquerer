@@ -29,7 +29,8 @@ local function createSingleTile(classTile, row, col, graphicGroup)
     -- yPos = i * heightFrame, (row - 1 to allign correctly on screen to 0, 0)
   xPos = col * widthFrame
   yPos = (row - 1) * heightFrame
-  myImage = display.newImage(graphicGroup, obstaclesSrc..classTile..'.png')
+  --myImage = display.newImage(graphicGroup, obstaclesSrc..classTile..'.png')
+  myImage = display.newImage(graphicGroup, obstaclesSrc..classTile..'.jpg')
   myImage.anchorX = anchorXPoint
   myImage.anchorY = anchorYPoint
   myImage.x = xPos + marginX
@@ -146,7 +147,7 @@ function M.new(gridRows, gridCols, lvl, graphicGroup)
   anchorYPoint = constants.anchorYPoint
   widthFrame = constants.widthFrame
   heightFrame = constants.heightFrame
-  obstaclesSrc = constants.obstaclesSrc
+  obstaclesSrc = constants.levelVars[lvl].obstaclesSrc
   obstacles = constants.obstacles
   pathTile = constants.levelVars[lvl].pathTile
   pathTracerMoves = constants.levelVars[lvl].pathTracerMoves

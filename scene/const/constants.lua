@@ -24,11 +24,10 @@ local M = {
   -- ui vars
   padButtonDimension = 50,
   -- tiles vars
-  widthFrame = 50,
-  heightFrame = 50,
+  widthFrame = 64,
+  heightFrame = 64,
   anchorXPoint = 1,
   anchorYPoint = 1,
-  obstaclesSrc = "scene/img/tiles/",
   obstacles = {'flower','rock','tree'},
   -- player vars
   playerSrc = "scene/img/mainDog.png",
@@ -48,7 +47,7 @@ local M = {
   -- level vars
   levelVars = {
     { lvl = 1, timerSeconds = 5, pathTracerMoves = 200,
-      obstacleTile = 'flower', treeTile = 'tree', pathTile = 'path',
+      obstaclesSrc = "scene/img/tiles/country/", obstacleTile = 'obstacle', treeTile = 'tree', pathTile = 'path',
       totalLevelTrees = 1, minPeeLevel = 5, maxPeeLevel = 100, peeStream = 6, vanishingPee = 2
     }
   }
