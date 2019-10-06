@@ -10,20 +10,23 @@ local lastDirection = ""
 
 ------------------------------------- EXTRA FUNCTIONS
 local function createMarginsForPlayableScreen()
+   print("1 ")
+    print("1 "..display.actualContentWidth)
+    print("2 "..playableScreenWidth)
   if display.actualContentWidth > playableScreenWidth then
     marginX = (display.actualContentWidth - playableScreenWidth) / 2
   end
   if display.actualContentHeight > playableScreenHeight then
     marginY = (display.actualContentHeight - playableScreenHeight) / 2
   end
+  if display.actualContentWidth == playableScreenWidth then
+    marginY = 0
+    marginX = 0
+  end
 end
 
 local function updateTreePeeBar(peeBar, peeLevel)
-  print("updateTreePeeBar FUNCTION")
   peePerc = peeLevel / maxPeeLevel
-  print('maxPeeLevel '..maxPeeLevel)
-  print('peeLevel '..peeLevel)
-  print('peePerc '..peePerc)
   peeBar:setProgress(peePerc) -- percentage
 end
 
@@ -32,7 +35,6 @@ local function playerCollision(self, event)
   if (event.phase == "began" ) then
     if event.other.type == 'tree' then
       collidedWith = event.other
-      print('tree')
     else
       -- NOTHING BECAUSE IT'S NOT A TREE
       -- collidedWith.type = event.other.type
@@ -43,7 +45,7 @@ end
 
 -------------------------------------
 
-function M.new(gridRows, gridCols, lvl)
+function M.new(gridRows, gridCols, lvl, sceneGroup)
 
   -- init vars
   anchorXPoint = constants.anchorXPoint
@@ -75,6 +77,8 @@ function M.new(gridRows, gridCols, lvl)
   player.collision = playerCollision
   player:addEventListener("collision", player)
   physics.addBody(player, "dynamic", playerBodyOptions)
+
+  sceneGroup:insert(player)
 
   function player:animate(animation)
     player:setSequence(animation)
