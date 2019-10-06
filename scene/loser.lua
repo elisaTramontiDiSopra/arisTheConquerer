@@ -9,12 +9,12 @@ local nextBtn, homeBtn
 --------------------------------------------------------------
 
 local function onPlayBtnRelease()
-	composer.gotoScene("levels.game", "fade", 500 )
+	composer.gotoScene("scene.levels", "fade", 500 )
 	return true	-- indicates successful touch
 end
 
 local function onHomeBtnRelease()
-	composer.gotoScene("menu.game", "fade", 500 )
+	composer.gotoScene("scene.menu", "fade", 500 )
 	return true	-- indicates successful touch
 end
 
@@ -22,6 +22,9 @@ end
 
 
 function scene:create( event )
+	--remobe game scene to reset it
+	--composer.removeScene("game.lua")
+
   -- init vars
   buttonSrc = constants.buttonSrc
   buttonWidth = constants.buttonWidth
@@ -45,24 +48,24 @@ function scene:create( event )
     {
         width = buttonWidth,
         height = buttonHeight,
-        defaultFile = "play.png",
+        defaultFile = "next.png",
         onEvent = onPlayBtnRelease	-- event listener function
     }
   )
 	nextBtn.x = display.contentCenterX
-	nextBtn.y = display.contentHeight - 125
+	nextBtn.y = display.contentHeight - 85
 
 	-- create a widget button (which will loads level1.lua on release)
   homeBtn = widget.newButton(
     {
         width = buttonWidth,
         height = buttonHeight,
-        defaultFile = "credits.png",
+        defaultFile = "home.png",
         onEvent = onHomeBtnRelease	-- event listener function
     }
   )
 	homeBtn.x = display.contentCenterX
-	homeBtn.y = display.contentHeight - 55
+	homeBtn.y = display.contentHeight - 20
 
 	-- all display objects must be inserted into group
 	sceneGroup:insert( background )

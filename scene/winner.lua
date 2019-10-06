@@ -8,13 +8,13 @@ local nextBtn, homeBtn
 
 --------------------------------------------------------------
 
-local function onPlayBtnRelease()
-	composer.gotoScene("levels.game", "fade", 500 )
+local function onNextBtnRelease()
+	composer.gotoScene("scene.game", "fade", 500 )
 	return true	-- indicates successful touch
 end
 
 local function onHomeBtnRelease()
-	composer.gotoScene("menu.game", "fade", 500 )
+	composer.gotoScene("scene.menu", "fade", 500 )
 	return true	-- indicates successful touch
 end
 
@@ -29,10 +29,6 @@ function scene:create( event )
 
   local sceneGroup = self.view
 
-	-- Called when the scene's view does not exist.
-	-- INSERT code here to initialize the scene
-	-- e.g. add display objects to 'sceneGroup', add touch listeners, etc.
-
 	-- display a background image
 	local background = display.newImageRect("win.jpg", display.actualContentWidth, display.actualContentHeight )
 	background.anchorX = 0
@@ -45,24 +41,24 @@ function scene:create( event )
     {
         width = buttonWidth,
         height = buttonHeight,
-        defaultFile = "play.png",
-        onEvent = onPlayBtnRelease	-- event listener function
+        defaultFile = "next.png",
+        onEvent = onNextBtnRelease	-- event listener function
     }
   )
 	nextBtn.x = display.contentCenterX
-	nextBtn.y = display.contentHeight - 125
+	nextBtn.y = display.contentHeight - 85
 
 	-- create a widget button (which will loads level1.lua on release)
   homeBtn = widget.newButton(
     {
         width = buttonWidth,
         height = buttonHeight,
-        defaultFile = "credits.png",
+        defaultFile = "home.png",
         onEvent = onHomeBtnRelease	-- event listener function
     }
   )
 	homeBtn.x = display.contentCenterX
-	homeBtn.y = display.contentHeight - 55
+	homeBtn.y = display.contentHeight - 20
 
 	-- all display objects must be inserted into group
 	sceneGroup:insert( background )
@@ -78,9 +74,6 @@ function scene:show( event )
 		-- Called when the scene is still off screen and is about to move on screen
 	elseif phase == "did" then
 		-- Called when the scene is now on screen
-		--
-		-- INSERT code here to make the scene come alive
-		-- e.g. start timers, begin animation, play audio, etc.
 	end
 end
 
@@ -90,9 +83,6 @@ function scene:hide( event )
 
 	if event.phase == "will" then
 		-- Called when the scene is on screen and is about to move off screen
-		--
-		-- INSERT code here to pause the scene
-		-- e.g. stop timers, stop animation, unload sounds, etc.)
 	elseif phase == "did" then
 		-- Called when the scene is now off screen
 	end
@@ -100,12 +90,7 @@ end
 
 function scene:destroy( event )
 	local sceneGroup = self.view
-
 	-- Called prior to the removal of scene's "view" (sceneGroup)
-	--
-	-- INSERT code here to cleanup the scene
-	-- e.g. remove display objects, remove touch listeners, save state, etc.
-
 	if playBtn then
 		playBtn:removeSelf()	-- widgets must be manually removed
 		playBtn = nil
