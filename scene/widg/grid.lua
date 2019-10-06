@@ -53,8 +53,9 @@ end
 
 -- Create the walking path in a graphic way (TO BE DEFINED BEFORE THE WALKING ALGORITHM)
 local function openPath(rowNumber, colNumber, graphicGroup)
-  -- choose the random tile and save it in the grid to remember it
-  randomPath = pathTile..math.random(4)
+  -- choose the random tile and save it in the grid to remember it -------------------------- UNCOMMENT FOR MULTIPLE PATH TILES
+  -- randomPath = pathTile..math.random(4)
+  randomPath = pathTile..'1'
   -- remove old tile
   gridMatrix[rowNumber][colNumber]:removeSelf()
   gridMatrix[rowNumber][colNumber] = nil
