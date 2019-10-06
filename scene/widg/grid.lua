@@ -111,11 +111,13 @@ local function visualizeTreePeeBar(xPos, yPos, graphicGroup)
   -- auto change of position based on general anchor point of the project
   --print(anchorXPoint)
   if anchorXPoint == 1 then
-    xPos = xPos - widthFrame + 10
-    yPos = yPos - 2*heightFrame + heightFrame/2
+    xPos = xPos - widthFrame
+    yPos = yPos - heightFrame - heightFrame/2
+    --[[ xPos = xPos - widthFrame + 10
+    yPos = yPos - 2*heightFrame + heightFrame/2 ]]
   elseif anchorXPoint == 0.5 then
-    --xPos = xPos - widthFrame + 5
-    --yPos = yPos - 10
+    xPos = xPos - widthFrame + 5
+    yPos = yPos - 10
   end
 
   peeBarSheet = graphics.newImageSheet(peeBarSrc, peeBarOptions)
