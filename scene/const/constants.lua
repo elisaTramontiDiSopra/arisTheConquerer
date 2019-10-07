@@ -47,19 +47,19 @@ local M = {
   -- level vars
   numberOfLevels = 16,
   levelVars = {
-    { lvl = 1, timerSeconds = 50, pathTracerMoves = 200,
+    { lvl = 1, timerSeconds = 10, pathTracerMoves = 200,
       obstaclesSrc = "scene/img/tiles/country/", obstacleTile = 'obstacle', treeTile = 'tree', pathTile = 'path',
       totalLevelTrees = 1, minPeeLevel = 5, maxPeeLevel = 100, peeStream = 6, vanishingPee = 2
     },
-    { lvl = 2, timerSeconds = 50, pathTracerMoves = 100,
+    { lvl = 2, timerSeconds = 10, pathTracerMoves = 100,
       obstaclesSrc = "scene/img/tiles/pole/", obstacleTile = 'obstacle', treeTile = 'tree', pathTile = 'path',
       totalLevelTrees = 1, minPeeLevel = 5, maxPeeLevel = 100, peeStream = 6, vanishingPee = 2
     },
-    { lvl = 3, timerSeconds = 50, pathTracerMoves = 100,
+    { lvl = 3, timerSeconds = 10, pathTracerMoves = 100,
       obstaclesSrc = "scene/img/tiles/desert/", obstacleTile = 'obstacle', treeTile = 'tree', pathTile = 'path',
       totalLevelTrees = 1, minPeeLevel = 5, maxPeeLevel = 100, peeStream = 6, vanishingPee = 2
     },
-    { lvl = 4, timerSeconds = 50, pathTracerMoves = 100,
+    { lvl = 4, timerSeconds = 10, pathTracerMoves = 100,
       obstaclesSrc = "scene/img/tiles/isle/", obstacleTile = 'obstacle', treeTile = 'tree', pathTile = 'path',
       totalLevelTrees = 1, minPeeLevel = 5, maxPeeLevel = 100, peeStream = 6, vanishingPee = 2
     }

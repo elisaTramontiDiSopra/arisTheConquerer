@@ -22,8 +22,11 @@ end
 
 ------------------------------------------------------------------- EXTRA FUNCTIONS
 local function loadLevel()
-  lvl = progress.load()
-  lvl = 4
+  --lvl = progress.load()
+
+  -- get level from local var because it's been memorized in the levels view
+  lvl = composer.getVariable('playLevel')
+
   if (lvl) then
     print("level "..lvl)
   else
@@ -105,7 +108,8 @@ local function checkIfLevelIsPassed()
   else
     composer.setVariable('winOrLose', 'win' )
     lvl = lvl + 1
-    --progress.save(lvl)
+
+    progress.save(lvl)
   end
   composer.gotoScene("scene.nextLevel", "fade", 500 )
 
@@ -174,7 +178,6 @@ end
 
 local function pee()
   collidedWith = player:pee()
-  --countDownPeeTimer = timer.performWithDelay( 1000, test, 3)
 end
 
 local function createUI(sceneGroup)
@@ -251,9 +254,6 @@ function scene:create( event )
   -- load level
   loadLevel()
 
-	-- Called when the scene's view does not exist.
-	-- INSERT code here to initialize the scene
-	-- e.g. add display objects to 'sceneGroup', add touch listeners, etc.
 	local sceneGroup = self.view
   physics.start()
   physics.setGravity(0,0)
@@ -262,7 +262,6 @@ function scene:create( event )
   initLevelSettings()
 
   -- create the grid
-  print("lvl "..lvl)
   twoGrids = grid.new(gridRows, gridCols, lvl, sceneGroup)
   gridMatrix = twoGrids.gridMatrix  -- because I returned the two values in the object
   gridTree = twoGrids.gridTree      -- because I returned the two values in the object
@@ -304,15 +303,10 @@ end
 
 function scene:hide( event )
 	local sceneGroup = self.view
-
 	local phase = event.phase
 
 	if event.phase == "will" then
 		-- Called when the scene is on screen and is about to move off screen
-		--
-		-- INSERT code here to pause the scene
-		-- e.g. stop timers, stop animation, unload sounds, etc.)
-		-- physics.stop()
 	elseif phase == "did" then
 		-- Called when the scene is now off screen
 	end
@@ -320,11 +314,7 @@ function scene:hide( event )
 end
 
 function scene:destroy( event )
-
 	-- Called prior to the removal of scene's "view" (sceneGroup)
-	--
-	-- INSERT code here to cleanup the scene
-	-- e.g. remove display objects, remove touch listeners, save state, etc.
 	local sceneGroup = self.view
   -- remove required packages
 	package.loaded[physics] = nil

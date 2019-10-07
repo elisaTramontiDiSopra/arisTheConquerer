@@ -9,7 +9,8 @@ local playBtn, creditsBtn
 --------------------------------------------------------------
 
 local function onPlayBtnRelease()
-	composer.gotoScene("scene.game", "fade", 500 )
+	--composer.gotoScene("scene.game", "fade", 500 )
+	composer.gotoScene("scene.levels", "fade", 500 )
 	return true	-- indicates successful touch
 end
 

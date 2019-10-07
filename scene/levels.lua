@@ -12,9 +12,11 @@ local levelButtons = {}
 local marginX, marginY = 10, 30
 
 --------------------------------------------------------------
-local function playLevel()
-  composer.setVariable('playLevel', levelChoice)
-	composer.gotoScene("scene.game", "fade", 500 )
+local function playLevel(e)
+  if e.target.done == true then
+    composer.setVariable('playLevel', e.target.label)
+    composer.gotoScene("scene.game", "fade", 500 )
+  end
 end
 
 local function onCreditsBtnRelease()
@@ -32,8 +34,6 @@ function scene:create( event )
 
   local sceneGroup = self.view
 
-	-- Called when the scene's view does not exist.
-
 	-- display a background image
 	local background = display.newImageRect("background2.jpg", display.actualContentWidth, display.actualContentHeight )
 	background.anchorX = 0
@@ -47,18 +47,8 @@ function scene:create( event )
 
   -- calculate margins for displaying level buttons
   usableXspace = display.actualContentWidth - 2*marginX
-  totCols = math.floor( usableXspace / widthFrame)    -- N levels for row
-  -- redetermin the margin between level tiles
+  totCols = math.floor( usableXspace / widthFrame) -- N levels for row
   marginRightLevelTiles = (usableXspace - (widthFrame*totCols)) / totCols - 1
-
-  --totCols = math.floor( display.actualContentWidth / (widthFrame + marginRightLevelTiles))    -- N levels for row
-  --marginX = (display.actualContentWidth - (totCols * (widthFrame + marginRightLevelTiles))) / 2
-  print('display.actualContentWidth '..display.actualContentWidth)
-  print('usableXspace '..usableXspace)
-  print('widthFrame '..widthFrame)
-  print('totCols '..totCols)
-  print('marginX '..marginX)
-  print('lastLevel '..lastLevel)
 
   local col = 0
   -- find what levels are passed and create the different buttons for each level
@@ -70,18 +60,20 @@ function scene:create( event )
             width = widthFrame,
             height = heightFrame,
             defaultFile = "scene/img/levels/done.png",
-            --onEvent = playLevel	-- event listener function
+            onEvent = playLevel	-- event listener function
         }
       )
+      levelButtons[l].done = true
     else
       levelButtons[l] = widget.newButton(
         {
             width = widthFrame,
             height = heightFrame,
             defaultFile = "scene/img/levels/todo.png",
-            --onEvent = playLevel	-- event listener function
+            onEvent = playLevel	-- event listener function
         }
       )
+      levelButtons[l].done = false
     end
 
     row = math.ceil( l / totCols)         -- calculate the row for the Y position
@@ -94,12 +86,8 @@ function scene:create( event )
       col = col + 1
     end
 
-    print("l "..l.."  row "..row.."  col "..col)
-
-    levelButtons[l].level = l
-    levelButtons[l].row = row
-    levelButtons[l].col = col
-
+    --levelButtons[l].row = row
+    --levelButtons[l].col = col
     levelTilesSpace = widthFrame + marginRightLevelTiles
     levelButtons[l].x = col*widthFrame
     levelButtons[l].y = row*(heightFrame + marginBottomLevelTiles)
@@ -136,7 +124,7 @@ end
 function scene:destroy( event )
 	local sceneGroup = self.view
 	-- Called prior to the removal of scene's "view" (sceneGroup)
-if playBtn then
+  if playBtn then
 		playBtn:removeSelf()	-- widgets must be manually removed
 		playBtn = nil
 	end

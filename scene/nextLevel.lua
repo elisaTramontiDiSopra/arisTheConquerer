@@ -4,11 +4,18 @@ local scene = composer.newScene()
 local constants = require("scene.const.constants")
 
 -- MENU LOCAL VAR
-local nextBtn, homeBtn, bgUrl
+local nextBtn, homeBtn, bgUrl, winOrLose
 
 --------------------------------------------------------------
 
 local function onNextBtnRelease()
+	-- when we arrive the playLevel is still the one I passed so if the level is won add 1 otherwise replay
+	if winOrLose == 'win' then
+		lvl = composer.getVariable('playLevel')
+		lvl = lvl + 1
+		composer.setVariable('playLevel', lvl)
+	end
+
 	composer.gotoScene("scene.game", "fade", 500 )
 	return true	-- indicates successful touch
 end
@@ -36,7 +43,7 @@ function scene:create( event )
   local sceneGroup = self.view
 
   -- set variables according to level result
-  local winOrLose = composer.getVariable('winOrLose')
+  winOrLose = composer.getVariable('winOrLose')
   if winOrLose == 'win' then
     bgUrl = "win.jpg"
 		buttonUrl = 'next.png'

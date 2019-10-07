@@ -2,9 +2,14 @@
 local M = {}
 
  function M.save(lvl)
-  local saved = system.setPreferences( "app", { currentLevel = lvl } ) -- save in local storage under currentLevel
-  if ( saved == false ) then
-    print( "ERROR: could not save score" )
+  -- get the load level and the current played level
+  highestSavedLevel = M.load()
+  -- save only if the level you reached is new, otherwise you were re-playing an old level and do nothing
+  if lvl > highestSavedLevel then
+    local saved = system.setPreferences( "app", { currentLevel = lvl } ) -- save in local storage under currentLevel
+    if ( saved == false ) then
+      print( "ERROR: could not save score" )
+    end
   end
 end
 
