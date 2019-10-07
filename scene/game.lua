@@ -225,7 +225,7 @@ local function frameUpdate()
     player.y = player.y + playerSpeed
     lastDirection = 'Down'
   elseif buttonPressed['Up'] == true and player.y >
-    (0 + heightFrame) then
+    (0 + heightFrame/4) then
     --collidedWith = nil -- as soon as you move delete the last collision
     --collidedWith.type = 'empty'
     player.y = player.y - playerSpeed
