@@ -53,7 +53,7 @@ local M = {
     },
     { lvl = 2, timerSeconds = 20, pathTracerMoves = 100,
       obstaclesSrc = "scene/img/tiles/country/", obstacleTile = 'obstacle', treeTile = 'tree', pathTile = 'path',
-      totalLevelTrees = 3, minPeeLevel = 5, maxPeeLevel = 100, peeStream = 6, vanishingPee = 2
+      totalLevelTrees = 2, minPeeLevel = 5, maxPeeLevel = 100, peeStream = 6, vanishingPee = 2
     },
     { lvl = 3, timerSeconds = 20, pathTracerMoves = 100,
       obstaclesSrc = "scene/img/tiles/country/", obstacleTile = 'obstacle', treeTile = 'tree', pathTile = 'path',

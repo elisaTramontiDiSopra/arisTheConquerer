@@ -14,9 +14,14 @@ local function onPlayBtnRelease()
 	return true	-- indicates successful touch
 end
 
-
 local function onCreditsBtnRelease()
 	composer.gotoScene("scene.credits", "fade", 500 )
+	return true	-- indicates successful touch
+end
+
+
+local function onTutorialBtnRelease()
+	composer.gotoScene("scene.tutorial", "fade", 500 )
 	return true	-- indicates successful touch
 end
 
@@ -28,15 +33,10 @@ function scene:create( event )
   buttonSrc = constants.buttonSrc
   buttonWidth = constants.buttonWidth
   buttonHeight = constants.buttonHeight
+	local sceneGroup = self.view
 
   -- level variable
   composer.setVariable("level", 1)
-
-  local sceneGroup = self.view
-
-	-- Called when the scene's view does not exist.
-	-- INSERT code here to initialize the scene
-	-- e.g. add display objects to 'sceneGroup', add touch listeners, etc.
 
 	-- display a background image
 	local background = display.newImageRect("background2.jpg", display.actualContentWidth, display.actualContentHeight )
@@ -44,11 +44,6 @@ function scene:create( event )
 	background.anchorY = 0
 	background.x = 0 + display.screenOriginX
 	background.y = 0 + display.screenOriginY
-
-	-- create/position logo/title image on upper-half of the screen
-	--[[ local titleLogo = display.newImageRect("logo.png", constants.logoWidth, constants.logoHeight )
-	titleLogo.x = display.contentCenterX
-	titleLogo.y = 100 ]]
 
   -- create a widget button (which will loads level1.lua on release)
   playBtn = widget.newButton(
@@ -60,11 +55,9 @@ function scene:create( event )
     }
   )
 	playBtn.x = display.contentCenterX
-	playBtn.y = 175
-	--playBtn.y = display.contentHeight - 125
+	playBtn.y = 155
 
-	-- create a widget button (which will loads level1.lua on release)
-  creditsBtn = widget.newButton(
+	creditsBtn = widget.newButton(
     {
         width = buttonWidth,
         height = buttonHeight,
@@ -73,14 +66,25 @@ function scene:create( event )
     }
   )
 	creditsBtn.x = display.contentCenterX
-	creditsBtn.y = 245
-	--creditsBtn.y = display.contentHeight - 55
+	creditsBtn.y = 225
+
+	-- create a widget button (which will loads level1.lua on release)
+  tutorialBtn = widget.newButton(
+    {
+        width = buttonWidth,
+        height = buttonHeight,
+        defaultFile = "tutorial.png",
+        onEvent = onTutorialBtnRelease	-- event listener function
+    }
+  )
+	tutorialBtn.x = display.contentCenterX
+	tutorialBtn.y = 295
 
 	-- all display objects must be inserted into group
 	sceneGroup:insert( background )
-	--sceneGroup:insert( titleLogo )
 	sceneGroup:insert( playBtn )
 	sceneGroup:insert( creditsBtn )
+	sceneGroup:insert( tutorialBtn )
 end
 
 function scene:show( event )
