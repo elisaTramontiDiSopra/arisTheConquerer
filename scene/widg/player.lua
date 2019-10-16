@@ -3,16 +3,18 @@ local physics = require "physics"
 local constants = require("scene.const.constants")
 
 -- PLAYER VARS
-local player
---local peeing = false
+local player, playerCol, playerRow
 local collidedWith = {}
 local lastDirection = ""
 
+function printPairs(grid)
+  for k,v in pairs(grid) do
+    print( k,v )
+  end
+end
+
 ------------------------------------- EXTRA FUNCTIONS
 local function createMarginsForPlayableScreen()
-   print("1 ")
-    print("1 "..display.actualContentWidth)
-    print("2 "..playableScreenWidth)
   if display.actualContentWidth > playableScreenWidth then
     marginX = (display.actualContentWidth - playableScreenWidth) / 2
   end
@@ -30,10 +32,42 @@ local function updateTreePeeBar(peeBar, peeLevel)
   peeBar:setProgress(peePerc) -- percentage
 end
 
+local function findPlayerRowCol()
+  -- consider if the anchor point is at the end of the picture cause it could change the colliding point
+  if anchorXPoint == 1 then
+    playerRow = math.ceil((player.y - widthFrame + 10) / widthFrame)
+    playerCol = math.ceil((player.x - widthFrame + 10) / widthFrame)
+  else
+    playerRow = math.ceil((player.y) / widthFrame)
+    playerCol = math.ceil((player.x) / widthFrame)
+  end
+end
+
+local function checkIfPlayerIsClose(tree)
+  findPlayerRowCol()
+  local diffRow = math.abs(playerRow - tree.row)
+  local diffCol = math.abs(playerCol - tree.col)
+  -- if it's close then return true
+  if diffRow < 2 and diffCol < 2 then
+    return true
+  else
+    return false
+  end
+end
+
 local function playerCollision(self, event)
-  -- print("collision")
+  print("collision")
+  local nexToObject = false
   if (event.phase == "began" ) then
-    if event.other.type == 'tree' then
+    -- check if we're close to the tree, less then 1 row and 1 col away
+    nexToObject = checkIfPlayerIsClose(event.other)
+    print('player R '..playerRow..' C '..playerCol)
+    print('tree R '.. event.other.row..' C '.. event.other.col)
+
+    --[[ if (math.abs(playerRow - event.other.row) == 1) or (math.abs(playerCol - event.other.col) == 1)then
+      nexToObject = true
+    end ]]
+    if nexToObject == true and event.other.type == 'tree' then
       collidedWith = event.other
     else
       -- NOTHING BECAUSE IT'S NOT A TREE
@@ -48,6 +82,7 @@ end
 function M.new(gridRows, gridCols, lvl, sceneGroup)
 
   -- init vars
+  widthFrame = constants.widthFrame
   anchorXPoint = constants.anchorXPoint
   anchorYPoint = constants.anchorYPoint
   playerSrc = constants.playerSrc
@@ -102,6 +137,7 @@ function M.new(gridRows, gridCols, lvl, sceneGroup)
   function player:pee()
     -- if there is no collidedWith Object exit because you're not close to a tree
     if (collidedWith.peeLevel) then
+      print('inside')
       collidedWith.peeLevel = collidedWith.peeLevel + peeStream
       peeAnimation = 'pee'..lastDirection
       player:setSequence(peeAnimation)
