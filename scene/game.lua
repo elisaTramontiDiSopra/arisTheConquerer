@@ -47,6 +47,7 @@ local function initLevelSettings()
   playableScreenHeight = constants.widthFrame * gridRows
 
   -- UI vars
+  arrowPadOn = composer.getVariable('arrowPadOn')
   padButtonDimension = constants.padButtonDimension
 
   -- timer vars
@@ -177,29 +178,29 @@ local function decreasePeeInAllBars()
 end
 
 local function pee()
-  collidedWith = player:pee()
+   player:pee()
 end
 
 local function createUI(sceneGroup)
 
   upBtn = display.newRect(display.contentWidth - 2 * padButtonDimension, display.contentHeight - 3 * padButtonDimension, padButtonDimension, padButtonDimension)
-  upBtn:setFillColor(0, 0, 0)
+  upBtn:setFillColor(0, 0, 0, 0.3)
   upBtn.name = "Up"
   upBtn:addEventListener("touch", move)
 
   downBtn = display.newRect(display.contentWidth - 2 * padButtonDimension,  display.contentHeight - padButtonDimension, padButtonDimension, padButtonDimension)
   downBtn.name = "Down"
-  downBtn:setFillColor(0, 0, 0)
+  downBtn:setFillColor(0, 0, 0, 0.3)
   downBtn:addEventListener("touch", move)
 
   leftBtn = display.newRect(display.contentWidth - 3 * padButtonDimension, display.contentHeight - 2 * padButtonDimension, padButtonDimension, padButtonDimension)
   leftBtn.name = "Left"
-  leftBtn:setFillColor(0, 0, 0)
+  leftBtn:setFillColor(0, 0, 0, 0.3)
   leftBtn:addEventListener("touch", move)
 
   rightBtn = display.newRect(display.contentWidth - padButtonDimension, display.contentHeight - 2 * padButtonDimension, padButtonDimension, padButtonDimension)
   rightBtn.name = "Right"
-  rightBtn:setFillColor(0, 0, 0)
+  rightBtn:setFillColor(0, 0, 0, 0.3)
   rightBtn:addEventListener("touch", move)
 
   peeBtn = display.newCircle(display.contentWidth / 2, display.contentHeight / 2, padButtonDimension, padButtonDimension / 1.5)
@@ -214,10 +215,32 @@ local function createUI(sceneGroup)
   sceneGroup:insert( leftBtn )
   sceneGroup:insert( rightBtn )
   sceneGroup:insert( peeBtn )
-
 end
 
+local function onTilt( event )
+  player.x = player.x - event.xGravity - playerSpeed
+  player.y = player.y - event.yGravity - playerSpeed
+
+  -- contein within screen
+  if player.x > display.contentWidth then
+    player.x = display.contentWidth
+  end
+  if player.x < 0 then
+    player.x = 0
+  end
+  if player.y > display.contentHeight then
+    player.y = display.contentHeight
+  end
+  if player.y < 0 then
+    player.y = 0
+  end
+
+  return true
+end
+
+
 local function frameUpdate()
+  --print('p x'..player.x)
   if buttonPressed['Down'] == true and player.y <
     (gridRows * heightFrame) - heightFrame/2 then
     --collidedWith = nil
@@ -277,7 +300,9 @@ function scene:create( event )
   local countDownPee = timer.performWithDelay( 1000, decreasePeeInAllBars, timerSeconds)
 
   -- create the ui
-  createUI(sceneGroup)
+  if arrowPadOn then
+    createUI(sceneGroup)
+  end
   --sceneGroup:insert(player)
 
 end
@@ -296,6 +321,7 @@ function scene:show( event )
     audio.play( barkSound, {channel = 2})
 
     Runtime:addEventListener("enterFrame", frameUpdate) -- if the move buttons are pressed MOVE!
+    Runtime:addEventListener( "accelerometer", onTilt )
     --Runtime:addEventListener("gyroscope", onGyroscopeUpdate)
 
 	end
