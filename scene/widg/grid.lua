@@ -113,8 +113,6 @@ local function visualizeTreePeeBar(xPos, yPos, graphicGroup)
   if anchorXPoint == 1 then
     xPos = xPos - widthFrame
     yPos = yPos - heightFrame - heightFrame/2
-    --[[ xPos = xPos - widthFrame + 10
-    yPos = yPos - 2*heightFrame + heightFrame/2 ]]
   elseif anchorXPoint == 0.5 then
     xPos = xPos - widthFrame + 5
     yPos = yPos - 10

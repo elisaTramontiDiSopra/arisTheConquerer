@@ -28,25 +28,6 @@ function checkIfIsATree(cell)
     end
 end
 
-function pee()
-    if checkIfIsATree(collidedWith) then
-        localRow = collidedWith.row
-        localCol = collidedWith.col
-        peeLevel = gridMatrix[localRow][localCol].peeLevel
-        if peeLevel <= maxPeeLevel then
-            gridMatrix[localRow][localCol].peeLevel =
-                gridMatrix[localRow][localCol].peeLevel + peeStream
-            updateTreePeeBar(gridMatrix[localRow][localCol].peeBar,
-                             gridMatrix[localRow][localCol].peeLevel)
-            peeAnimation = 'pee' .. lastDirection
-            player:setSequence(peeAnimation)
-            player:play()
-        end
-    else
-        print("not a tree")
-        collidedWith = nil
-    end
-end
 -------------------------------------
 
 function M.new(gridMatrix, player, lvl)
