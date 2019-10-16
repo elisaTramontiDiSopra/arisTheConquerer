@@ -38,7 +38,8 @@ local function initLevelSettings()
 
   -- find the grid dimensions
   gridCols = math.floor(display.actualContentWidth / constants.widthFrame)
-  gridRows = math.floor(display.actualContentHeight / constants.heightFrame)
+  --gridRows = math.floor(display.actualContentHeight / constants.heightFrame)
+  gridRows = math.floor(display.actualContentHeight / constants.heightFrame) - 1 -- subtract 1 row for the timer
   centerHoriz = math.floor(gridRows/2)
   centerVert = math.floor(gridCols/2)
 
@@ -91,6 +92,12 @@ local function createTimer(sceneGroup)
   timerBar:setProgress(1.0)
   sceneGroup:insert( timerBar )
   sceneGroup:insert( timerText )
+end
+
+-- LEVEL WRITING
+local function createLevelWriting(sceneGroup)
+  levelText = display.newText( "level "..lvl, 50, display.contentHeight + 8, "fonts/8-BitMadness.ttf", 26 )
+  sceneGroup:insert( levelText )
 end
 
 local function checkIfLevelIsPassed()
@@ -295,6 +302,9 @@ function scene:create( event )
   -- create the timer
   createTimer(sceneGroup)
   local countDownTimer = timer.performWithDelay( 1000, updateTime, timerSeconds)
+
+  -- create the level text
+  createLevelWriting(sceneGroup)
 
   -- decrease pee levels in trees for all the game
   local countDownPee = timer.performWithDelay( 1000, decreasePeeInAllBars, timerSeconds)
