@@ -9,7 +9,6 @@ local playBtn, creditsBtn
 --------------------------------------------------------------
 
 local function onPlayBtnRelease()
-	--composer.gotoScene("scene.game", "fade", 500 )
 	composer.gotoScene("scene.levels", "fade", 500 )
 	return true	-- indicates successful touch
 end
@@ -19,9 +18,13 @@ local function onCreditsBtnRelease()
 	return true	-- indicates successful touch
 end
 
-
 local function onTutorialBtnRelease()
 	composer.gotoScene("scene.tutorial", "fade", 500 )
+	return true	-- indicates successful touch
+end
+
+local function onOptionBtnRelease()
+	composer.gotoScene("scene.options", "fade", 500 )
 	return true	-- indicates successful touch
 end
 
@@ -80,11 +83,25 @@ function scene:create( event )
 	tutorialBtn.x = display.contentCenterX
 	tutorialBtn.y = 295
 
+-- create a widget button (which will loads level1.lua on release)
+  optionBtn = widget.newButton(
+    {
+        width = buttonWidth,
+        height = buttonHeight,
+        defaultFile = "options.png",
+        onEvent = onOptionBtnRelease	-- event listener function
+    }
+  )
+	optionBtn.x = display.contentCenterX
+	optionBtn.y = 365
+
+
 	-- all display objects must be inserted into group
 	sceneGroup:insert( background )
 	sceneGroup:insert( playBtn )
 	sceneGroup:insert( creditsBtn )
 	sceneGroup:insert( tutorialBtn )
+	sceneGroup:insert( optionBtn )
 end
 
 function scene:show( event )

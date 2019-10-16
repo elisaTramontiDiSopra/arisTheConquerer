@@ -1,4 +1,7 @@
 local M = {
+  -- options
+  musicOn = false,
+  arrowPadOn = true,
   -- menu screen vars
   logoWidth = 280,
   logoHeight = 85,
@@ -47,16 +50,16 @@ local M = {
   -- level vars
   numberOfLevels = 20,
   levelVars = {
-    { lvl = 1, timerSeconds = 10, pathTracerMoves = 200,
+    { lvl = 1, timerSeconds = 40, pathTracerMoves = 200,
       obstaclesSrc = "scene/img/tiles/country/", obstacleTile = 'obstacle', treeTile = 'tree', pathTile = 'path',
       totalLevelTrees = 1, minPeeLevel = 5, maxPeeLevel = 100, peeStream = 6, vanishingPee = 2
     },
     { lvl = 2, timerSeconds = 20, pathTracerMoves = 100,
-      obstaclesSrc = "scene/img/tiles/country/", obstacleTile = 'obstacle', treeTile = 'tree', pathTile = 'path',
+      obstaclesSrc = "scene/img/tiles/isle/", obstacleTile = 'obstacle', treeTile = 'tree', pathTile = 'path',
       totalLevelTrees = 2, minPeeLevel = 5, maxPeeLevel = 100, peeStream = 6, vanishingPee = 2
     },
     { lvl = 3, timerSeconds = 20, pathTracerMoves = 100,
-      obstaclesSrc = "scene/img/tiles/country/", obstacleTile = 'obstacle', treeTile = 'tree', pathTile = 'path',
+      obstaclesSrc = "scene/img/tiles/pole/", obstacleTile = 'obstacle', treeTile = 'tree', pathTile = 'path',
       totalLevelTrees = 3, minPeeLevel = 5, maxPeeLevel = 100, peeStream = 6, vanishingPee = 2
     },
     { lvl = 4, timerSeconds = 20, pathTracerMoves = 100,
