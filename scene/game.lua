@@ -36,7 +36,7 @@ local function initLevelSettings()
   -- find the grid dimensions
   gridCols = math.floor(display.actualContentWidth / constants.widthFrame)
   --gridRows = math.floor(display.actualContentHeight / constants.heightFrame)
-  gridRows = math.floor(display.actualContentHeight / constants.heightFrame) - 1 -- subtract 1 row for the timer
+  gridRows = math.floor(display.actualContentHeight / constants.heightFrame) -- subtract 1 row for the timer
   centerHoriz = math.floor(gridRows/2)
   centerVert = math.floor(gridCols/2)
 
@@ -76,14 +76,14 @@ end
 -- TIMER CREATION AND UPDATE
 local function createTimer(sceneGroup)
   -- visualize text with a random text inside
-  timerText = display.newText( "00:00", display.contentWidth - 50, display.contentHeight + 8, "fonts/8-BitMadness.ttf", 26 )
+  timerText = display.newText( "00:00", display.contentWidth - 40, display.contentHeight + 12, "fonts/8-BitMadness.ttf", 22 )
   timerBar = widget.newProgressView(
     {sheet = timerBarSheet,
       fillOuterLeftFrame = 1, fillOuterMiddleFrame = 2, fillOuterRightFrame = 3,
       fillOuterWidth = 10, fillOuterHeight = timerBarFrameHeight,
       fillInnerLeftFrame = 4, fillInnerMiddleFrame = 5, fillInnerRightFrame = 6,
       fillWidth = 10, fillHeight = timerBarFrameHeight,
-      left = marginX, top = display.contentHeight - 25, width = playableScreenWidth, isAnimated = true
+      left = marginX, top = display.contentHeight, width = playableScreenWidth, isAnimated = true
     }
   )
   timerBar:setProgress(1.0)
@@ -93,7 +93,7 @@ end
 
 -- LEVEL WRITING
 local function createLevelWriting(sceneGroup)
-  levelText = display.newText( "level "..lvl, 50, display.contentHeight + 8, "fonts/8-BitMadness.ttf", 26 )
+  levelText = display.newText( "level "..lvl, 50, display.contentHeight + 12, "fonts/8-BitMadness.ttf", 22 )
   sceneGroup:insert( levelText )
 end
 

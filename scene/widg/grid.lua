@@ -154,7 +154,7 @@ local function visualizeTreePeeBar(xPos, yPos, graphicGroup)
   -- auto change of position based on general anchor point of the project
   if anchorXPoint == 1 then
     xPos = xPos - widthFrame
-    yPos = yPos - heightFrame
+    yPos = yPos - heightFrame - heightFrame/3
   --[[ elseif anchorXPoint == 0.5 then
     xPos = xPos - widthFrame + 5
     yPos = yPos - 10 ]]
@@ -307,7 +307,7 @@ function M.new(gridRows, gridCols, lvl, graphicGroup)
 
   toReturn.gridMatrix = gridMatrix
   toReturn.gridTree = treeGrid
-
+-- algoritmo di dixtra (pesato) non pesato  minumium spanning tree mst
   return toReturn
 end
 
