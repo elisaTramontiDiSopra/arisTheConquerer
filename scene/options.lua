@@ -4,17 +4,16 @@ local scene = composer.newScene()
 local constants = require("scene.const.constants")
 
 -- MENU LOCAL VAR
-local nextBtn, homeBtn, bgUrl, winOrLose
+local creditsBtn, bgUrl, winOrLose
 
 --------------------------------------------------------------
 
-local function onHomeBtnRelease()
-	composer.gotoScene("scene.menu", "fade", 500 )
+local function onCreditsBtnRelease()
+	composer.gotoScene("scene.credits", "fade", 500 )
 	return true	-- indicates successful touch
 end
 
 --------------------------------------------------------------
-
 
 function scene:create( event )
   -- init vars
@@ -31,25 +30,25 @@ function scene:create( event )
 	background.x = 0 + display.screenOriginX
 	background.y = 0 + display.screenOriginY
 
-  -- create a widget button (which will loads level1.lua on release)
-  nextBtn = widget.newButton(
-    {
-        width = buttonWidth,
-        height = buttonHeight,
-        defaultFile = buttonUrl,
-        onEvent = onNextBtnRelease	-- event listener function
-    }
-  )
-	nextBtn.x = display.contentCenterX
-	nextBtn.y = display.contentHeight - 85
+  -- create a creditsBtn (which will loads creditsBtn.lua on release)
+    creditsBtn = widget.newButton(
+        {
+            width = buttonWidth,
+            height = buttonHeight,
+            defaultFile = buttonUrl,
+            onEvent = onNextBtnRelease	-- event listener function
+        }
+    )
+    creditsBtn.x = display.contentCenterX
+    creditsBtn.y = display.contentHeight - 85
 
-display.setDefault( "anchorX", 0 )
+--display.setDefault( "anchorX", 0 )
 
 local dot = display.newCircle( display.contentCenterX, display.contentCenterY, 20 )
 dot:setFillColor( 0, 0, 1 )
 dot.color = "blue"
 dot.anchorX = 0.5
-
+--[[
 local xGravityLabel = display.newText( "xGravity:", 10, 15, native.systemFontBold, 12 )
 local yGravityLabel = display.newText( "yGravity:", 10, 31, native.systemFontBold, 12 )
 local zGravityLabel = display.newText( "zGravity:", 10, 47, native.systemFontBold, 12 )
@@ -64,15 +63,15 @@ local zInstantLabel = display.newText( "zInstant:", 250, 47, native.systemFontBo
 
 local xInstant = display.newText( "", 330, 15, native.systemFont, 12 )
 local yInstant = display.newText( "", 330, 31, native.systemFont, 12 )
-local zInstant = display.newText( "", 330, 47, native.systemFont, 12 )
+local zInstant = display.newText( "", 330, 47, native.systemFont, 12 ) ]]
 
 local function onTilt( event )
-    xGravity.text = event.xGravity
+    --[[ xGravity.text = event.xGravity
     yGravity.text = event.yGravity
     zGravity.text = event.zGravity
     xInstant.text = event.xInstant
     yInstant.text = event.yInstant
-    zInstant.text = event.zInstant
+    zInstant.text = event.zInstant ]]
 
     dot.x = dot.x + event.xGravity + 2
     dot.y = dot.y - event.yGravity - 2
@@ -90,7 +89,7 @@ local function onTilt( event )
         dot.y = 0
     end
 
-    if event.isShake then
+    --[[ if event.isShake then
         if dot.color == "blue" then
             dot:setFillColor( 1, 0, 0 )
             dot.color = "red"
@@ -98,16 +97,15 @@ local function onTilt( event )
             dot:setFillColor( 0, 0, 1 )
             dot.color = "blue"
         end
-    end
+    end ]]
     return true
 end
 
-Runtime:addEventListener( "accelerometer", onTilt )
+  Runtime:addEventListener( "accelerometer", onTilt )
 
-
-	-- all display objects must be inserted into group
-	sceneGroup:insert( background )
-	sceneGroup:insert( nextBtn )
+  -- all display objects must be inserted into group
+  sceneGroup:insert( background )
+  sceneGroup:insert( creditsBtn )
 end
 
 function scene:show( event )
@@ -118,7 +116,7 @@ function scene:show( event )
 		-- Called when the scene is still off screen and is about to move on screen
 	elseif phase == "did" then
 		-- Called when the scene is now on screen
-		audio.play( soundName,{ channel = 3, loops = 0} )
+		-- audio.play( soundName,{ channel = 3, loops = 0} ) -- barking sound ???????????????????
 	end
 end
 

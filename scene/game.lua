@@ -22,16 +22,13 @@ end
 
 ------------------------------------------------------------------- EXTRA FUNCTIONS
 local function loadLevel()
-  --lvl = progress.load()
-
   -- get level from local var because it's been memorized in the levels view
   lvl = composer.getVariable('playLevel')
-
-  if (lvl) then
+  --[[ if (lvl) then
     print("level "..lvl)
   else
     print("C'e' qualche problema con il caricamento del livello salvato")
-  end
+  end ]]
 end
 
 local function initLevelSettings()
@@ -102,6 +99,8 @@ end
 
 local function checkIfLevelIsPassed()
   local conqueredTrees = 0
+
+  -- calculate how many trees you have conquered based on the pee level
   for key, value in pairs(gridTree) do
     treeRow = gridTree[key].row
     treeCol = gridTree[key].col
@@ -110,25 +109,16 @@ local function checkIfLevelIsPassed()
       conqueredTrees = conqueredTrees + 1
     end
   end
-
+  -- based on the conquered trees visualize the right page
   if conqueredTrees < totalLevelTrees then
     composer.setVariable('winOrLose', 'lose' )
   else
     composer.setVariable('winOrLose', 'win' )
     lvl = lvl + 1
-
     progress.save(lvl)
   end
   composer.gotoScene("scene.nextLevel", "fade", 500 )
 
-  --[[ if conqueredTrees < totalLevelTrees then
-    composer.removeScene("scene")
-    composer.gotoScene("scene.loser", "fade", 500 )
-  else
-    lvl = lvl + 1
-    --progress.save(lvl)
-	  composer.gotoScene("scene.winner", "fade", 500 )
-  end ]]
 end
 
 local function updateTime()
@@ -157,10 +147,6 @@ local function move(event)
     buttonPressed[event.target.name] = false
     player:pause()
   end
-end
-
-local function test()
-  print('test')
 end
 
 function updatePeeBar(peeLevel, peeBar)
@@ -318,15 +304,12 @@ function scene:create( event )
 end
 
 function scene:show( event )
-	--local sceneGroup = self.view
 	local phase = event.phase
 
 	if phase == "will" then
     -- Called when the scene is still off screen and is about to move on screen
 	elseif phase == "did" then
 		-- Called when the scene is now on screen INSERT code here to make the scene come alive
-		-- e.g. start timers, begin animation, play audio, etc.
-
     -- randomly play bark sounds during the game
     audio.play( barkSound, {channel = 2})
 
@@ -365,7 +348,6 @@ end
 
 ---------------------------------------------------------------------------------
 
--- Listener setup
 scene:addEventListener( "create", scene )
 scene:addEventListener( "show", scene )
 scene:addEventListener( "hide", scene )
