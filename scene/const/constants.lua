@@ -35,7 +35,7 @@ local M = {
   -- player vars
   playerSrc = "scene/img/mainDog.png",
   playerSpeed = 5,
-  playerSheetOptions = {width = 50, height = 50, numFrames = 28}, -- use widthFrame & heightFrame
+  playerSheetOptions = {width = 50, height = 50, numFrames = 32}, -- use widthFrame & heightFrame
   playerBodyOptions = {radius = 20}, -- to add a physics body, use circle or it wouldn't be realistic
   playerSequenceData = {
     {name = "walkingDown", start = 1, count = 4, time = 100, loopCount = 0, loopDirection = "forward"},
@@ -45,8 +45,10 @@ local M = {
     {name = "peeDown", start = 17, count = 4, time = 100, loopCount = 0, loopDirection = "forward"},
     {name = "peeRight", start = 21, count = 4, time = 100, loopCount = 0, loopDirection = "forward"},
     {name = "peeLeft", start = 25, count = 4, time = 100, loopCount = 0, loopDirection = "forward"},
-    {name = "peeUp", start = 17, count = 4, time = 100, loopCount = 0, loopDirection = "forward"}
+    {name = "peeUp", start = 29, count = 4, time = 100, loopCount = 0, loopDirection = "forward"}
   },
+  -- meanDog vars
+  enemyDogSrc = "scene/img/mainDogMean.png",
   -- level vars
   numberOfLevels = 20,
   levelVars = {
