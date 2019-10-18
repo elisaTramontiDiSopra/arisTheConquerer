@@ -3,12 +3,13 @@ local physics = require "physics"
 local widget = require "widget"
 local grid = require("scene.widg.grid")
 local ply = require("scene.widg.player")
+local char = require("scene.widg.otherCharacter")
 local ui = require("scene.widg.ui")
 local progress = require("scene.widg.progress")
 local constants = require("scene.const.constants")
 
 -- SCENE
-local lvl, timerSeconds
+local lvl, timerSeconds, sceneToPass
 local player, buttonPressed, collidedWith
 local buttonPressed = {Down = false, Up = false, Left = false, Right = false}
 local scene = composer.newScene()
@@ -66,7 +67,12 @@ local function initLevelSettings()
   treeTile = constants.levelVars[lvl].treeTile
   pathTile = constants.levelVars[lvl].pathTile
 
+  -- player vars
   playerSpeed = constants.playerSpeed
+  playerSrc = constants.playerSrc
+
+  -- player vars
+  enemyDogSrc = constants.enemyDogSrc
 
   -- pee vars
   maxPeeLevel = constants.levelVars[lvl].maxPeeLevel
@@ -149,7 +155,7 @@ local function move(event)
   end
 end
 
-function updatePeeBar(peeLevel, peeBar)
+local function updatePeeBar(peeLevel, peeBar)
   peePerc = peeLevel / maxPeeLevel
   peeBar:setProgress(peePerc) -- percentage
 end
@@ -231,6 +237,14 @@ local function onTilt( event )
   return true
 end
 
+-- ENEMY DOG FUNCTIONS
+local function visualizeEnemyDog(sceneGroup)
+  -- put the dog on the first free cell
+
+  -- create the enemy dog
+  enemyDog = char.new(gridRows, gridCols, lvl, sceneToPass, enemyDogSrc)
+
+end
 
 local function frameUpdate()
   --print('p x'..player.x)
@@ -283,7 +297,11 @@ function scene:create( event )
   gridTree = twoGrids.gridTree      -- because I returned the two values in the object
 
   -- create the player
-  player = ply.new(gridRows, gridCols, lvl, sceneGroup)
+  player = ply.new(gridRows, gridCols, lvl, sceneGroup, playerSrc)
+
+  -- create the enemy dog after 5 seconds
+  sceneToPass = sceneGroup
+  timer.performWithDelay( 5000, visualizeEnemyDog)
 
   -- create the timer
   createTimer(sceneGroup)
@@ -356,3 +374,12 @@ scene:addEventListener( "destroy", scene )
 -----------------------------------------------------------------------------------------
 
 return scene
+
+
+--[[
+  insert the enemy dog at 1.1 check if it.s free, if it's not go t 1.2, if it's not free go to 1.3 ...
+  create a matrix and using the dixtra algorithm or minimum spanning tree mst go to the first tree
+
+
+]]
+-- algoritmo di dixtra (pesato) non pesato  minumium spanning tree mst
