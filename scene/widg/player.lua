@@ -129,7 +129,6 @@ function M.new(gridRows, gridCols, lvl, sceneGroup, imageSrc)
     if (collidedWith.peeLevel and collidedWith.peeLevel < maxPeeLevel) then
       collidedWith.peeLevel = collidedWith.peeLevel + peeStream
       peeAnimation = 'pee'..lastDirection
-      print('peeAnimation'..peeAnimation)
       player:setSequence(peeAnimation)
       updateTreePeeBar(collidedWith.peeBar, collidedWith.peeLevel)
       return collidedWith

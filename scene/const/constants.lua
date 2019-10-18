@@ -15,10 +15,6 @@ local M = {
   fillOuterWidth = 20, -- Set this to horizontally offset the fill region of the progress view. Default is 0
   timerBarOptions = {width = 64, height = 38, numFrames = 6, sheetContentWidth = 384, sheetContentHeight = 38},
   -- peeBar vars
-  --[[ peeBarFrameWidth = 10,
-  peeBarFrameHeight = 10,
-  peeBarSrc = "scene/img/peeBar.png",
-  peeBarOptions = {width = 10, height = 10, numFrames = 6, sheetContentWidth = 60, sheetContentHeight = 10}, ]]
   peeBarFrameWidth = 10,
   peeBarFrameHeight = 13,
   peeBarSrc = "scene/img/peeBarMini.png",
@@ -43,8 +39,8 @@ local M = {
     {name = "walkingRight", start = 9, count = 4, time = 100, loopCount = 0, loopDirection = "forward"},
     {name = "walkingUp", start = 13, count = 4, time = 100, loopCount = 0, loopDirection = "forward"},
     {name = "peeDown", start = 17, count = 4, time = 100, loopCount = 0, loopDirection = "forward"},
-    {name = "peeRight", start = 21, count = 4, time = 100, loopCount = 0, loopDirection = "forward"},
-    {name = "peeLeft", start = 25, count = 4, time = 100, loopCount = 0, loopDirection = "forward"},
+    {name = "peeLeft", start = 21, count = 4, time = 100, loopCount = 0, loopDirection = "forward"},
+    {name = "peeRight", start = 25, count = 4, time = 100, loopCount = 0, loopDirection = "forward"},
     {name = "peeUp", start = 29, count = 4, time = 100, loopCount = 0, loopDirection = "forward"}
   },
   -- meanDog vars
