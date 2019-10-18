@@ -60,7 +60,7 @@ end
 
 -------------------------------------
 
-function M.new(gridRows, gridCols, lvl, sceneGroup, imageSrc)
+function M.new(gridRows, gridCols, charRow, charCol, lvl, sceneGroup, imageSrc)
 
   -- init vars
   widthFrame = constants.widthFrame
@@ -75,16 +75,17 @@ function M.new(gridRows, gridCols, lvl, sceneGroup, imageSrc)
   vanishingPee = constants.levelVars[lvl].vanishingPee
 
   createMarginsForPlayableScreen()
-  centerHoriz = math.floor(gridRows/2)
-  centerVert = math.floor(gridCols/2)
 
   -- Create the player
   local imageSheet = graphics.newImageSheet(charSrc, playerSheetOptions)
   char = display.newSprite(imageSheet, playerSequenceData)
   char.anchorX = anchorXPoint
   char.anchorY = anchorYPoint
-  char.x = centerVert * heightFrame + marginX
-  char.y = centerHoriz * widthFrame + marginY
+  print('charCol '..charCol)
+  print('charRow '..charRow)
+  char.x = charCol * widthFrame + marginX -- -1 is for the anchorPoin 1
+  char.y = charRow * heightFrame + marginY
+  print('my '..marginY)
   char.name = 'char'
   char:setSequence("walkingDown")
   char.objectType = char

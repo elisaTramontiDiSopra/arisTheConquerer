@@ -13,6 +13,7 @@ local lvl, timerSeconds, sceneToPass
 local player, buttonPressed, collidedWith
 local buttonPressed = {Down = false, Up = false, Left = false, Right = false}
 local scene = composer.newScene()
+local entryEnemyCel = {}
 
 
 function printPairs(grid)
@@ -238,11 +239,29 @@ local function onTilt( event )
 end
 
 -- ENEMY DOG FUNCTIONS
+local function whereToEnterTheEnemyDog()
+
+  for c = 1, gridCols do
+    for r = 1, gridRows do
+      if gridMatrix[r][c].type == 'path' then -- if it's not an obstacle
+        entryEnemyCel.row = r
+        entryEnemyCel.col = c
+        return
+      end
+    end
+  end
+
+end
+
 local function visualizeEnemyDog(sceneGroup)
   -- put the dog on the first free cell
 
+  -- calculate where to make the dog enter: 1 column, down row till you find an empty one
+  whereToEnterTheEnemyDog()
+  print(entryEnemyCel.row..' '..entryEnemyCel.col)
+
   -- create the enemy dog
-  enemyDog = char.new(gridRows, gridCols, lvl, sceneToPass, enemyDogSrc)
+  enemyDog = char.new(gridRows, gridCols, entryEnemyCel.row, entryEnemyCel.col, lvl, sceneToPass, enemyDogSrc)
 
 end
 
