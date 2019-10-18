@@ -33,14 +33,13 @@ local function updateTreePeeBar(peeBar, peeLevel)
 end
 
 local function findPlayerRowCol()
+  playerRow = math.ceil((player.y) / widthFrame)
+  playerCol = math.ceil((player.x) / widthFrame)
   -- consider if the anchor point is at the end of the picture cause it could change the colliding point
-  if anchorXPoint == 1 then
+  --[[ if anchorXPoint == 1 then
     playerRow = math.ceil((player.y - widthFrame + 10) / widthFrame)
     playerCol = math.ceil((player.x - widthFrame + 10) / widthFrame)
-  else
-    playerRow = math.ceil((player.y) / widthFrame)
-    playerCol = math.ceil((player.x) / widthFrame)
-  end
+  end ]]
 end
 
 local function checkIfPlayerIsClose(tree)
@@ -63,12 +62,16 @@ local function playerCollision(self, event)
     nexToObject = checkIfPlayerIsClose(event.other)
     print('player R '..playerRow..' C '..playerCol)
     print('tree R '.. event.other.row..' C '.. event.other.col)
+    print('nexToObject ')
+    print(nexToObject)
 
     --[[ if (math.abs(playerRow - event.other.row) == 1) or (math.abs(playerCol - event.other.col) == 1)then
       nexToObject = true
     end ]]
     if nexToObject == true and event.other.type == 'tree' then
       collidedWith = event.other
+
+    print('collidedWithTree R '.. collidedWith.row..' C '.. collidedWith.col)
     else
       -- NOTHING BECAUSE IT'S NOT A TREE
       -- collidedWith.type = event.other.type
@@ -79,13 +82,13 @@ end
 
 -------------------------------------
 
-function M.new(gridRows, gridCols, lvl, sceneGroup)
+function M.new(gridRows, gridCols, lvl, sceneGroup, imageSrc)
 
   -- init vars
   widthFrame = constants.widthFrame
   anchorXPoint = constants.anchorXPoint
   anchorYPoint = constants.anchorYPoint
-  playerSrc = constants.playerSrc
+  playerSrc = imageSrc
   playerSpeed = constants.playerSpeed
   playerSequenceData = constants.playerSequenceData
   playerSheetOptions = constants.playerSheetOptions
@@ -117,8 +120,8 @@ function M.new(gridRows, gridCols, lvl, sceneGroup)
 
   function player:animate(animation)
     player:setSequence(animation)
-    --player.play()
     player.rotation = 0 -- to prevent player from rotating if walking on an obstacle angle
+    lastDirection = animation:sub(8) -- take what's after 'walking'
     --[[ if animation == 'walkingDown' and player.y < (gridRows * heightFrame) - heightFrame/2 then
       player.y = player.y + playerSpeed
       lastDirection = 'Down'
@@ -136,10 +139,10 @@ function M.new(gridRows, gridCols, lvl, sceneGroup)
 
   function player:pee()
     -- if there is no collidedWith Object exit because you're not close to a tree
-    if (collidedWith.peeLevel) then
-      print('inside')
+    if (collidedWith.peeLevel and collidedWith.peeLevel < maxPeeLevel) then
       collidedWith.peeLevel = collidedWith.peeLevel + peeStream
       peeAnimation = 'pee'..lastDirection
+      print('peeAnimation'..peeAnimation)
       player:setSequence(peeAnimation)
       updateTreePeeBar(collidedWith.peeBar, collidedWith.peeLevel)
       return collidedWith
