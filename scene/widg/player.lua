@@ -122,19 +122,6 @@ function M.new(gridRows, gridCols, lvl, sceneGroup, imageSrc)
     player:setSequence(animation)
     player.rotation = 0 -- to prevent player from rotating if walking on an obstacle angle
     lastDirection = animation:sub(8) -- take what's after 'walking'
-    --[[ if animation == 'walkingDown' and player.y < (gridRows * heightFrame) - heightFrame/2 then
-      player.y = player.y + playerSpeed
-      lastDirection = 'Down'
-    elseif animation == 'walkingUp' and player.y > (0 + heightFrame) then
-      player.y = player.y - playerSpeed
-      lastDirection = 'Up'
-    elseif animation == 'walkingRight' and player.x < (gridCols * widthFrame) then
-      player.x = player.x + playerSpeed
-      lastDirection = 'Right'
-    elseif animation == 'walkingLeft' and player.x > (0 + widthFrame) then
-      player.x = player.x - playerSpeed
-      lastDirection = 'Left'
-    end ]]
   end
 
   function player:pee()
