@@ -4,20 +4,15 @@ local constants = require("scene.const.constants")
 -- pathfinder
 local Grid = require ("jumper.grid")
 local Pathfinder = require ("jumper.pathfinder")
+local serpent = require("libs.serpent")
 
 
 
 local function findPath(walkableMap, startx, starty, endx, endy)
-  print('walkableMap')
-  print(walkableMap)
-  print('startx')
-  print(startx)
-  print('starty')
-  print(starty)
-  print('endx')
-  print(endx)
-  print('endy')
-  print(endy)
+
+  print('SERPENT MAP')
+  print(serpent.block(walkableMap))
+
   -- Set up a collision map
   local walkableMap = {
     {0,1,0,1,0},
@@ -32,30 +27,24 @@ local function findPath(walkableMap, startx, starty, endx, endy)
   -- Creates a grid object
   local grid = Grid(walkableMap)
 
-  -- Creates a pathfinder object using Jump Point Search algorithm
+  -- Creates a pathfinder object using Jump Point Search
   local myFinder = Pathfinder(grid, 'JPS', walkable)
 
   -- Define start and goal locations coordinates
-  --[[ local startx, starty = 1,1
-  local endx, endy = 5,1 ]]
+  local startx, starty = 1,1
+  local endx, endy = 5,1
 
   -- Calculates the path, and its length
-  path = myFinder:getPath(startx, starty, endx, endy)
+  local path = myFinder:getPath(startx, starty, endx, endy)
+  if path then
+    print(('Path found! Length: %.2f'):format(path:getLength()))
+    for node, count in path:nodes() do
+      print(('Step: %d - x: %d - y: %d'):format(count, node:getX(), node:getY()))
+    end
+  end
+
   return path
 end
-
-
--- Pretty-printing the results
---[[ if path then
-  print(('Path found! Length: %.2f'):format(path:getLength()))
-	for node, count in path:nodes() do
-	  print(('Step: %d - x: %d - y: %d'):format(count, node:getX(), node:getY()))
-	end
-end ]]
-
-
-
-
 
 
 -- PLAYER VARS
@@ -115,22 +104,22 @@ local function charCollision(self, event)
   return true --limit event propagation
 end
 
-function callNewPath()
+--[[ function callNewPath()
 	path = myFinder:getPath(startx, starty, endx, endy)
 	if path then
 	touchStarted = 1
-	print(('Path found! Length: %.2f'):format(path:getLength()))
+	--print(('Path found! Length: %.2f'):format(path:getLength()))
 		for node, count in path:nodes() do
-		print(('Step: %d - x: %d - y: %d'):format(count, node:getX(), node:getY()))
-		print(node:getX())
-		print(node:getY())
+		--print(('Step: %d - x: %d - y: %d'):format(count, node:getX(), node:getY()))
+		--print(node:getX())
+		--print(node:getY())
 		setX[#setX+1] = node:getX() -- populating coordinate table on each movement
 		setY[#setY+1] = node:getY() -- populating coordinate table on each movement
 		cellb[node:getY()][node:getX()].alpha = .8 -- see the path you've chosen!
 		moveCount = moveCount+1
 		end
 	end
-end
+end ]]
 
 function printPairs(grid)
   for k,v in pairs(grid) do
@@ -175,8 +164,6 @@ function M.new(gridRows, gridCols, charRow, charCol, lvl, sceneGroup, imageSrc, 
 
   -- calculate the path to the first tree
   path = findPath(pathFinderGrid, charRow, charCol, treeGrid[1].row, treeGrid[1].col)
-  print('path')
-  print(path)
 
   -- Handle player collision
   char.collision = playerCollision
