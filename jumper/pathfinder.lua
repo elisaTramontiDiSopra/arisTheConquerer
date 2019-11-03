@@ -92,7 +92,8 @@ if (...) then
 	  newPathfinder:setGrid(grid)
     newPathfinder:setFinder(finderName)
     newPathfinder:setWalkable(walkable)
-    newPathfinder:setMode('DIAGONAL')
+    --newPathfinder:setMode('DIAGONAL')
+    newPathfinder:setMode('ORTHOGONAL') -- changed MODE
     newPathfinder:setHeuristic('MANHATTAN')
     newPathfinder:setTunnelling(false)
     return newPathfinder
