@@ -1,11 +1,68 @@
 local M = {}
 local physics = require "physics"
 local constants = require("scene.const.constants")
+-- pathfinder
+local Grid = require ("jumper.grid")
+local Pathfinder = require ("jumper.pathfinder")
+
+
+
+local function findPath(walkableMap, startx, starty, endx, endy)
+  print('walkableMap')
+  print(walkableMap)
+  print('startx')
+  print(startx)
+  print('starty')
+  print(starty)
+  print('endx')
+  print(endx)
+  print('endy')
+  print(endy)
+  -- Set up a collision map
+  local walkableMap = {
+    {0,1,0,1,0},
+    {0,1,0,1,0},
+    {0,1,1,1,0},
+    {0,0,0,0,0},
+  }
+
+  -- Value for walkable tiles
+  local walkable = 0
+
+  -- Creates a grid object
+  local grid = Grid(walkableMap)
+
+  -- Creates a pathfinder object using Jump Point Search algorithm
+  local myFinder = Pathfinder(grid, 'JPS', walkable)
+
+  -- Define start and goal locations coordinates
+  --[[ local startx, starty = 1,1
+  local endx, endy = 5,1 ]]
+
+  -- Calculates the path, and its length
+  path = myFinder:getPath(startx, starty, endx, endy)
+  return path
+end
+
+
+-- Pretty-printing the results
+--[[ if path then
+  print(('Path found! Length: %.2f'):format(path:getLength()))
+	for node, count in path:nodes() do
+	  print(('Step: %d - x: %d - y: %d'):format(count, node:getX(), node:getY()))
+	end
+end ]]
+
+
+
+
+
 
 -- PLAYER VARS
 local player, playerCol, playerRow
 local collidedWith = {}
 local lastDirection = ""
+local path
 
 ------------------------------------- EXTRA FUNCTIONS
 local function createMarginsForPlayableScreen()
@@ -58,9 +115,35 @@ local function charCollision(self, event)
   return true --limit event propagation
 end
 
+function callNewPath()
+	path = myFinder:getPath(startx, starty, endx, endy)
+	if path then
+	touchStarted = 1
+	print(('Path found! Length: %.2f'):format(path:getLength()))
+		for node, count in path:nodes() do
+		print(('Step: %d - x: %d - y: %d'):format(count, node:getX(), node:getY()))
+		print(node:getX())
+		print(node:getY())
+		setX[#setX+1] = node:getX() -- populating coordinate table on each movement
+		setY[#setY+1] = node:getY() -- populating coordinate table on each movement
+		cellb[node:getY()][node:getX()].alpha = .8 -- see the path you've chosen!
+		moveCount = moveCount+1
+		end
+	end
+end
+
+function printPairs(grid)
+  for k,v in pairs(grid) do
+    print( k,v )
+  end
+end
+
+
 -------------------------------------
 
-function M.new(gridRows, gridCols, charRow, charCol, lvl, sceneGroup, imageSrc)
+
+--ADD WALBABLE MAP
+function M.new(gridRows, gridCols, charRow, charCol, lvl, sceneGroup, imageSrc, pathFinderGrid, treeGrid)
 
   -- init vars
   widthFrame = constants.widthFrame
@@ -81,14 +164,19 @@ function M.new(gridRows, gridCols, charRow, charCol, lvl, sceneGroup, imageSrc)
   char = display.newSprite(imageSheet, playerSequenceData)
   char.anchorX = anchorXPoint
   char.anchorY = anchorYPoint
-  print('charCol '..charCol)
-  print('charRow '..charRow)
+ -- print('charCol '..charCol)
+  --print('charRow '..charRow)
   char.x = charCol * widthFrame + marginX -- -1 is for the anchorPoin 1
   char.y = charRow * heightFrame + marginY
-  print('my '..marginY)
+  --print('my '..marginY)
   char.name = 'char'
   char:setSequence("walkingDown")
   char.objectType = char
+
+  -- calculate the path to the first tree
+  path = findPath(pathFinderGrid, charRow, charCol, treeGrid[1].row, treeGrid[1].col)
+  print('path')
+  print(path)
 
   -- Handle player collision
   char.collision = playerCollision
@@ -111,6 +199,10 @@ function M.new(gridRows, gridCols, charRow, charCol, lvl, sceneGroup, imageSrc)
       updateTreePeeBar(collidedWith.peeBar, collidedWith.peeLevel)
       return collidedWith
     end
+  end
+
+  function char:move(path)
+    --printPairs(path)
   end
 
   return char

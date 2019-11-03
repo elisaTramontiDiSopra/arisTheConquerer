@@ -261,7 +261,8 @@ local function visualizeEnemyDog(sceneGroup)
   print(entryEnemyCel.row..' '..entryEnemyCel.col)
 
   -- create the enemy dog
-  enemyDog = char.new(gridRows, gridCols, entryEnemyCel.row, entryEnemyCel.col, lvl, sceneToPass, enemyDogSrc)
+  enemyDog = char.new(gridRows, gridCols, entryEnemyCel.row, entryEnemyCel.col, lvl, sceneToPass, enemyDogSrc, pathFinderGrid, gridTree)
+  enemyDog.move()
 
 end
 
@@ -312,8 +313,12 @@ function scene:create( event )
 
   -- create the grid
   twoGrids = grid.new(gridRows, gridCols, lvl, sceneGroup)
-  gridMatrix = twoGrids.gridMatrix  -- because I returned the two values in the object
-  gridTree = twoGrids.gridTree      -- because I returned the two values in the object
+  gridMatrix = twoGrids.gridMatrix          -- I returned multiple grids
+  gridTree = twoGrids.gridTree              -- I returned multiple grids
+  pathFinderGrid = twoGrids.pathFinderGrid  -- I returned multiple grids
+
+  print('pathFinderGrid')
+  printPairs(pathFinderGrid)
 
   -- create the player
   player = ply.new(gridRows, gridCols, lvl, sceneGroup, playerSrc)
