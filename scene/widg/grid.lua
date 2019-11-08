@@ -1,5 +1,4 @@
 -- grid.lua creates the grid but doesn't do anything else
-
 local M = {}
 local physics = require "physics"
 local widget = require "widget"
@@ -9,17 +8,28 @@ local constants = require("scene.const.constants")
 local gridMatrix = {}
 local obstacleGrid = {}
 local treeGrid = {}
+local pathFinderGrid
 local toReturn = {}
 local marginX, marginY = 0, 0
 local gridGroup --to insert it on the scene
+
+
+
+function printPairs(grid)
+  for k,v in pairs(grid) do
+    print( k,v )
+  end
+end
 
 -------------------------------------------------------------------------- EXTRA FUNCTIONS
 local function initVars(lvl)
   -- reset grids
   gridMatrix = nil
   treeGrid = nil
+  pathFinderGrid = nil
   gridMatrix = {}
   treeGrid = {}
+  pathFinderGrid = {}
   -- init vars
   anchorXPoint = constants.anchorXPoint
   anchorYPoint = constants.anchorYPoint
@@ -75,7 +85,6 @@ local function destroySingleTile(tile)
   display.remove(tile)
   tile = nil
 end
-
 
 -- Create the walking path in a graphic way (TO BE DEFINED BEFORE THE WALKING ALGORITHM)
 local function openPath(rowNumber, colNumber, graphicGroup)
@@ -232,7 +241,7 @@ function M.new(gridRows, gridCols, lvl, graphicGroup)
   centerHoriz = math.floor(gridRows/2)
   centerVert = math.floor(gridCols/2)
 
-  -- Populate the grid matrix for the level
+  -- Populate the grid matrix for the level with random obstacles
   for i = 1, gridRows do -- change to 0 and -1 to position correctly on the screen
     gridMatrix[i] = {} -- create a new row
     for j = 1, gridCols do
@@ -262,52 +271,20 @@ function M.new(gridRows, gridCols, lvl, graphicGroup)
   -- Transform obstacles into trees
   actualTrees = 0
   transformObstaclesIntoTrees(graphicGroup)
-  --[[ while actualTrees < totalLevelTrees do
-    randomCell = math.random(table.maxn(obstacleGrid))    -- choose a random cell
-    -- check if it's close to path
-    isReachable = checkIfReachable(obstacleGrid[randomCell].row, obstacleGrid[randomCell].col)
-    alreadyChosenAsTree = checkIfIsATree(obstacleGrid[randomCell])
-    if isReachable == true and alreadyChosenAsTree == false then
-      actualTrees = actualTrees + 1
-      -- substitute the cell with the new background
-      randomTree = 'tree'..math.random(4)
 
-      localRow = obstacleGrid[randomCell].row
-      localCol = obstacleGrid[randomCell].col
-
-      -- destroy the old cell image
-      destroySingleTile(obstacleGrid[randomCell])
-      obstacleGrid[randomCell] = nil
-      destroySingleTile(gridMatrix[localRow][localCol])
-      gridMatrix[localRow][localCol] = nil
-
-      cell = createSingleTile(randomTree, localRow, localCol, graphicGroup)
-      obstacleGrid[randomCell] = cell
-      gridMatrix[localRow][localCol] = cell
-
-      -- add the pee loading bar
-      --peeBar = visualizeTreePeeBar(localCol * widthFrame, localRow * heightFrame + heightFrame / 2, actualTrees)
-      peeBar = visualizeTreePeeBar(localCol * widthFrame, localRow * heightFrame + heightFrame / 2, graphicGroup)
-
-      -- set the current cell as tree
-      gridMatrix[localRow][localCol].type = 'tree'
-      gridMatrix[localRow][localCol].peeLevel = 0
-      gridMatrix[localRow][localCol].maxPeeLevel = maxPeeLevel
-      gridMatrix[localRow][localCol].minPeeLevel = minPeeLevel
-      gridMatrix[localRow][localCol].actualTrees = actualTrees --tree number
-      gridMatrix[localRow][localCol].peeBar = peeBar
-
-      physics.addBody(gridMatrix[localRow][localCol], "static")
-
-      -- add the current tree to a tree table to decrease the peeLevel in auto function
-      table.insert(treeGrid, {row = localRow, col = localCol, number = actualTrees})
-
+  -- create a simpler grid with just obstacles 1 and path 0
+  for i = 1, gridRows do
+    pathFinderGrid[i] = {} -- create new row
+    for j = 1, gridCols do
+      pathFinderGrid[i][j] = gridMatrix[i][j].obstacle
+      --table.insert(pathFinderGrid[i], gridMatrix[i][j].obstacle)
     end
-  end ]]
+  end
 
   toReturn.gridMatrix = gridMatrix
   toReturn.gridTree = treeGrid
--- algoritmo di dixtra (pesato) non pesato  minumium spanning tree mst
+  toReturn.pathFinderGrid = pathFinderGrid
+
   return toReturn
 end
 

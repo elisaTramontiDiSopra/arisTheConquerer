@@ -50,39 +50,48 @@ local M = {
   levelVars = {
     { lvl = 1, timerSeconds = 40, pathTracerMoves = 200,
       obstaclesSrc = "scene/img/tiles/country/", obstacleTile = 'obstacle', treeTile = 'tree', pathTile = 'path',
-      totalLevelTrees = 1, minPeeLevel = 5, maxPeeLevel = 100, peeStream = 6, vanishingPee = 2
+      totalLevelTrees = 1, minPeeLevel = 5, maxPeeLevel = 100, peeStream = 6, vanishingPee = 2,
+      enemyTransitionTime = 500
     },
     { lvl = 2, timerSeconds = 20, pathTracerMoves = 100,
       obstaclesSrc = "scene/img/tiles/isle/", obstacleTile = 'obstacle', treeTile = 'tree', pathTile = 'path',
-      totalLevelTrees = 2, minPeeLevel = 5, maxPeeLevel = 100, peeStream = 6, vanishingPee = 2
+      totalLevelTrees = 2, minPeeLevel = 5, maxPeeLevel = 100, peeStream = 6, vanishingPee = 2,
+      enemyTransitionTime = 500
     },
     { lvl = 3, timerSeconds = 20, pathTracerMoves = 100,
       obstaclesSrc = "scene/img/tiles/pole/", obstacleTile = 'obstacle', treeTile = 'tree', pathTile = 'path',
-      totalLevelTrees = 3, minPeeLevel = 5, maxPeeLevel = 100, peeStream = 6, vanishingPee = 2
+      totalLevelTrees = 3, minPeeLevel = 5, maxPeeLevel = 100, peeStream = 6, vanishingPee = 2,
+      enemyTransitionTime = 500
     },
     { lvl = 4, timerSeconds = 20, pathTracerMoves = 100,
       obstaclesSrc = "scene/img/tiles/isle/", obstacleTile = 'obstacle', treeTile = 'tree', pathTile = 'path',
-      totalLevelTrees = 3, minPeeLevel = 10, maxPeeLevel = 100, peeStream = 6, vanishingPee = 2
+      totalLevelTrees = 3, minPeeLevel = 10, maxPeeLevel = 100, peeStream = 6, vanishingPee = 2,
+      enemyTransitionTime = 500
     },
     { lvl = 5, timerSeconds = 20, pathTracerMoves = 200,
       obstaclesSrc = "scene/img/tiles/isle/", obstacleTile = 'obstacle', treeTile = 'tree', pathTile = 'path',
-      totalLevelTrees = 4, minPeeLevel = 10, maxPeeLevel = 100, peeStream = 6, vanishingPee = 2
+      totalLevelTrees = 4, minPeeLevel = 10, maxPeeLevel = 100, peeStream = 6, vanishingPee = 2,
+      enemyTransitionTime = 500
     },
     { lvl = 6, timerSeconds = 20, pathTracerMoves = 100,
       obstaclesSrc = "scene/img/tiles/isle/", obstacleTile = 'obstacle', treeTile = 'tree', pathTile = 'path',
-      totalLevelTrees = 4, minPeeLevel = 10, maxPeeLevel = 100, peeStream = 6, vanishingPee = 4
+      totalLevelTrees = 4, minPeeLevel = 10, maxPeeLevel = 100, peeStream = 6, vanishingPee = 4,
+      enemyTransitionTime = 200
     },
     { lvl = 7, timerSeconds = 30, pathTracerMoves = 100,
       obstaclesSrc = "scene/img/tiles/isle/", obstacleTile = 'obstacle', treeTile = 'tree', pathTile = 'path',
-      totalLevelTrees = 4, minPeeLevel = 10, maxPeeLevel = 100, peeStream = 6, vanishingPee = 4
+      totalLevelTrees = 4, minPeeLevel = 10, maxPeeLevel = 100, peeStream = 6, vanishingPee = 4,
+      enemyTransitionTime = 200
     },
     { lvl = 8, timerSeconds = 30, pathTracerMoves = 100,
       obstaclesSrc = "scene/img/tiles/isle/", obstacleTile = 'obstacle', treeTile = 'tree', pathTile = 'path',
-      totalLevelTrees = 4, minPeeLevel = 10, maxPeeLevel = 100, peeStream = 6, vanishingPee = 4
+      totalLevelTrees = 4, minPeeLevel = 10, maxPeeLevel = 100, peeStream = 6, vanishingPee = 4,
+      enemyTransitionTime = 200
     },
     { lvl = 9, timerSeconds = 20, pathTracerMoves = 90,
       obstaclesSrc = "scene/img/tiles/desert/", obstacleTile = 'obstacle', treeTile = 'tree', pathTile = 'path',
-      totalLevelTrees = 4, minPeeLevel = 10, maxPeeLevel = 100, peeStream = 6, vanishingPee = 4
+      totalLevelTrees = 4, minPeeLevel = 10, maxPeeLevel = 100, peeStream = 6, vanishingPee = 4,
+      enemyTransitionTime = 200
     },
     { lvl = 10, timerSeconds = 30, pathTracerMoves = 90,
       obstaclesSrc = "scene/img/tiles/desert/", obstacleTile = 'obstacle', treeTile = 'tree', pathTile = 'path',

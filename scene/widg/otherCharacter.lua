@@ -6,47 +6,55 @@ local Grid = require ("jumper.grid")
 local Pathfinder = require ("jumper.pathfinder")
 local serpent = require("libs.serpent")
 
-
-
-local function findPath(walkableMap, startx, starty, endx, endy)
+local function moveBasedOnPath(path)
+  for node, count in path:nodes() do
+    print(('Step: %d - x: %d - y: %d'):format(count, node:getX(), node:getY()))
+    -- move following the steps
+    transition.to(char, { time=500, x=node:getX()*widthFrame, y = node:getY()*heightFrame, onComplete=listener2 } )
+  end
+end
+--[[
+local function findPath(walkableMap, startX, startY, goalX, goalY)
 
   print('SERPENT MAP')
   print(serpent.block(walkableMap))
 
-  -- Set up a collision map
-  local walkableMap = {
-    {0,1,0,1,0},
-    {0,1,0,1,0},
-    {0,1,1,1,0},
-    {0,0,0,0,0},
-  }
-
   -- Value for walkable tiles
   local walkable = 0
 
-  -- Creates a grid object
+  -- Creates a grid object and pathfinder
   local grid = Grid(walkableMap)
+  local myFinder = Pathfinder(grid, 'JPS', walkable) -- use A* instead of JPS to avoid diagonal passages and possible problems with bodies
+  myFinder:setMode('ORTHOGONAL')
 
-  -- Creates a pathfinder object using Jump Point Search
-  local myFinder = Pathfinder(grid, 'JPS', walkable)
+  print('START: x:'..startX..' y:'..startY)
+  print('END: x:'..goalX..' y:'..goalY)
 
-  -- Define start and goal locations coordinates
-  local startx, starty = 1,1
-  local endx, endy = 5,1
-
+  -- the end point can't be unwalkable so I first have to find the closest tile
+  -- I subtract one tile from the x first, and if there is a path I go there, otherwise I move to the closest y tile
+  goalX = goalX - 1
   -- Calculates the path, and its length
-  local path = myFinder:getPath(startx, starty, endx, endy)
+  -- X is the row, so is actually Y, and viceverse therefore invert the vars in getPath
+  local path = myFinder:getPath(startY, startX, goalY, goalX)
+
   if path then
     print(('Path found! Length: %.2f'):format(path:getLength()))
+  else
+    goalX = goalX+1
+    goalY = goalY - 1
+    path = myFinder:getPath(startY, startX, goalY, goalX)
     for node, count in path:nodes() do
       print(('Step: %d - x: %d - y: %d'):format(count, node:getX(), node:getY()))
+      -- move following the steps
+      transition.to(char, { time=500, x=node:getX()*widthFrame, y = node:getY()*heightFrame, onComplete=listener2 } )
     end
+
   end
 
   return path
 end
 
-
+ ]]
 -- PLAYER VARS
 local player, playerCol, playerRow
 local collidedWith = {}
@@ -104,23 +112,6 @@ local function charCollision(self, event)
   return true --limit event propagation
 end
 
---[[ function callNewPath()
-	path = myFinder:getPath(startx, starty, endx, endy)
-	if path then
-	touchStarted = 1
-	--print(('Path found! Length: %.2f'):format(path:getLength()))
-		for node, count in path:nodes() do
-		--print(('Step: %d - x: %d - y: %d'):format(count, node:getX(), node:getY()))
-		--print(node:getX())
-		--print(node:getY())
-		setX[#setX+1] = node:getX() -- populating coordinate table on each movement
-		setY[#setY+1] = node:getY() -- populating coordinate table on each movement
-		cellb[node:getY()][node:getX()].alpha = .8 -- see the path you've chosen!
-		moveCount = moveCount+1
-		end
-	end
-end ]]
-
 function printPairs(grid)
   for k,v in pairs(grid) do
     print( k,v )
@@ -156,14 +147,14 @@ function M.new(gridRows, gridCols, charRow, charCol, lvl, sceneGroup, imageSrc, 
  -- print('charCol '..charCol)
   --print('charRow '..charRow)
   char.x = charCol * widthFrame + marginX -- -1 is for the anchorPoin 1
-  char.y = charRow * heightFrame + marginY
+  char.y = (charRow - 1 )* heightFrame + marginY
   --print('my '..marginY)
   char.name = 'char'
   char:setSequence("walkingDown")
   char.objectType = char
 
   -- calculate the path to the first tree
-  path = findPath(pathFinderGrid, charRow, charCol, treeGrid[1].row, treeGrid[1].col)
+  --path = findPath(pathFinderGrid, charRow, charCol, treeGrid[1].row, treeGrid[1].col)
 
   -- Handle player collision
   char.collision = playerCollision

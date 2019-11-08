@@ -92,8 +92,7 @@ if (...) then
 	  newPathfinder:setGrid(grid)
     newPathfinder:setFinder(finderName)
     newPathfinder:setWalkable(walkable)
-    --newPathfinder:setMode('DIAGONAL')
-    newPathfinder:setMode('ORTHOGONAL') -- changed MODE
+    newPathfinder:setMode('DIAGONAL')
     newPathfinder:setHeuristic('MANHATTAN')
     newPathfinder:setTunnelling(false)
     return newPathfinder
@@ -348,6 +347,9 @@ if (...) then
     if _endNode then
 			return Utils.traceBackPath(self, _endNode, startNode)
     end
+    print(endX..' '..endY)
+    print('_endNode')
+    print(_endNode)
     return nil
   end
 

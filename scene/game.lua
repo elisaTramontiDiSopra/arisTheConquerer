@@ -8,13 +8,20 @@ local ui = require("scene.widg.ui")
 local progress = require("scene.widg.progress")
 local constants = require("scene.const.constants")
 
+-- pathfinder
+local Grid = require ("jumper.grid")
+local Pathfinder = require ("jumper.pathfinder")
+local serpent = require("libs.serpent")
+
 -- SCENE
 local lvl, timerSeconds, sceneToPass
 local player, buttonPressed, collidedWith
 local buttonPressed = {Down = false, Up = false, Left = false, Right = false}
 local scene = composer.newScene()
 local entryEnemyCel = {}
-
+local path
+local steps = 1
+local movementGrid = {}
 
 function printPairs(grid)
   for k,v in pairs(grid) do
@@ -78,6 +85,9 @@ local function initLevelSettings()
   -- pee vars
   maxPeeLevel = constants.levelVars[lvl].maxPeeLevel
   vanishingPee = constants.levelVars[lvl].vanishingPee
+
+  --enemyDog vars
+  enemyTransitionTime = constants.levelVars[lvl].enemyTransitionTime
 end
 
 -- TIMER CREATION AND UPDATE
@@ -116,6 +126,7 @@ local function checkIfLevelIsPassed()
       conqueredTrees = conqueredTrees + 1
     end
   end
+
   -- based on the conquered trees visualize the right page
   if conqueredTrees < totalLevelTrees then
     composer.setVariable('winOrLose', 'lose' )
@@ -253,18 +264,78 @@ local function whereToEnterTheEnemyDog()
 
 end
 
-local function visualizeEnemyDog(sceneGroup)
-  -- put the dog on the first free cell
+local function followPath()
+  print("# "..#movementGrid)
+  print("steps"..steps)
+  if steps <= #movementGrid then
+    transition.to(enemyDog, { x = movementGrid[steps].x, y = movementGrid[steps].y, time = enemyTransitionTime, onComplete = followPath })
+    steps = steps + 1
+  end
+end
 
+local function moveBasedOnPath(path)
+  -- reset path vars
+  steps = 1
+  movementGrid = {}
+  -- populate movementGrid with new path
+  for node, count in path:nodes() do
+    movementGrid[count] = { x = node:getX() * widthFrame, y = node:getY() * heightFrame }
+  end
+  followPath()
+end
+
+local function findPath(startX, startY, goalX, goalY)
+  -- init vars for pathfinding
+  local walkable = 0
+  local grid = Grid(pathFinderGrid)
+  local myFinder = Pathfinder(grid, 'JPS', walkable) -- use A* instead of JPS to avoid diagonal passages and possible problems with bodies
+  myFinder:setMode('ORTHOGONAL')
+  local startX = entryEnemyCel.row
+  local startY = entryEnemyCel.col
+  local goalX = gridTree[1].row
+  local goalY = gridTree[1].col
+
+  -- the end point can't be unwalkable so I first have to find the closest tile
+  -- first I look for the left X, then the right X
+  path = myFinder:getPath(startY, startX, goalY, goalX - 1)
+  if goalX > 0 and path then -- invert X and Y
+    moveBasedOnPath(path)
+    return
+  end
+
+  path = myFinder:getPath(startY, startX, goalY - 1, goalX)
+  if goalY > 0 and path then
+    moveBasedOnPath(path)
+    return
+  end
+
+  path = myFinder:getPath(startY, startX, goalY, goalX + 1)
+  if goalX < gridRows and path then -- invert X and Y
+    moveBasedOnPath(path)
+    return
+  end
+
+  path = myFinder:getPath(startY, startX, goalY + 1, goalX)
+  if goalY < gridCols and path then
+    moveBasedOnPath(path)
+    return
+  end
+
+end
+
+
+local function visualizeEnemyDog(sceneGroup)
   -- calculate where to make the dog enter: 1 column, down row till you find an empty one
   whereToEnterTheEnemyDog()
-  print(entryEnemyCel.row..' '..entryEnemyCel.col)
 
   -- create the enemy dog
   enemyDog = char.new(gridRows, gridCols, entryEnemyCel.row, entryEnemyCel.col, lvl, sceneToPass, enemyDogSrc, pathFinderGrid, gridTree)
-  enemyDog.move()
-
+  findPath()
 end
+
+
+
+
 
 local function frameUpdate()
   --print('p x'..player.x)
@@ -316,9 +387,6 @@ function scene:create( event )
   gridMatrix = twoGrids.gridMatrix          -- I returned multiple grids
   gridTree = twoGrids.gridTree              -- I returned multiple grids
   pathFinderGrid = twoGrids.pathFinderGrid  -- I returned multiple grids
-
-  print('pathFinderGrid')
-  printPairs(pathFinderGrid)
 
   -- create the player
   player = ply.new(gridRows, gridCols, lvl, sceneGroup, playerSrc)
