@@ -23,6 +23,7 @@ local path
 local steps = 1
 local movementGrid = {}
 
+
 function printPairs(grid)
   for k,v in pairs(grid) do
     print( k,v )
@@ -277,6 +278,7 @@ local function moveBasedOnPath(path)
   -- reset path vars
   steps = 1
   movementGrid = {}
+  print(path)
   -- populate movementGrid with new path
   for node, count in path:nodes() do
     movementGrid[count] = { x = node:getX() * widthFrame, y = node:getY() * heightFrame }
@@ -284,42 +286,65 @@ local function moveBasedOnPath(path)
   followPath()
 end
 
-local function findPath(startX, startY, goalX, goalY)
+
+-- PATH FINDING
+-- Find a random tree that will be the end point
+-- Select the first tree as target then look for the closest free cell and set it as the end point
+-- Launch jumper to find the shortest path to the end point and save it in movementGrid
+
+local function findClosestAvailableCell(treeX, treeY)
+  print('treeX '..treeX..' treeY '..treeY)
+  -- create an array with all the position sourrounding the target tree
+  local cellsToChek = {
+    {x = treeX - 1, y = treeY + 1 }, {x = treeX, y = treeY + 1 }, {x = treeX + 1, y = treeY + 1 },
+    {x = treeX - 1, y = treeY},                                   {x = treeX + 1, y = treeY},
+    {x = treeX + 1, y = treeY - 1 }, {x = treeX, y = treeY - 1 }, {x = treeX + 1, y = treeY + 1 },
+  }
+  -- loop trough those cells, make sure they're on the grid (not < 0), then return the first that is free
+  for n, cell in pairs(cellsToChek) do
+    row = cellsToChek[n].x
+    col = cellsToChek[n].y
+    print(row)
+    print(col)
+    -- if row == 0 or col == 0 there is a possible error in pathFInderGrid, since there is no continue to skip do x+1
+    if row == 0 then row = 1 end
+    if col == 0 then col = 1 end
+    -- if it's a valid row and it's not an obstacle (wlkable == 0), return the cell coords
+    if row > 0 and row <= gridRows and pathFinderGrid[row][col] == 0 then
+      print('row ok')
+      print('pathFinderGrid[row][col] '..pathFinderGrid[row][col] )
+      return cellsToChek[n]
+    elseif col > 0 and col <= gridRows and pathFinderGrid[row][col] == 0 then
+      print('col ok')
+      return cellsToChek[n]
+    end
+  end
+end
+
+local function findPath(endX, endY)
   -- init vars for pathfinding
   local walkable = 0
   local grid = Grid(pathFinderGrid)
   local myFinder = Pathfinder(grid, 'JPS', walkable) -- use A* instead of JPS to avoid diagonal passages and possible problems with bodies
   myFinder:setMode('ORTHOGONAL')
-  local startX = entryEnemyCel.row
-  local startY = entryEnemyCel.col
-  local goalX = gridTree[1].row
-  local goalY = gridTree[1].col
 
-  -- the end point can't be unwalkable so I first have to find the closest tile
-  -- first I look for the left X, then the right X
-  path = myFinder:getPath(startY, startX, goalY, goalX - 1)
-  if goalX > 0 and path then -- invert X and Y
-    moveBasedOnPath(path)
-    return
-  end
+  path = myFinder:getPath(entryEnemyCel.col, entryEnemyCel.row, endY, endX)
+  print('path')
+  print(path)
+  moveBasedOnPath(path)
 
-  path = myFinder:getPath(startY, startX, goalY - 1, goalX)
-  if goalY > 0 and path then
-    moveBasedOnPath(path)
-    return
-  end
+end
 
-  path = myFinder:getPath(startY, startX, goalY, goalX + 1)
-  if goalX < gridRows and path then -- invert X and Y
-    moveBasedOnPath(path)
-    return
-  end
+local function findThePathToATree()
+  -- pick a random tree
+  local r = math.random(#gridTree)
+  -- find the closest available cell to make it the end path cell
+  local endPathCell = findClosestAvailableCell(gridTree[r].row, gridTree[r].col)
+  -- find the path
+  print('x '..endPathCell.x)
 
-  path = myFinder:getPath(startY, startX, goalY + 1, goalX)
-  if goalY < gridCols and path then
-    moveBasedOnPath(path)
-    return
-  end
+  print('y '..endPathCell.y)
+  findPath(endPathCell.x, endPathCell.y)
 
 end
 
@@ -330,7 +355,9 @@ local function visualizeEnemyDog(sceneGroup)
 
   -- create the enemy dog
   enemyDog = char.new(gridRows, gridCols, entryEnemyCel.row, entryEnemyCel.col, lvl, sceneToPass, enemyDogSrc, pathFinderGrid, gridTree)
-  findPath()
+
+  findThePathToATree()
+
 end
 
 
