@@ -97,19 +97,15 @@ local function checkIfPlayerIsClose(tree)
   end
 end
 
-local function charCollision(self, event)
-  local nexToObject = false
-  if (event.phase == "began" ) then
-    -- check if we're close to the tree, less then 1 row and 1 col away
-    nexToObject = checkIfPlayerIsClose(event.other)
-    if nexToObject == true and event.other.type == 'tree' then
-      collidedWith = event.other
-    else
-      -- NOTHING BECAUSE IT'S NOT A TREE
-      -- collidedWith.type = event.other.type
-    end
+
+local function charCollision( self, event )
+
+  if ( event.phase == "began" ) then
+    print( self.name .. ": collision began with " .. event.other.name )
+
+  elseif ( event.phase == "ended" ) then
+        print( self.name .. ": collision ended with " .. event.other.name )
   end
-  return true --limit event propagation
 end
 
 function printPairs(grid)
@@ -121,8 +117,6 @@ end
 
 -------------------------------------
 
-
---ADD WALBABLE MAP
 function M.new(gridRows, gridCols, charRow, charCol, lvl, sceneGroup, imageSrc, pathFinderGrid, treeGrid)
 
   -- init vars
@@ -144,21 +138,16 @@ function M.new(gridRows, gridCols, charRow, charCol, lvl, sceneGroup, imageSrc, 
   char = display.newSprite(imageSheet, playerSequenceData)
   char.anchorX = anchorXPoint
   char.anchorY = anchorYPoint
- -- print('charCol '..charCol)
-  --print('charRow '..charRow)
   char.x = charCol * widthFrame + marginX -- -1 is for the anchorPoin 1
   char.y = (charRow - 1 )* heightFrame + marginY
-  --print('my '..marginY)
-  char.name = 'char'
+  char.name = 'enemy'
   char:setSequence("walkingDown")
-  char.objectType = char
-
-  -- calculate the path to the first tree
-  --path = findPath(pathFinderGrid, charRow, charCol, treeGrid[1].row, treeGrid[1].col)
+  char.objectType = char   -- is itusefeul??? can I delete it???
+  char.type = 'enemy'
 
   -- Handle player collision
-  char.collision = playerCollision
-  char:addEventListener("collision", char)
+  char.collision = charCollision
+  char:addEventListener("collision")
   physics.addBody(char, "dynamic", playerBodyOptions)
 
   sceneGroup:insert(char)

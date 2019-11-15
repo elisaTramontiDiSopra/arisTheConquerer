@@ -1,0 +1,26 @@
+Game.lua
+
+- The enemy dog is created using otherCharacter.lua 5 seconds after the start of the game
+- I find the first free cell and place the enemy dog there
+- I calculate the shortest path from the dog position to the first tree (wherever it is, it's not the closest one, just the first in the table)
+- I use the calculated path to move there and collide with the tree
+
+
+
+
+
+ENEMY LOGIC
+
+-- Pathfinding
+I used jumper
+Jumper creates a path between two available points but my end point is a tree and it's unavailable
+so I first had to find the closest available cell with function findClosestAvailableCell()
+
+findClosestAvailableCell() creates a table with the
+(x-1, y+1)
+(x, y+1)
+(x+1, y+1)
+
+-- collision with other dog
+This is handled on the main char function since it already checks if it does collide with trees
+If it collides with the other dog it stops the level

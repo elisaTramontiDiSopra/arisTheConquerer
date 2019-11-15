@@ -6,6 +6,7 @@ local ply = require("scene.widg.player")
 local char = require("scene.widg.otherCharacter")
 local ui = require("scene.widg.ui")
 local progress = require("scene.widg.progress")
+local tilt = require("scene.widg.tilt")
 local constants = require("scene.const.constants")
 
 -- pathfinder
@@ -15,7 +16,7 @@ local serpent = require("libs.serpent")
 
 -- SCENE
 local lvl, timerSeconds, sceneToPass
-local player, buttonPressed, collidedWith
+local player, buttonPressed, collidedWith, enemyDog
 local buttonPressed = {Down = false, Up = false, Left = false, Right = false}
 local scene = composer.newScene()
 local entryEnemyCel = {}
@@ -34,6 +35,7 @@ end
 local function loadLevel()
   -- get level from local var because it's been memorized in the levels view
   lvl = composer.getVariable('playLevel')
+  gyro = composer.getVariable('gyroscope')
   --[[ if (lvl) then
     print("level "..lvl)
   else
@@ -49,7 +51,6 @@ local function initLevelSettings()
   gridRows = math.floor(display.actualContentHeight / constants.heightFrame) -- subtract 1 row for the timer
   centerHoriz = math.floor(gridRows/2)
   centerVert = math.floor(gridCols/2)
-
   -- set screen dimensions if there are black bands
   playableScreenWidth = constants.widthFrame * gridCols
   playableScreenHeight = constants.widthFrame * gridRows
@@ -230,24 +231,12 @@ local function createUI(sceneGroup)
 end
 
 local function onTilt( event )
-  player.x = player.x - event.xGravity - playerSpeed
-  player.y = player.y - event.yGravity - playerSpeed
-
-  -- contein within screen
-  if player.x > display.contentWidth then
-    player.x = display.contentWidth
-  end
-  if player.x < 0 then
-    player.x = 0
-  end
-  if player.y > display.contentHeight then
-    player.y = display.contentHeight
-  end
-  if player.y < 0 then
-    player.y = 0
-  end
-
-  return true
+  animation = 'walkDown'
+  if event.xGravity > 0 then animation = 'walkLeft'
+  elseif event.yGravity > 0 then animation = 'walkUp'
+  elseif event.xGravity < 0 then animation = 'walkRight' end
+  player:animate(animation)
+  tilt.tilt(player, event)
 end
 
 -- ENEMY DOG FUNCTIONS
@@ -327,10 +316,8 @@ local function findPath(endX, endY)
   local grid = Grid(pathFinderGrid)
   local myFinder = Pathfinder(grid, 'JPS', walkable) -- use A* instead of JPS to avoid diagonal passages and possible problems with bodies
   myFinder:setMode('ORTHOGONAL')
-
   path = myFinder:getPath(entryEnemyCel.col, entryEnemyCel.row, endY, endX)
-  print('path')
-  print(path)
+
   moveBasedOnPath(path)
 
 end
@@ -342,22 +329,16 @@ local function findThePathToATree()
   local endPathCell = findClosestAvailableCell(gridTree[r].row, gridTree[r].col)
   -- find the path
   print('x '..endPathCell.x)
-
   print('y '..endPathCell.y)
   findPath(endPathCell.x, endPathCell.y)
-
 end
-
 
 local function visualizeEnemyDog(sceneGroup)
   -- calculate where to make the dog enter: 1 column, down row till you find an empty one
   whereToEnterTheEnemyDog()
-
   -- create the enemy dog
   enemyDog = char.new(gridRows, gridCols, entryEnemyCel.row, entryEnemyCel.col, lvl, sceneToPass, enemyDogSrc, pathFinderGrid, gridTree)
-
   findThePathToATree()
-
 end
 
 
@@ -365,23 +346,17 @@ end
 
 
 local function frameUpdate()
-  --print('p x'..player.x)
+  --print('p x'..playerCollisionr.x)
   if buttonPressed['Down'] == true and player.y <
     (gridRows * heightFrame) - heightFrame/2 then
-    --collidedWith = nil
-    --collidedWith.type = 'empty'
     player.y = player.y + playerSpeed
     lastDirection = 'Down'
   elseif buttonPressed['Up'] == true and player.y >
     (0 + heightFrame/4) then
-    --collidedWith = nil -- as soon as you move delete the last collision
-    --collidedWith.type = 'empty'
     player.y = player.y - playerSpeed
     lastDirection = 'Up'
   elseif buttonPressed['Right'] == true and player.x <
     (gridCols * widthFrame) then
-    --collidedWith = nil -- as soon as you move delete the last collision
-    --collidedWith.type = 'empty'
     player.x = player.x + playerSpeed
     lastDirection = 'Right'
   elseif buttonPressed['Left'] == true and player.x >
@@ -432,7 +407,7 @@ function scene:create( event )
   -- decrease pee levels in trees for all the game
   local countDownPee = timer.performWithDelay( 1000, decreasePeeInAllBars, timerSeconds)
 
-  -- create the ui
+  -- create the ui or activate gyroscope
   if arrowPadOn then
     createUI(sceneGroup)
   end
@@ -451,7 +426,11 @@ function scene:show( event )
     audio.play( barkSound, {channel = 2})
 
     Runtime:addEventListener("enterFrame", frameUpdate) -- if the move buttons are pressed MOVE!
-    Runtime:addEventListener( "accelerometer", onTilt )
+
+    -- create the ui or activate gyroscope
+    if arrowPadOn == false then
+      Runtime:addEventListener( "accelerometer", onTilt )
+    end
     --Runtime:addEventListener("gyroscope", onGyroscopeUpdate)
 
 	end
@@ -493,12 +472,3 @@ scene:addEventListener( "destroy", scene )
 -----------------------------------------------------------------------------------------
 
 return scene
-
-
---[[
-  insert the enemy dog at 1.1 check if it.s free, if it's not go t 1.2, if it's not free go to 1.3 ...
-  create a matrix and using the dixtra algorithm or minimum spanning tree mst go to the first tree
-
-
-]]
--- algoritmo di dixtra (pesato) non pesato  minumium spanning tree mst

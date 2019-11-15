@@ -1,6 +1,7 @@
 local M = {}
 local physics = require "physics"
 local constants = require("scene.const.constants")
+local composer = require( "composer" )
 
 -- PLAYER VARS
 local player, playerCol, playerRow
@@ -44,6 +45,10 @@ end
 
 local function checkIfPlayerIsClose(tree)
   findPlayerRowCol()
+
+  -- if it hit the enemy exit otherwise it might throw an
+  if tree.name == 'enemy' then return end
+
   local diffRow = math.abs(playerRow - tree.row)
   local diffCol = math.abs(playerCol - tree.col)
   -- if it's close then return true
@@ -55,24 +60,25 @@ local function checkIfPlayerIsClose(tree)
 end
 
 local function playerCollision(self, event)
-  print("collision")
+  --print("collision")
   local nexToObject = false
   if (event.phase == "began" ) then
+
+    -- if you hit the enemy dog lose the game and go to the appropriate scene
+    if (event.phase == "began" ) then
+      if event.other.name == 'enemy' then
+        composer.setVariable('winOrLose', 'lose' )
+        composer.gotoScene("scene.brawl", "fade", 500 )
+      end
+    end
+
     -- check if we're close to the tree, less then 1 row and 1 col away
     nexToObject = checkIfPlayerIsClose(event.other)
-    print('player R '..playerRow..' C '..playerCol)
-    print('tree R '.. event.other.row..' C '.. event.other.col)
-    print('nexToObject ')
-    print(nexToObject)
 
-    --[[ if (math.abs(playerRow - event.other.row) == 1) or (math.abs(playerCol - event.other.col) == 1)then
-      nexToObject = true
-    end ]]
     if nexToObject == true and event.other.type == 'tree' then
       collidedWith = event.other
-
-    print('collidedWithTree R '.. collidedWith.row..' C '.. collidedWith.col)
-    else
+    elseif nexToObject == true and event.other.type == 'char' then
+      -- dog collided with other dog
       -- NOTHING BECAUSE IT'S NOT A TREE
       -- collidedWith.type = event.other.type
     end
