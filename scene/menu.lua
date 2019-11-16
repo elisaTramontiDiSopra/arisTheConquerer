@@ -39,7 +39,7 @@ function scene:create( event )
 	local sceneGroup = self.view
 
   -- level variable
-  composer.setVariable("level", 1)
+	composer.setVariable("level", 1)
 
 	-- display a background image
 	local background = display.newImageRect("background2.jpg", display.actualContentWidth, display.actualContentHeight )
@@ -69,7 +69,7 @@ function scene:create( event )
     }
   )
 	creditsBtn.x = display.contentCenterX
-	creditsBtn.y = 225
+	creditsBtn.y = 365
 
 	-- create a widget button (which will loads level1.lua on release)
   tutorialBtn = widget.newButton(
@@ -93,7 +93,7 @@ function scene:create( event )
     }
   )
 	optionBtn.x = display.contentCenterX
-	optionBtn.y = 365
+	optionBtn.y = 225
 
 
 	-- all display objects must be inserted into group
