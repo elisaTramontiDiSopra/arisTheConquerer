@@ -18,8 +18,6 @@ loseSound = audio.loadSound( "audio/lose.mp3" )
 -- get the option and save them locally
 musicOn = constants.musicOn
 composer.setVariable('musicOn', musicOn )
-arrowPadOn = constants.arrowPadOn
-composer.setVariable('arrowPadOn', arrowPadOn )
 
 if musicOn then
   audio.play( backgroundMusic, { channel=1, loops=-1, fadein=2000 } )

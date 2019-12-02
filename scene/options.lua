@@ -1,15 +1,37 @@
 local composer = require( "composer" )
 local widget = require "widget"
 local scene = composer.newScene()
+local progress = require("scene.widg.progress")
 local constants = require("scene.const.constants")
 
 -- MENU LOCAL VAR
-local creditsBtn, bgUrl, winOrLose
+local creditsBtn, bgUrl, winOrLose, padBg, accelerometerBg, controlType
 
 --------------------------------------------------------------
 
-local function onCreditsBtnRelease()
-	composer.gotoScene("scene.credits", "fade", 500 )
+local function onPadBtnRelease(event)
+	print('pressed')
+  if event.target.name == 'accelBtn' then
+		accelBtn.isVisible = false
+		composer.setVariable('arrowPadOn', false)
+		controlType = 'accel'
+	else
+		accelBtn.isVisible = true
+		composer.setVariable('arrowPadOn', true)
+		controlType = 'pad'
+	end
+	print('controlType')
+	print(controlType)
+end
+
+local function onHomeBtnRelease()
+	composer.gotoScene("scene.menu", "fade", 500 )
+	return true	-- indicates successful touch
+end
+
+local function onSaveBtnRelease()
+	--progress.saveControlOptions(controlType)
+	composer.gotoScene("scene.menu", "fade", 500 )
 	return true	-- indicates successful touch
 end
 
@@ -19,93 +41,74 @@ function scene:create( event )
   -- init vars
   buttonSrc = constants.buttonSrc
   buttonWidth = constants.buttonWidth
-  buttonHeight = constants.buttonHeight
+	buttonHeight = constants.buttonHeight
+	padBgOn = constants.padOn
+	padBgOff = constants.padOff
+	accelerometerOn = constants.accelerometerOn
+	accelerometerOff = constants.accelerometerOff
+	saveBg = constants.save
 
-  local sceneGroup = self.view
+	sceneGroup = self.view
 
-	-- display a background image
-	local background = display.newImageRect("lose.jpg", display.actualContentWidth, display.actualContentHeight )
-	background.anchorX = 0
-	background.anchorY = 0
-	background.x = 0 + display.screenOriginX
-	background.y = 0 + display.screenOriginY
+  -- display a background image
+  local background = display.newImageRect("options.jpg", display.actualContentWidth, display.actualContentHeight )
+  background.anchorX = 0
+  background.anchorY = 0
+  background.x = 0 + display.screenOriginX
+  background.y = 0 + display.screenOriginY
 
-  -- create a creditsBtn (which will loads creditsBtn.lua on release)
-    creditsBtn = widget.newButton(
-        {
-            width = buttonWidth,
-            height = buttonHeight,
-            defaultFile = buttonUrl,
-            onEvent = onNextBtnRelease	-- event listener function
-        }
-    )
-    creditsBtn.x = display.contentCenterX
-    creditsBtn.y = display.contentHeight - 85
+	-- get what is the last level passed
+  controlSystem = progress.loadControlOptions()
 
---display.setDefault( "anchorX", 0 )
+	print('options')
+	print(controlSystem)
 
-local dot = display.newCircle( display.contentCenterX, display.contentCenterY, 20 )
-dot:setFillColor( 0, 0, 1 )
-dot.color = "blue"
-dot.anchorX = 0.5
---[[
-local xGravityLabel = display.newText( "xGravity:", 10, 15, native.systemFontBold, 12 )
-local yGravityLabel = display.newText( "yGravity:", 10, 31, native.systemFontBold, 12 )
-local zGravityLabel = display.newText( "zGravity:", 10, 47, native.systemFontBold, 12 )
+  padBtn = widget.newButton(
+    {
+        width = buttonWidth,
+				height = buttonHeight,
+        defaultFile = padBgOn,
+        onRelease = onPadBtnRelease	-- event listener function
+    }
+	)
+	padBtn.name = 'padBtn'
+	padBtn.x = display.contentCenterX
+	padBtn.y = display.contentHeight - 270
 
-local xGravity = display.newText( "", 80, 15, native.systemFont, 12 )
-local yGravity = display.newText( "", 80, 31, native.systemFont, 12 )
-local zGravity = display.newText( "", 80, 47, native.systemFont, 12 )
+	accelBtn = widget.newButton(
+    {
+        width = buttonWidth,
+        height = buttonHeight,
+        defaultFile = accelerometerOn,
+        onRelease = onPadBtnRelease	-- event listener function
+    }
+	)
+	accelBtn.name = 'accelBtn'
+	accelBtn.x = display.contentCenterX
+	accelBtn.y = display.contentHeight - 270
 
-local xInstantLabel = display.newText( "xInstant:", 250, 15, native.systemFontBold, 12 )
-local yInstantLabel = display.newText( "yInstant:", 250, 31, native.systemFontBold, 12 )
-local zInstantLabel = display.newText( "zInstant:", 250, 47, native.systemFontBold, 12 )
+	if controlType == 'pad' then
+		accelBtn.isVisible = false
+	else
+		accelBtn.isVisible = true
+	end
 
-local xInstant = display.newText( "", 330, 15, native.systemFont, 12 )
-local yInstant = display.newText( "", 330, 31, native.systemFont, 12 )
-local zInstant = display.newText( "", 330, 47, native.systemFont, 12 ) ]]
-
-local function onTilt( event )
-    --[[ xGravity.text = event.xGravity
-    yGravity.text = event.yGravity
-    zGravity.text = event.zGravity
-    xInstant.text = event.xInstant
-    yInstant.text = event.yInstant
-    zInstant.text = event.zInstant ]]
-
-    dot.x = dot.x + event.xGravity + 2
-    dot.y = dot.y - event.yGravity - 2
-
-    if dot.x > display.contentWidth then
-        dot.x = display.contentWidth
-    end
-    if dot.x < 0 then
-        dot.x = 0
-    end
-    if dot.y > display.contentHeight then
-        dot.y = display.contentHeight
-    end
-    if dot.y < 0 then
-        dot.y = 0
-    end
-
-    --[[ if event.isShake then
-        if dot.color == "blue" then
-            dot:setFillColor( 1, 0, 0 )
-            dot.color = "red"
-        else
-            dot:setFillColor( 0, 0, 1 )
-            dot.color = "blue"
-        end
-    end ]]
-    return true
-end
-
-  Runtime:addEventListener( "accelerometer", onTilt )
+  saveBtn = widget.newButton(
+    {
+        width = buttonWidth,
+        height = buttonHeight,
+        defaultFile = saveBg,
+        onEvent = onSaveBtnRelease	-- event listener function
+    }
+  )
+	saveBtn.x = display.contentCenterX
+	saveBtn.y = display.contentHeight - 120
 
   -- all display objects must be inserted into group
   sceneGroup:insert( background )
-  sceneGroup:insert( creditsBtn )
+	sceneGroup:insert( saveBtn )
+	sceneGroup:insert( padBtn )
+	sceneGroup:insert( accelBtn )
 end
 
 function scene:show( event )
@@ -134,10 +137,15 @@ end
 function scene:destroy( event )
 	local sceneGroup = self.view
 	-- Called prior to the removal of scene's "view" (sceneGroup)
-	if playBtn then
-		playBtn:removeSelf()	-- widgets must be manually removed
-		playBtn = nil
-	end
+	accelBtn:removeSelf()	-- widgets must be manually removed
+	accelBtn = nil
+	padBtn:removeSelf()	-- widgets must be manually removed
+	padBtn = nil
+	-- remove required packages
+	package.loaded[progress] = nil
+  progress = nil
+  package.loaded[constants] = nil
+  constants = nil
 end
 
 ---------------------------------------------------------------------------------

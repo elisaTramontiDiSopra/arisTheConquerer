@@ -16,7 +16,8 @@ local serpent = require("libs.serpent")
 
 -- SCENE
 local lvl, timerSeconds, sceneToPass
-local player, buttonPressed, collidedWith, enemyDog
+local player, buttonPressed --collidedWith,
+local enemyDog, enemyCollidedWith, visualizeEnemy
 local buttonPressed = {Down = false, Up = false, Left = false, Right = false}
 local scene = composer.newScene()
 local entryEnemyCel = {}
@@ -57,6 +58,7 @@ local function initLevelSettings()
 
   -- UI vars
   arrowPadOn = composer.getVariable('arrowPadOn')
+  print(arrowPadOn)
   padButtonDimension = constants.padButtonDimension
 
   -- timer vars
@@ -89,6 +91,7 @@ local function initLevelSettings()
   vanishingPee = constants.levelVars[lvl].vanishingPee
 
   --enemyDog vars
+  visualizeEnemy = constants.levelVars[lvl].visualizeEnemy
   enemyTransitionTime = constants.levelVars[lvl].enemyTransitionTime
 end
 
@@ -239,7 +242,10 @@ local function onTilt( event )
   tilt.tilt(player, event)
 end
 
+-----------------------------------------------
 -- ENEMY DOG FUNCTIONS
+-----------------------------------------------
+local findThePathToATree
 local function whereToEnterTheEnemyDog()
 
   for c = 1, gridCols do
@@ -255,11 +261,19 @@ local function whereToEnterTheEnemyDog()
 end
 
 local function followPath()
-  print("# "..#movementGrid)
-  print("steps"..steps)
   if steps <= #movementGrid then
     transition.to(enemyDog, { x = movementGrid[steps].x, y = movementGrid[steps].y, time = enemyTransitionTime, onComplete = followPath })
     steps = steps + 1
+  else
+    -- if there are no more steps you're arrived so
+    -- 1. pee till the level gets to 0
+    -- 2. set the new position as the starting point for path
+    -- launch a new findPath
+    enemyDog:pee(enemyCollidedWith)
+    entryEnemyCel.row = math.floor(enemyDog.y/heightFrame)
+    entryEnemyCel.col = math.floor(enemyDog.x/widthFrame)
+    print('ER '..entryEnemyCel.row..' EC '..entryEnemyCel.col)
+    findThePathToATree()
   end
 end
 
@@ -275,7 +289,6 @@ local function moveBasedOnPath(path)
   followPath()
 end
 
-
 -- PATH FINDING
 -- Find a random tree that will be the end point
 -- Select the first tree as target then look for the closest free cell and set it as the end point
@@ -285,25 +298,22 @@ local function findClosestAvailableCell(treeX, treeY)
   print('treeX '..treeX..' treeY '..treeY)
   -- create an array with all the position sourrounding the target tree
   local cellsToChek = {
-    {x = treeX - 1, y = treeY + 1 }, {x = treeX, y = treeY + 1 }, {x = treeX + 1, y = treeY + 1 },
-    {x = treeX - 1, y = treeY},                                   {x = treeX + 1, y = treeY},
-    {x = treeX + 1, y = treeY - 1 }, {x = treeX, y = treeY - 1 }, {x = treeX + 1, y = treeY + 1 },
+                                {x = treeX, y = treeY + 1 },
+    {x = treeX - 1, y = treeY},                              {x = treeX + 1, y = treeY},
+                                {x = treeX, y = treeY - 1 },
   }
   -- loop trough those cells, make sure they're on the grid (not < 0), then return the first that is free
   for n, cell in pairs(cellsToChek) do
     row = cellsToChek[n].x
     col = cellsToChek[n].y
-    print(row)
-    print(col)
     -- if row == 0 or col == 0 there is a possible error in pathFInderGrid, since there is no continue to skip do x+1
     if row == 0 then row = 1 end
     if col == 0 then col = 1 end
     -- if it's a valid row and it's not an obstacle (wlkable == 0), return the cell coords
     if row > 0 and row <= gridRows and pathFinderGrid[row][col] == 0 then
       print('row ok')
-      print('pathFinderGrid[row][col] '..pathFinderGrid[row][col] )
       return cellsToChek[n]
-    elseif col > 0 and col <= gridRows and pathFinderGrid[row][col] == 0 then
+    elseif col > 0 and col <= gridCols and pathFinderGrid[row][col] == 0 then
       print('col ok')
       return cellsToChek[n]
     end
@@ -316,20 +326,23 @@ local function findPath(endX, endY)
   local grid = Grid(pathFinderGrid)
   local myFinder = Pathfinder(grid, 'JPS', walkable) -- use A* instead of JPS to avoid diagonal passages and possible problems with bodies
   myFinder:setMode('ORTHOGONAL')
+  print('START x '..entryEnemyCel.row..' y '..entryEnemyCel.col)
+  print('END x '..endX..' y '..endY)
   path = myFinder:getPath(entryEnemyCel.col, entryEnemyCel.row, endY, endX)
 
   moveBasedOnPath(path)
 
 end
 
-local function findThePathToATree()
-  -- pick a random tree
+function findThePathToATree()
+  -- pick a random tree and save it as enemyCollidedWith object so I can pass it along later for the pee function
   local r = math.random(#gridTree)
+  treeRow = gridTree[r].row
+  treeCol = gridTree[r].col
+  enemyCollidedWith = gridMatrix[treeRow][treeCol]
   -- find the closest available cell to make it the end path cell
   local endPathCell = findClosestAvailableCell(gridTree[r].row, gridTree[r].col)
   -- find the path
-  print('x '..endPathCell.x)
-  print('y '..endPathCell.y)
   findPath(endPathCell.x, endPathCell.y)
 end
 
@@ -346,7 +359,6 @@ end
 
 
 local function frameUpdate()
-  --print('p x'..playerCollisionr.x)
   if buttonPressed['Down'] == true and player.y <
     (gridRows * heightFrame) - heightFrame/2 then
     player.y = player.y + playerSpeed
@@ -395,7 +407,9 @@ function scene:create( event )
 
   -- create the enemy dog after 5 seconds
   sceneToPass = sceneGroup
-  timer.performWithDelay( 5000, visualizeEnemyDog)
+  if visualizeEnemy == true then
+    timer.performWithDelay( 5000, visualizeEnemyDog)
+  end
 
   -- create the timer
   createTimer(sceneGroup)
