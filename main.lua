@@ -19,6 +19,12 @@ loseSound = audio.loadSound( "audio/lose.mp3" )
 musicOn = constants.musicOn
 composer.setVariable('musicOn', musicOn )
 
+arrowPadOn = composer.getVariable('arrowPadOn')
+if arrowPadOn == nil then
+  arrowPadOn = constants.arrowPadOn
+  composer.setVariable('arrowPadOn', arrowPadOn)
+end
+
 if musicOn then
   audio.play( backgroundMusic, { channel=1, loops=-1, fadein=2000 } )
 end

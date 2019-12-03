@@ -58,6 +58,7 @@ local function initLevelSettings()
 
   -- UI vars
   arrowPadOn = composer.getVariable('arrowPadOn')
+  print('arrowPadOn INT')
   print(arrowPadOn)
   padButtonDimension = constants.padButtonDimension
 
@@ -326,8 +327,8 @@ local function findPath(endX, endY)
   local grid = Grid(pathFinderGrid)
   local myFinder = Pathfinder(grid, 'JPS', walkable) -- use A* instead of JPS to avoid diagonal passages and possible problems with bodies
   myFinder:setMode('ORTHOGONAL')
-  print('START x '..entryEnemyCel.row..' y '..entryEnemyCel.col)
-  print('END x '..endX..' y '..endY)
+  --print('START x '..entryEnemyCel.row..' y '..entryEnemyCel.col)
+  --print('END x '..endX..' y '..endY)
   path = myFinder:getPath(entryEnemyCel.col, entryEnemyCel.row, endY, endX)
 
   moveBasedOnPath(path)
