@@ -4,7 +4,6 @@ local widget = require "widget"
 local grid = require("scene.widg.grid")
 local ply = require("scene.widg.player")
 local char = require("scene.widg.otherCharacter")
-local ui = require("scene.widg.ui")
 local progress = require("scene.widg.progress")
 local tilt = require("scene.widg.tilt")
 local constants = require("scene.const.constants")
@@ -17,7 +16,7 @@ local serpent = require("libs.serpent")
 -- SCENE
 local lvl, timerSeconds, sceneToPass
 local player, buttonPressed --collidedWith,
-local enemyDog, enemyCollidedWith, visualizeEnemy
+local enemyDog, enemyCollidedWith, visualizeEnemy, peeStream, enemyPeeActions, enemyPeeVelocity, enemyPeeTrees
 local buttonPressed = {Down = false, Up = false, Left = false, Right = false}
 local scene = composer.newScene()
 local entryEnemyCel = {}
@@ -48,7 +47,6 @@ local function initLevelSettings()
 
   -- find the grid dimensions
   gridCols = math.floor(display.actualContentWidth / constants.widthFrame)
-  --gridRows = math.floor(display.actualContentHeight / constants.heightFrame)
   gridRows = math.floor(display.actualContentHeight / constants.heightFrame) -- subtract 1 row for the timer
   centerHoriz = math.floor(gridRows/2)
   centerVert = math.floor(gridCols/2)
@@ -94,6 +92,9 @@ local function initLevelSettings()
   --enemyDog vars
   visualizeEnemy = constants.levelVars[lvl].visualizeEnemy
   enemyTransitionTime = constants.levelVars[lvl].enemyTransitionTime
+  peeStream = constants.levelVars[lvl].peeStream
+  enemyPeeVelocity = constants.levelVars[lvl].enemyPeeVelocity
+
 end
 
 -- TIMER CREATION AND UPDATE
@@ -261,6 +262,10 @@ local function whereToEnterTheEnemyDog()
 
 end
 
+local function enemyDogPees()
+  enemyDog:pee(enemyCollidedWith)
+end
+
 local function followPath()
   if steps <= #movementGrid then
     transition.to(enemyDog, { x = movementGrid[steps].x, y = movementGrid[steps].y, time = enemyTransitionTime, onComplete = followPath })
@@ -270,7 +275,12 @@ local function followPath()
     -- 1. pee till the level gets to 0
     -- 2. set the new position as the starting point for path
     -- launch a new findPath
-    enemyDog:pee(enemyCollidedWith)
+    --enemyDog:pee(enemyCollidedWith)
+
+    -- 1. pee until you reach 0
+    timer.performWithDelay( enemyPeeVelocity, enemyDogPees, enemyPeeActions)
+
+    -- 2. reset position
     entryEnemyCel.row = math.floor(enemyDog.y/heightFrame)
     entryEnemyCel.col = math.floor(enemyDog.x/widthFrame)
     print('ER '..entryEnemyCel.row..' EC '..entryEnemyCel.col)
@@ -327,12 +337,8 @@ local function findPath(endX, endY)
   local grid = Grid(pathFinderGrid)
   local myFinder = Pathfinder(grid, 'JPS', walkable) -- use A* instead of JPS to avoid diagonal passages and possible problems with bodies
   myFinder:setMode('ORTHOGONAL')
-  --print('START x '..entryEnemyCel.row..' y '..entryEnemyCel.col)
-  --print('END x '..endX..' y '..endY)
   path = myFinder:getPath(entryEnemyCel.col, entryEnemyCel.row, endY, endX)
-
   moveBasedOnPath(path)
-
 end
 
 function findThePathToATree()
@@ -341,6 +347,9 @@ function findThePathToATree()
   treeRow = gridTree[r].row
   treeCol = gridTree[r].col
   enemyCollidedWith = gridMatrix[treeRow][treeCol]
+  -- calculate how many pee actions are needed to take the pee level to 0
+  enemyPeeActions = (enemyCollidedWith.peeLevel / peeStream ) + 1 -- +1 is to cover if there is an eventual reminder
+
   -- find the closest available cell to make it the end path cell
   local endPathCell = findClosestAvailableCell(gridTree[r].row, gridTree[r].col)
   -- find the path
@@ -475,6 +484,8 @@ function scene:destroy( event )
   ply = nil
   package.loaded[constants] = nil
   constants = nil
+  package.loaded[char] = nil
+  char = nil
 end
 
 ---------------------------------------------------------------------------------
