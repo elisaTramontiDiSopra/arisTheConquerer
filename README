@@ -6,21 +6,51 @@ Game.lua
 - I use the calculated path to move there and collide with the tree
 
 
+------------------------------------------
+GRID LOGIC -------------------------------  otherCharacter.lua
+------------------------------------------
+
+--The grid is created in grid.lua at the beginning of the level (it's called in game.lua)
+  grid.new()
+    - the size of the screen and number of cells is calculated
+    - the screen is filled with tiles of random obstacles
+    - set the central tile as a path (with openPath) because the player will start from here
+    - repeat this cicle until you reach pathTracerMoves (more moves, more path to walk, the easier is the game,
+      parameter setted in level configuration)
+
+      randomWalking()               >> choose a random direction and move there then turn the ending tile into
+                                       a path with openPath
+      openPath()                    >> change the tile and its properties to an open path that is walkable
+
+    - count the remaining obstacles and give them a body
+    transformObstaclesIntoTrees()   >> if a remaining obstacle is reachable, aka close to a path, then turn it
+                                       into a tree (with a random image) until you have reached the number of
+                                       trees for that level
+    - return 3 grids: one complete (path, obstacles and properties), one with just the trees, one with just
+      1 for obstacles and 0 for walkable to be used by jumper.
 
 
+------------------------------------------
+ENEMY LOGIC ------------------------------  otherCharacter.lua
+------------------------------------------
 
-ENEMY LOGIC
+--The enemy dog is created in game.lua only if visualizeEnemy = true in the level constants
+  visualizeEnemyDog()
+    whereToEnterTheEnemyDog()    >> chooses the first free cell on the grid to enter the dog
+    findThePathToATree()         >> finds a random tree
+    findClosestAvailableCell()   >> finds a free cell close to the tree (otherwise jumper doesn't work)
+    findPath()                   >> finds the path to the tree/close-cell
+    moveBasedOnPath()            >> moves the enemy dog to the tree/close-cell
+    enemyDogPees()               >>
 
--- Pathfinding
-I used jumper
-Jumper creates a path between two available points but my end point is a tree and it's unavailable
-so I first had to find the closest available cell with function findClosestAvailableCell()
+--Pathfinding
+  I used jumper
+  Jumper creates a path between two available points but my end point is a tree and it's unavailable
+  so I first had to find the closest available cell with function findClosestAvailableCell()
 
-findClosestAvailableCell() creates a table with the
-(x-1, y+1)
-(x, y+1)
-(x+1, y+1)
+--Contrasting player
+  When it reaches the tree it pees on it till the player pee level is 0 then moves to another tree
 
--- collision with other dog
-This is handled on the main char function since it already checks if it does collide with trees
-If it collides with the other dog it stops the level
+--collision with other dog
+  This is handled on the main char function (player) since it already checks if it does collide with trees
+  If it collides with the other dog it stops the level, visualizes another screen similar to the "lose" one
