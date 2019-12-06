@@ -20,10 +20,11 @@ local enemyDog, enemyCollidedWith, visualizeEnemy, peeStream, enemyPeeActions, e
 local buttonPressed = {Down = false, Up = false, Left = false, Right = false}
 local scene = composer.newScene()
 local entryEnemyCel = {}
+local entryPoint = {}
 local path
+local lastPath = false
 local steps = 1
 local movementGrid = {}
-
 
 function printPairs(grid)
   for k,v in pairs(grid) do
@@ -94,8 +95,12 @@ local function initLevelSettings()
   enemyTransitionTime = constants.levelVars[lvl].enemyTransitionTime
   peeStream = constants.levelVars[lvl].peeStream
   enemyPeeVelocity = constants.levelVars[lvl].enemyPeeVelocity
+  enemyPeeTrees = constants.levelVars[lvl].enemyPeeTrees
+  enemyDogTreesDone = 0
 
 end
+
+local findPath -- placed here because I call it on higher functions
 
 -- TIMER CREATION AND UPDATE
 local function createTimer(sceneGroup)
@@ -255,6 +260,8 @@ local function whereToEnterTheEnemyDog()
       if gridMatrix[r][c].type == 'path' then -- if it's not an obstacle
         entryEnemyCel.row = r
         entryEnemyCel.col = c
+        entryPoint.row = r -- use them later to exit the dog, keep them here to avoid overwriting
+        entryPoint.col = c -- use them later to exit the dog
         return
       end
     end
@@ -266,33 +273,51 @@ local function enemyDogPees()
   enemyDog:pee(enemyCollidedWith)
 end
 
-local function followPath()
-  if steps <= #movementGrid then
-    transition.to(enemyDog, { x = movementGrid[steps].x, y = movementGrid[steps].y, time = enemyTransitionTime, onComplete = followPath })
-    steps = steps + 1
+local function checkIfEnemyDogIsDone()
+  print(enemyDogTreesDone)
+  -- if you've done the trees youre supposed to visit then return to the entry point
+  if enemyDogTreesDone == enemyPeeTrees then
+    print('trees done')
+    -- find the path to the point where you entered, use true as third parameter to say this is the exit path
+    lastPath = true
+    findPath(entryPoint.row, entryPoint.col)
   else
-    -- if there are no more steps you're arrived so
-    -- 1. pee till the level gets to 0
-    -- 2. set the new position as the starting point for path
-    -- launch a new findPath
-    --enemyDog:pee(enemyCollidedWith)
-
-    -- 1. pee until you reach 0
-    timer.performWithDelay( enemyPeeVelocity, enemyDogPees, enemyPeeActions)
-
-    -- 2. reset position
+    -- reset the position and find another tree
+    enemyDogTreesDone = enemyDogTreesDone + 1
     entryEnemyCel.row = math.floor(enemyDog.y/heightFrame)
     entryEnemyCel.col = math.floor(enemyDog.x/widthFrame)
-    print('ER '..entryEnemyCel.row..' EC '..entryEnemyCel.col)
     findThePathToATree()
   end
 end
 
-local function moveBasedOnPath(path)
+local function followPath()
+
+  if steps <= #movementGrid then
+    transition.to(enemyDog, { x = movementGrid[steps].x, y = movementGrid[steps].y, time = enemyTransitionTime, onComplete = followPath })
+    steps = steps + 1
+  else
+    -- if it was the lastPath then make enemyDog disappear
+    if lastPath == true then
+      print('PUF!')
+      display.remove(enemyDog)
+      return
+    end
+
+    -- you're arrived, pee till peelevel reaches 0
+    for i = 0, enemyPeeActions do
+      timer.performWithDelay( enemyPeeVelocity, enemyDogPees)
+      i = i + 1
+    end
+
+    checkIfEnemyDogIsDone()
+
+  end
+end
+
+local function moveBasedOnPath(path, lastPath)
   -- reset path vars
   steps = 1
   movementGrid = {}
-  print(path)
   -- populate movementGrid with new path
   for node, count in path:nodes() do
     movementGrid[count] = { x = node:getX() * widthFrame, y = node:getY() * heightFrame }
@@ -331,7 +356,7 @@ local function findClosestAvailableCell(treeX, treeY)
   end
 end
 
-local function findPath(endX, endY)
+function findPath(endX, endY)
   -- init vars for pathfinding
   local walkable = 0
   local grid = Grid(pathFinderGrid)
@@ -353,7 +378,7 @@ function findThePathToATree()
   -- find the closest available cell to make it the end path cell
   local endPathCell = findClosestAvailableCell(gridTree[r].row, gridTree[r].col)
   -- find the path
-  findPath(endPathCell.x, endPathCell.y)
+  findPath(endPathCell.x, endPathCell.y, false)
 end
 
 local function visualizeEnemyDog(sceneGroup)
@@ -486,6 +511,7 @@ function scene:destroy( event )
   constants = nil
   package.loaded[char] = nil
   char = nil
+  enemyDog = nil
 end
 
 ---------------------------------------------------------------------------------
