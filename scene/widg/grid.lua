@@ -13,14 +13,6 @@ local toReturn = {}
 local marginX, marginY = 0, 0
 local gridGroup --to insert it on the scene
 
-
-
-function printPairs(grid)
-  for k,v in pairs(grid) do
-    print( k,v )
-  end
-end
-
 -------------------------------------------------------------------------- EXTRA FUNCTIONS
 local function initVars(lvl)
   -- reset grids
@@ -60,11 +52,8 @@ end
 
 -- create the single tile with all the properties
 local function createSingleTile(classTile, row, col, graphicGroup)
-    -- xPos = col * widthFrame,
-    -- yPos = i * heightFrame, (row - 1 to allign correctly on screen to 0, 0)
   xPos = col * widthFrame
   yPos = (row - 1) * heightFrame
-  --myImage = display.newImage(graphicGroup, obstaclesSrc..classTile..'.png')
   myImage = display.newImage(graphicGroup, obstaclesSrc..classTile..'.jpg')
   myImage.anchorX = anchorXPoint
   myImage.anchorY = anchorYPoint
@@ -76,8 +65,6 @@ local function createSingleTile(classTile, row, col, graphicGroup)
   myImage.name = 'cell_'..row..'-'..col
   myImage.type = classTile
 
-  -- graphicGroup:insert(myImage)
-
   return myImage
 end
 
@@ -88,7 +75,7 @@ end
 
 -- Create the walking path in a graphic way (TO BE DEFINED BEFORE THE WALKING ALGORITHM)
 local function openPath(rowNumber, colNumber, graphicGroup)
-  -- choose the random tile and save it in the grid to remember it -------------------------- UNCOMMENT FOR MULTIPLE PATH TILES
+  -- choose the random tile and save it in the grid to remember it -------- UNCOMMENT FOR MULTIPLE PATH TILES
   -- randomPath = pathTile..math.random(4)
   randomPath = pathTile..'1'
   -- remove old tile
@@ -250,7 +237,7 @@ function M.new(gridRows, gridCols, lvl, graphicGroup)
     end
   end
 
-  -- Random walking algorithm, clearing the path (start from the center)
+  -- Random walking algorithm, clearing the path (start from the center where the player will be)
   pathGridX = centerHoriz
   pathGridY = centerVert
   openPath(pathGridX, pathGridY, graphicGroup)      -- free the central cell
@@ -277,7 +264,6 @@ function M.new(gridRows, gridCols, lvl, graphicGroup)
     pathFinderGrid[i] = {} -- create new row
     for j = 1, gridCols do
       pathFinderGrid[i][j] = gridMatrix[i][j].obstacle
-      --table.insert(pathFinderGrid[i], gridMatrix[i][j].obstacle)
     end
   end
 
