@@ -120,6 +120,10 @@ function scene:destroy( event )
 	if playBtn then
 		playBtn:removeSelf()	-- widgets must be manually removed
 		playBtn = nil
+		nextBtn:removeSelf()	-- widgets must be manually removed
+		nextBtn = nil
+		homeBtn.removeSelf()
+		homeBtn = nil
 	end
 end
 

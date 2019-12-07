@@ -1,7 +1,7 @@
 -- progress.lua handles saving and loading of highest game level
 local M = {}
 
- function M.save(lvl)
+function M.save(lvl)
   -- get the load level and the current played level
   highestSavedLevel = M.load()
   -- save only if the level you reached is new, otherwise you were re-playing an old level and do nothing
@@ -25,9 +25,31 @@ function M.load()
   else
     -- if there is no score is the first load and return lvl = 1
     return 1
-    --print( "ERROR: could not load score (score may not exist in storage)" )
   end
 end
+
+function M.loadControlOptions()
+  print('LOAD')
+  local controlSystem = system.getPreference( "app", "controlSystem", "string" )
+  print(controlSystem)
+  if controlSystem == nil then
+    return 'accel'
+  else
+    -- if there is no data is the first load and return controlSystem = 'accel'
+    return controlSystem
+  end
+end
+
+function M.saveControlOptions(opt)
+  print(opt)
+  print(type(opt))
+  local saved = system.setPreferences( "app", { controlSystem = opt } ) -- save in local storage under currentLevel
+  print(saved)
+  if ( saved == false ) then
+    print( "ERROR: could not save score" )
+  end
+end
+
 
 
 return M
