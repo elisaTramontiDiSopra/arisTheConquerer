@@ -274,7 +274,6 @@ local function enemyDogPees()
 end
 
 local function checkIfEnemyDogIsDone()
-  print(enemyDogTreesDone)
   -- if you've done the trees youre supposed to visit then return to the entry point
   if enemyDogTreesDone == enemyPeeTrees then
     print('trees done')
@@ -290,14 +289,31 @@ local function checkIfEnemyDogIsDone()
   end
 end
 
+local function checkDirectionForAnimation(steps)
+  local previousStep = steps - 1
+  local animation = 'walkingDown'
+  -- check the direction of movment
+  if movementGrid[steps].x > movementGrid[previousStep].x then
+    animation = 'walkingRight'
+  elseif movementGrid[steps].x < movementGrid[previousStep].x then
+    animation = 'walkingLeft'
+  elseif movementGrid[steps].y < movementGrid[previousStep].y then
+    animation = 'walkingUp'
+  end
+  print(animation)
+  return animation
+end
+
 local function followPath()
 
   if steps <= #movementGrid then
     transition.to(enemyDog, { x = movementGrid[steps].x, y = movementGrid[steps].y, time = enemyTransitionTime, onComplete = followPath })
+    enemyDog:animate(movementGrid[steps].animation)
     steps = steps + 1
   else
     -- if it was the lastPath then make enemyDog disappear
     if lastPath == true then
+      -- play the puff! animation then remove the enemy from the game
       print('PUF!')
       display.remove(enemyDog)
       return
@@ -321,14 +337,21 @@ local function moveBasedOnPath(path, lastPath)
   -- populate movementGrid with new path
   for node, count in path:nodes() do
     movementGrid[count] = { x = node:getX() * widthFrame, y = node:getY() * heightFrame }
+    -- add movment direction for animation
+    if count == 1 then
+      -- this is the first step, the default start animation is walkingDown
+      movementGrid[count].animation = 'walkingDown'
+    else
+      -- calculate direction and set the animation
+      print('call direction')
+      print(count)
+      local animation = checkDirectionForAnimation(count)
+      print(animation)
+      movementGrid[count].animation = animation
+    end
   end
   followPath()
 end
-
--- PATH FINDING
--- Find a random tree that will be the end point
--- Select the first tree as target then look for the closest free cell and set it as the end point
--- Launch jumper to find the shortest path to the end point and save it in movementGrid
 
 local function findClosestAvailableCell(treeX, treeY)
   print('treeX '..treeX..' treeY '..treeY)
@@ -385,7 +408,7 @@ local function visualizeEnemyDog(sceneGroup)
   -- calculate where to make the dog enter: 1 column, down row till you find an empty one
   whereToEnterTheEnemyDog()
   -- create the enemy dog
-  enemyDog = char.new(gridRows, gridCols, entryEnemyCel.row, entryEnemyCel.col, lvl, sceneToPass, enemyDogSrc, pathFinderGrid, gridTree)
+  enemyDog = char.new(gridRows, gridCols, entryEnemyCel.row, entryEnemyCel.col, lvl, sceneToPass, enemyDogSrc, pathFinderGrid, gridTree, gridMatrix)
   findThePathToATree()
 end
 
