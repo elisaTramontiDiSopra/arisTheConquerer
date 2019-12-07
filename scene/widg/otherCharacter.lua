@@ -13,52 +13,9 @@ local function moveBasedOnPath(path)
     transition.to(char, { time=500, x=node:getX()*widthFrame, y = node:getY()*heightFrame, onComplete=listener2 } )
   end
 end
---[[
-local function findPath(walkableMap, startX, startY, goalX, goalY)
 
-  print('SERPENT MAP')
-  print(serpent.block(walkableMap))
-
-  -- Value for walkable tiles
-  local walkable = 0
-
-  -- Creates a grid object and pathfinder
-  local grid = Grid(walkableMap)
-  local myFinder = Pathfinder(grid, 'JPS', walkable) -- use A* instead of JPS to avoid diagonal passages and possible problems with bodies
-  myFinder:setMode('ORTHOGONAL')
-
-  print('START: x:'..startX..' y:'..startY)
-  print('END: x:'..goalX..' y:'..goalY)
-
-  -- the end point can't be unwalkable so I first have to find the closest tile
-  -- I subtract one tile from the x first, and if there is a path I go there, otherwise I move to the closest y tile
-  goalX = goalX - 1
-  -- Calculates the path, and its length
-  -- X is the row, so is actually Y, and viceverse therefore invert the vars in getPath
-  local path = myFinder:getPath(startY, startX, goalY, goalX)
-
-  if path then
-    print(('Path found! Length: %.2f'):format(path:getLength()))
-  else
-    goalX = goalX+1
-    goalY = goalY - 1
-    path = myFinder:getPath(startY, startX, goalY, goalX)
-    for node, count in path:nodes() do
-      print(('Step: %d - x: %d - y: %d'):format(count, node:getX(), node:getY()))
-      -- move following the steps
-      transition.to(char, { time=500, x=node:getX()*widthFrame, y = node:getY()*heightFrame, onComplete=listener2 } )
-    end
-
-  end
-
-  return path
-end
-
- ]]
 -- PLAYER VARS
-local player, playerCol, playerRow
-local collidedWith = {}
-local lastDirection = ""
+local player, playerCol, playerRow, collidedWith
 local path
 
 ------------------------------------- EXTRA FUNCTIONS
@@ -94,17 +51,6 @@ local function checkIfPlayerIsClose(tree)
     return true
   else
     return false
-  end
-end
-
-
-local function charCollision( self, event )
-
-  if ( event.phase == "began" ) then
-    print( self.name .. ": collision began with " .. event.other.name )
-
-  elseif ( event.phase == "ended" ) then
-        print( self.name .. ": collision ended with " .. event.other.name )
   end
 end
 
@@ -145,27 +91,33 @@ function M.new(gridRows, gridCols, charRow, charCol, lvl, sceneGroup, imageSrc, 
   char.objectType = char   -- is itusefeul??? can I delete it???
   char.type = 'enemy'
 
-  -- Handle player collision
-  char.collision = charCollision
-  char:addEventListener("collision")
   physics.addBody(char, "dynamic", playerBodyOptions)
 
   sceneGroup:insert(char)
 
   function char:animate(animation)
+    print(animation)
     char:setSequence(animation)
     char.rotation = 0 -- to prevent player from rotating if walking on an obstacle angle
   end
 
-  function char:pee()
-    -- if there is no collidedWith Object exit because you're not close to a tree
-    if (collidedWith.peeLevel and collidedWith.peeLevel < maxPeeLevel) then
-      collidedWith.peeLevel = collidedWith.peeLevel + peeStream
-      peeAnimation = 'pee'..lastDirection
+  local pee
+  function char:pee(obj)
+    -- decrease pee level till it gets to 0
+    collidedWith = obj
+    if obj.peeLevel > 0 then
+      obj.peeLevel = obj.peeLevel - peeStream
+      peeAnimation = 'peeLeft' -- shortcut, pee animation is always the same
       char:setSequence(peeAnimation)
-      updateTreePeeBar(collidedWith.peeBar, collidedWith.peeLevel)
-      return collidedWith
+      updateTreePeeBar(obj.peeBar, obj.peeLevel)
+      local c = timer.performWithDelay( 300, pee, 1)
     end
+    -- when it's done return something
+    return true
+  end
+
+  function pee()
+    char:pee(collidedWith)
   end
 
   function char:move(path)
