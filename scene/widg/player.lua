@@ -65,11 +65,10 @@ local function playerCollision(self, event)
   if (event.phase == "began" ) then
 
     -- if you hit the enemy dog lose the game and go to the appropriate scene
-
-      if event.other.name == 'enemy' then
-        composer.setVariable('winOrLose', 'lose' )
-        composer.gotoScene("scene.brawl", "fade", 500 )
-      end
+    if event.other.name == 'enemy' then
+      composer.setVariable('winOrLose', 'lose' )
+      composer.gotoScene("scene.brawl", "fade", 150 )
+    end
 
     -- check if we're close to the tree, less then 1 row and 1 col away
     nexToObject = checkIfPlayerIsClose(event.other)
