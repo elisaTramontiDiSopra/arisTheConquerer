@@ -36,10 +36,10 @@ function scene:create( event )
   buttonSrc = constants.buttonSrc
   buttonWidth = constants.buttonWidth
 	buttonHeight = constants.buttonHeight
-	playBtn = constants.playBtn
+	playBtnBg = constants.playBtn
 	creditsBtnBg = constants.creditsBtn
-	tutorialBtn = constants.tutorialBtn
-	optionBtn = constants.optionBtn
+	tutorialBtnBg = constants.tutorialBtn
+	optionBtnBg = constants.optionBtn
 
 	local sceneGroup = self.view
 
@@ -58,7 +58,7 @@ function scene:create( event )
     {
         width = buttonWidth,
         height = buttonHeight,
-        defaultFile = "play.png",
+        defaultFile = playBtnBg,
         onEvent = onPlayBtnRelease	-- event listener function
     }
   )
@@ -69,7 +69,7 @@ function scene:create( event )
     {
         width = buttonWidth,
         height = buttonHeight,
-        defaultFile = "credits.png",
+        defaultFile = creditsBtnBg,
         onEvent = onCreditsBtnRelease	-- event listener function
     }
   )
@@ -81,7 +81,7 @@ function scene:create( event )
     {
         width = buttonWidth,
         height = buttonHeight,
-        defaultFile = "tutorial.png",
+        defaultFile = tutorialBtnBg,
         onEvent = onTutorialBtnRelease	-- event listener function
     }
   )
@@ -93,7 +93,7 @@ function scene:create( event )
     {
         width = buttonWidth,
         height = buttonHeight,
-        defaultFile = "options.png",
+        defaultFile = optionBtnBg,
         onEvent = onOptionBtnRelease	-- event listener function
     }
   )
