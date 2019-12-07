@@ -1,19 +1,23 @@
 ------------------------------------------
-STRUCTURE
+STRUCTURE --------------------------------
 ------------------------------------------
+main.lua            >> music and sounds loading, checking controls mode then takes you to the menu
+menu.lua            >> view that allows you to choose between pages/views
+levels.lua          >> visualizes the levels before starting the game
+game.lua            >> main file with the actual logic.
+                       (changes depending on the level parameters but the file is the same)
+nextLevel.lua       >> handles the view if yo win or lose the level
+options.lua         >> allows to changes controls from pad to accelerometer
+credits.lua         >> credits page, static
+
 grid.lua            >> handles the creation of the grid, graphics and tiles/cell properties, as well as the
                        grids used by jumper for the path finding
 player.lua          >> handles the player creation and some functions (like pee)
 otherCharacter.lua  >> handles enemy creation and some function
-levels.lua          >> visualizes the levels before starting the game
 progress.lua        >> handles saving and loading progress
-nextLevel.lua       >> handles the view if yo win or lose the level
 constants.lua       >> configuration file for all the game variables, level variables included
 
-main.lua            >> music and sounds loading, checking controls mode then takes you to the menu
-menu.lua            >> view that allows you to choose to go to other pages
-options.lua         >> allows to changes controls from pad to accelerometer
-credits.lua         >> credits page, static
+
 
 
 Game.lua
