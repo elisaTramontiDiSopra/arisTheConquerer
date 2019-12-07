@@ -279,7 +279,6 @@ local function checkIfEnemyDogIsDone()
 
   -- if you've done the trees youre supposed to visit then return to the entry point
   if enemyDogTreesDone == enemyPeeTrees then
-    print('trees done')
     -- find the path to the point where you entered, use true as third parameter to say this is the exit path
     lastPath = true
     findPath(entryPoint.row, entryPoint.col)
@@ -303,7 +302,6 @@ local function checkDirectionForAnimation(steps)
   elseif movementGrid[steps].y < movementGrid[previousStep].y then
     animation = 'walkingUp'
   end
-  print(animation)
   return animation
 end
 
@@ -324,6 +322,7 @@ local function followPath()
       -- play the puff! animation then remove the enemy from the game
       print('PUF!')
       enemyDog:animate('puff')
+      enemyDog:play()
       timer.performWithDelay( 1, removeEnemy)
       return
     end
