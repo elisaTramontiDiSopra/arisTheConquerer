@@ -63,7 +63,7 @@ end
 
 -------------------------------------
 
-function M.new(gridRows, gridCols, charRow, charCol, lvl, sceneGroup, imageSrc, pathFinderGrid, treeGrid)
+function M.new(gridRows, gridCols, charRow, charCol, lvl, sceneGroup, imageSrc, pathFinderGrid, treeGrid, gridMatrix)
 
   -- init vars
   widthFrame = constants.widthFrame
@@ -116,7 +116,7 @@ function M.new(gridRows, gridCols, charRow, charCol, lvl, sceneGroup, imageSrc, 
     return true
   end
 
-  function pee()
+  function pee() -- to be used for other functions such as delay
     char:pee(collidedWith)
   end
 
