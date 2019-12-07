@@ -2,12 +2,25 @@ local M = {
   -- options
   musicOn = false,
   arrowPadOn = true, -- initially padOn
+  -- bg
+  optionsBg = 'screens/options.jpg',
+  menuBg = 'screens/menu.jpg',
+  creditsBg = 'screens/credits.jpg',
+  winBg = 'screens/win.jpg',
+  loseBg = 'screens/lose.jpg',
+  brawlBg = 'screens/brawl.jpg',
   -- buttons
-  padOn = 'pad.png',
-  padOff = 'padOff.png',
-  accelerometerOn = 'accelerometer.png',
-  accelerometerOff = 'accelerometerOff.png',
-  save = 'save.png',
+  playBtn = 'buttons/playBtn.png',
+  creditsBtn = 'buttons/creditsBtn.png',
+  tutorialBtn = 'buttons/tutorialBtn.png',
+  optionBtn = 'buttons/optionBtn.png',
+  padBtn = 'buttons/pad.png',
+  accelerometerOn = 'buttons/accelerometer.png',
+  saveBtn = 'save.png',
+  musicOn = 'buttons/on.png',
+  musicOff = 'buttons/off.png',
+  nextBtn = 'buttons/next.png',
+  replayBtn = 'buttons/replay.png',
   -- menu screen vars
   logoWidth = 280,
   logoHeight = 85,

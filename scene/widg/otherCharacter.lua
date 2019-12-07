@@ -96,7 +96,6 @@ function M.new(gridRows, gridCols, charRow, charCol, lvl, sceneGroup, imageSrc, 
   sceneGroup:insert(char)
 
   function char:animate(animation)
-    print(animation)
     char:setSequence(animation)
     char:play()
     char.rotation = 0 -- to prevent player from rotating if walking on an obstacle angle

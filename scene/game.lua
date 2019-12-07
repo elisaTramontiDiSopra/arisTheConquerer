@@ -57,8 +57,6 @@ local function initLevelSettings()
 
   -- UI vars
   arrowPadOn = composer.getVariable('arrowPadOn')
-  print('arrowPadOn INT')
-  print(arrowPadOn)
   padButtonDimension = constants.padButtonDimension
 
   -- timer vars
@@ -320,10 +318,11 @@ local function followPath()
     -- if it was the lastPath then make enemyDog disappear
     if lastPath == true then
       -- play the puff! animation then remove the enemy from the game
-      print('PUF!')
-      enemyDog:animate('puff')
-      enemyDog:play()
-      timer.performWithDelay( 1, removeEnemy)
+      --print('PUF!')
+      local anim = 'puff'
+      enemyDog:animate(anim)
+
+      timer.performWithDelay( 1000, removeEnemy)
       return
     end
 
@@ -359,7 +358,6 @@ local function moveBasedOnPath(path, lastPath)
 end
 
 local function findClosestAvailableCell(treeX, treeY)
-  print('treeX '..treeX..' treeY '..treeY)
   -- create an array with all the position sourrounding the target tree
   local cellsToChek = {
                                 {x = treeX, y = treeY + 1 },
@@ -375,10 +373,8 @@ local function findClosestAvailableCell(treeX, treeY)
     if col == 0 then col = 1 end
     -- if it's a valid row and it's not an obstacle (wlkable == 0), return the cell coords
     if row > 0 and row <= gridRows and pathFinderGrid[row][col] == 0 then
-      print('row ok')
       return cellsToChek[n]
     elseif col > 0 and col <= gridCols and pathFinderGrid[row][col] == 0 then
-      print('col ok')
       return cellsToChek[n]
     end
   end
@@ -451,7 +447,7 @@ function scene:create( event )
 	local sceneGroup = self.view
   physics.start()
   physics.setGravity(0,0)
-  --physics.setDrawMode( "debug" )
+  --physics.setDrawMode( "hybrid" )
 
   -- init game vars
   initLevelSettings()

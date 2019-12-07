@@ -35,7 +35,12 @@ function scene:create( event )
   -- init vars
   buttonSrc = constants.buttonSrc
   buttonWidth = constants.buttonWidth
-  buttonHeight = constants.buttonHeight
+	buttonHeight = constants.buttonHeight
+	playBtn = constants.playBtn
+	creditsBtnBg = constants.creditsBtn
+	tutorialBtn = constants.tutorialBtn
+	optionBtn = constants.optionBtn
+
 	local sceneGroup = self.view
 
   -- level variable

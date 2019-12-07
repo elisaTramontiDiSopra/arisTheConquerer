@@ -1,4 +1,5 @@
 local composer = require( "composer" )
+local constants = require("scene.const.constants")
 local scene = composer.newScene()
 
 -------------------------------------------------------------------------------------
@@ -10,17 +11,20 @@ end
 -------------------------------------------------------------------------------------
 
 function scene:create( event )
+  -- init vars
+  creditsBg = constants.creditsBg
+
   local sceneGroup = self.view
 
-	-- display a background image
-	local background = display.newImageRect("screens/credits.jpg", display.actualContentWidth, display.actualContentHeight )
-	background.anchorX = 0
-	background.anchorY = 0
-	background.x = 0 + display.screenOriginX
-    background.y = 0 + display.screenOriginY
+  -- display a background image
+  local background = display.newImageRect(creditsBg, display.actualContentWidth, display.actualContentHeight )
+  background.anchorX = 0
+  background.anchorY = 0
+  background.x = 0 + display.screenOriginX
+  background.y = 0 + display.screenOriginY
 
-	-- all display objects must be inserted into group
-	sceneGroup:insert( background )
+  -- all display objects must be inserted into group
+  sceneGroup:insert( background )
 end
 
 function scene:show( event )

@@ -38,19 +38,24 @@ function scene:create( event )
   -- init vars
   buttonSrc = constants.buttonSrc
   buttonWidth = constants.buttonWidth
-  buttonHeight = constants.buttonHeight
+	buttonHeight = constants.buttonHeight
+	winBg = constants.winBg
+	loseBg = constants.loseBg
+	brawlBg = constants.brawlBg
+	nextBtn = constants.nextBtn
+	replayBtn = constants.replayBtn
 
   local sceneGroup = self.view
 
   -- set variables according to level result
   winOrLose = composer.getVariable('winOrLose')
   if winOrLose == 'win' then
-    bgUrl = "win.jpg"
-		buttonUrl = 'next.png'
+    bgUrl = winBg
+		buttonUrl = nextBtn
 		soundName = winSound
   else
-    bgUrl = "lose.jpg"
-    buttonUrl = 'replay.png'
+    bgUrl = loseBg
+    buttonUrl = replayBtn
 		soundName = loseSound
   end
 
