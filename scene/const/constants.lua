@@ -55,6 +55,18 @@ local M = {
   -- meanDog vars
   enemyDogSrc = "scene/img/mainDogMean.png",
   --enemyDogSrc = "scene/img/mainDogMean_64.png",                   -- 64PX VERSION
+  enemySheetOptions = {width = 50, height = 50, numFrames = 36}, -- use widthFrame & heightFrame
+  enemySequenceData = {
+    {name = "walkingDown", start = 1, count = 4, time = 100, loopCount = 0, loopDirection = "forward"},
+    {name = "walkingLeft", start = 5, count = 4, time = 100, loopCount = 0, loopDirection = "forward"},
+    {name = "walkingRight", start = 9, count = 4, time = 100, loopCount = 0, loopDirection = "forward"},
+    {name = "walkingUp", start = 13, count = 4, time = 100, loopCount = 0, loopDirection = "forward"},
+    {name = "peeDown", start = 17, count = 4, time = 100, loopCount = 0, loopDirection = "forward"},
+    {name = "peeLeft", start = 21, count = 4, time = 100, loopCount = 0, loopDirection = "forward"},
+    {name = "peeRight", start = 25, count = 4, time = 100, loopCount = 0, loopDirection = "forward"},
+    {name = "peeUp", start = 29, count = 4, time = 100, loopCount = 0, loopDirection = "forward"},
+    {name = "puff", start = 33, count = 4, time = 100, loopCount = 0, loopDirection = "forward"} -- THIS IS ADDED
+  },
   -- level vars
   numberOfLevels = 20,
   levelVars = {

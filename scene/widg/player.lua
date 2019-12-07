@@ -121,6 +121,7 @@ function M.new(gridRows, gridCols, lvl, sceneGroup, imageSrc)
 
   function player:animate(animation)
     player:setSequence(animation)
+    player:play()
     player.rotation = 0 -- to prevent player from rotating if walking on an obstacle angle
     lastDirection = animation:sub(8) -- take what's after 'walking'
   end

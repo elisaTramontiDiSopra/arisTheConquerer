@@ -71,8 +71,8 @@ function M.new(gridRows, gridCols, charRow, charCol, lvl, sceneGroup, imageSrc, 
   anchorYPoint = constants.anchorYPoint
   charSrc = imageSrc
   playerSpeed = constants.playerSpeed
-  playerSequenceData = constants.playerSequenceData
-  playerSheetOptions = constants.playerSheetOptions
+  playerSequenceData = constants.enemySequenceData
+  playerSheetOptions = constants.enemySheetOptions
   playerBodyOptions = constants.playerBodyOptions
   peeStream = constants.levelVars[lvl].peeStream
   vanishingPee = constants.levelVars[lvl].vanishingPee
@@ -98,6 +98,7 @@ function M.new(gridRows, gridCols, charRow, charCol, lvl, sceneGroup, imageSrc, 
   function char:animate(animation)
     print(animation)
     char:setSequence(animation)
+    char:play()
     char.rotation = 0 -- to prevent player from rotating if walking on an obstacle angle
   end
 
