@@ -5,12 +5,11 @@ local progress = require("scene.widg.progress")
 local constants = require("scene.const.constants")
 
 -- MENU LOCAL VAR
-local creditsBtn, bgUrl, winOrLose, padBg, accelerometerBg, controlType
+local creditsBtn, bgUrl, winOrLose, padBg, accelerometerBg, controlType, onBtn, offBtn
 
 --------------------------------------------------------------
 
 local function onPadBtnRelease(event)
-	print('pressed')
   if event.target.name == 'accelBtn' then
 		accelBtn.isVisible = false
 		composer.setVariable('arrowPadOn', false)
@@ -20,8 +19,18 @@ local function onPadBtnRelease(event)
 		composer.setVariable('arrowPadOn', true)
 		controlType = 'pad'
 	end
-	print('controlType')
-	print(controlType)
+end
+
+local function onMusicBtnRelease(event)
+  if event.target.name == 'offBtn' then
+		offBtn.isVisible = false
+		composer.setVariable('musicOn', false)
+		musicState = 'off'
+	else
+		offBtn.isVisible = true
+		composer.setVariable('musicOn', true)
+		musicState = 'on'
+	end
 end
 
 local function onHomeBtnRelease()
@@ -30,6 +39,13 @@ local function onHomeBtnRelease()
 end
 
 local function onSaveBtnRelease()
+	-- check music saved parameters and start or stop music accordingly
+	if musicState == 'on' then
+		audio.play( backgroundMusic, { channel=1, loops=-1, fadein=2000 } )
+	else
+		audio.stop()
+	end
+
 	--progress.saveControlOptions(controlType)
 	composer.gotoScene("scene.menu", "fade", 500 )
 	return true	-- indicates successful touch
@@ -42,16 +58,17 @@ function scene:create( event )
   buttonSrc = constants.buttonSrc
   buttonWidth = constants.buttonWidth
 	buttonHeight = constants.buttonHeight
-	padBgOn = constants.padOn
-	padBgOff = constants.padOff
+	padBgOn = constants.padBtn
 	accelerometerOn = constants.accelerometerOn
-	accelerometerOff = constants.accelerometerOff
-	saveBg = constants.save
+	saveBg = constants.saveBtn
+	musicOnBg = constants.musicOn
+	musicOffBg = constants.musicOff
+	optionsBg = constants.optionsBg
 
 	sceneGroup = self.view
 
   -- display a background image
-  local background = display.newImageRect("options.jpg", display.actualContentWidth, display.actualContentHeight )
+  local background = display.newImageRect(optionsBg, display.actualContentWidth, display.actualContentHeight )
   background.anchorX = 0
   background.anchorY = 0
   background.x = 0 + display.screenOriginX
@@ -74,7 +91,7 @@ function scene:create( event )
 	)
 	padBtn.name = 'padBtn'
 	padBtn.x = display.contentCenterX
-	padBtn.y = display.contentHeight - 270
+	padBtn.y = display.contentHeight - 320
 
 	accelBtn = widget.newButton(
     {
@@ -86,7 +103,32 @@ function scene:create( event )
 	)
 	accelBtn.name = 'accelBtn'
 	accelBtn.x = display.contentCenterX
-	accelBtn.y = display.contentHeight - 270
+	accelBtn.y = display.contentHeight - 320
+
+	onBtn = widget.newButton(
+    {
+        width = buttonWidth,
+        height = buttonHeight,
+        defaultFile = musicOnBg,
+        onRelease = onMusicBtnRelease	-- event listener function
+    }
+	)
+	onBtn.name = 'onBtn'
+	onBtn.x = display.contentCenterX
+	onBtn.y = display.contentHeight - 200
+
+	offBtn = widget.newButton(
+    {
+        width = buttonWidth,
+        height = buttonHeight,
+        defaultFile = musicOffBg,
+        onRelease = onMusicBtnRelease	-- event listener function
+    }
+	)
+	offBtn.name = 'offBtn'
+	offBtn.x = display.contentCenterX
+	offBtn.y = display.contentHeight - 200
+
 
 	if controlType == 'pad' then
 		accelBtn.isVisible = false
@@ -103,13 +145,15 @@ function scene:create( event )
     }
   )
 	saveBtn.x = display.contentCenterX
-	saveBtn.y = display.contentHeight - 120
+	saveBtn.y = display.contentHeight - 70
 
   -- all display objects must be inserted into group
   sceneGroup:insert( background )
 	sceneGroup:insert( saveBtn )
 	sceneGroup:insert( padBtn )
 	sceneGroup:insert( accelBtn )
+	sceneGroup:insert( onBtn )
+	sceneGroup:insert( offBtn )
 end
 
 function scene:show( event )
