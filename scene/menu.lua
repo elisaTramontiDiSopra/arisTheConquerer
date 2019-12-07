@@ -40,6 +40,7 @@ function scene:create( event )
 	creditsBtnBg = constants.creditsBtn
 	tutorialBtnBg = constants.tutorialBtn
 	optionBtnBg = constants.optionBtn
+	menuBg = constants.menuBg
 
 	local sceneGroup = self.view
 
@@ -47,7 +48,7 @@ function scene:create( event )
 	composer.setVariable("level", 1)
 
 	-- display a background image
-	local background = display.newImageRect("background2.jpg", display.actualContentWidth, display.actualContentHeight )
+	local background = display.newImageRect(menuBg, display.actualContentWidth, display.actualContentHeight )
 	background.anchorX = 0
 	background.anchorY = 0
 	background.x = 0 + display.screenOriginX
