@@ -44,6 +44,7 @@ function scene:create( event )
 	brawlBg = constants.brawlBg
 	nextBtn = constants.nextBtn
 	replayBtn = constants.replayBtn
+	homeBtn = constants.homeBtn
 
   local sceneGroup = self.view
 
@@ -83,7 +84,7 @@ function scene:create( event )
     {
         width = buttonWidth,
         height = buttonHeight,
-        defaultFile = "home.png",
+        defaultFile = homeBtn,
         onEvent = onHomeBtnRelease	-- event listener function
     }
   )

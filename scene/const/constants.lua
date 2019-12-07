@@ -9,6 +9,7 @@ local M = {
   winBg = 'screens/win.jpg',
   loseBg = 'screens/lose.jpg',
   brawlBg = 'screens/brawl.jpg',
+  levelsBg = 'screens/levels.jpg',
   -- buttons
   playBtn = 'buttons/play.png',
   creditsBtn = 'buttons/credits.png',
@@ -17,11 +18,13 @@ local M = {
   homeBtn = 'buttons/home.png',
   padBtn = 'buttons/pad.png',
   accelerometerOn = 'buttons/accelerometer.png',
-  saveBtn = 'save.png',
+  saveBtn = 'buttons/save.png',
   musicOn = 'buttons/on.png',
   musicOff = 'buttons/off.png',
   nextBtn = 'buttons/next.png',
   replayBtn = 'buttons/replay.png',
+  levelDoneBtn = 'buttons/levels/done.png',
+  levelToDoBtn = 'buttons/levels/todo.png',
   -- menu screen vars
   logoWidth = 280,
   logoHeight = 85,

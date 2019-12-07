@@ -31,11 +31,14 @@ function scene:create( event )
   numberOfLevels = constants.numberOfLevels
   widthFrame = constants.widthFrame
   heightFrame = constants.heightFrame
+  levelsBg = constants.levelsBg
+  levelDoneBtn = constants.levelDoneBtn
+  levelToDoBtn = constants.levelToDoBtn
 
   local sceneGroup = self.view
 
 	-- display a background image
-	local background = display.newImageRect("background2.jpg", display.actualContentWidth, display.actualContentHeight )
+	local background = display.newImageRect(levelsBg, display.actualContentWidth, display.actualContentHeight )
 	background.anchorX = 0
 	background.anchorY = 0
 	background.x = 0 + display.screenOriginX
@@ -59,7 +62,7 @@ function scene:create( event )
         {
             width = widthFrame,
             height = heightFrame,
-            defaultFile = "scene/img/levels/done.png",
+            defaultFile = levelDoneBtn,
             onEvent = playLevel	-- event listener function
         }
       )
@@ -69,7 +72,7 @@ function scene:create( event )
         {
             width = widthFrame,
             height = heightFrame,
-            defaultFile = "scene/img/levels/todo.png",
+            defaultFile = levelToDoBtn,
             onEvent = playLevel	-- event listener function
         }
       )

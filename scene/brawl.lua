@@ -36,15 +36,16 @@ function scene:create( event )
   -- init vars
   buttonSrc = constants.buttonSrc
   buttonWidth = constants.buttonWidth
-  buttonHeight = constants.buttonHeight
-  bgUrl = "brawl.jpg"
-  buttonUrl = 'replay.png'
+	buttonHeight = constants.buttonHeight
+	brawlBg = constants.brawlBg
+	buttonUrl = constants.replayBtn
+	homeBtn = constants.homeBtn
 	soundName = loseSound
 
   local sceneGroup = self.view
 
 	-- display a background image
-	local background = display.newImageRect(bgUrl, display.actualContentWidth, display.actualContentHeight )
+	local background = display.newImageRect(brawlBg, display.actualContentWidth, display.actualContentHeight )
 	background.anchorX = 0
 	background.anchorY = 0
 	background.x = 0 + display.screenOriginX
@@ -67,7 +68,7 @@ function scene:create( event )
     {
         width = buttonWidth,
         height = buttonHeight,
-        defaultFile = "home.png",
+        defaultFile = homeBtn,
         onEvent = onHomeBtnRelease	-- event listener function
     }
   )
