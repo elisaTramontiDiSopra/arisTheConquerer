@@ -35,7 +35,7 @@ local M = {
   anchorYPoint = 1,
   obstacles = {'flower','rock','tree'},
   -- player vars
-  playerSpeed = 5,
+  playerSpeed = 2,
   playerSrc = "scene/img/mainDog.png",
   playerSheetOptions = {width = 50, height = 50, numFrames = 32}, -- use widthFrame & heightFrame
   playerBodyOptions = {radius = 20}, -- to add a physics body, use circle or it wouldn't be realistic

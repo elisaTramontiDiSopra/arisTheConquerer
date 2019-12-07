@@ -270,10 +270,13 @@ local function whereToEnterTheEnemyDog()
 end
 
 local function enemyDogPees()
+  if enemyDog == nil then return end -- safe escape for problems if hitting the player when the scene is deleting
   enemyDog:pee(enemyCollidedWith)
 end
 
 local function checkIfEnemyDogIsDone()
+  if enemyDog == nil then return end -- safe escape for problems if hitting the player when the scene is deleting
+
   -- if you've done the trees youre supposed to visit then return to the entry point
   if enemyDogTreesDone == enemyPeeTrees then
     print('trees done')
@@ -304,10 +307,15 @@ local function checkDirectionForAnimation(steps)
   return animation
 end
 
+local function removeEnemy()
+  display.remove(enemyDog)
+end
+
 local function followPath()
 
   if steps <= #movementGrid then
     transition.to(enemyDog, { x = movementGrid[steps].x, y = movementGrid[steps].y, time = enemyTransitionTime, onComplete = followPath })
+    if enemyDog == nil then return end -- safe escape for problems if hitting the player when the scene is deleting
     enemyDog:animate(movementGrid[steps].animation)
     steps = steps + 1
   else
@@ -315,7 +323,8 @@ local function followPath()
     if lastPath == true then
       -- play the puff! animation then remove the enemy from the game
       print('PUF!')
-      display.remove(enemyDog)
+      enemyDog:animate('puff')
+      timer.performWithDelay( 1, removeEnemy)
       return
     end
 
@@ -343,10 +352,7 @@ local function moveBasedOnPath(path, lastPath)
       movementGrid[count].animation = 'walkingDown'
     else
       -- calculate direction and set the animation
-      print('call direction')
-      print(count)
       local animation = checkDirectionForAnimation(count)
-      print(animation)
       movementGrid[count].animation = animation
     end
   end
@@ -412,10 +418,6 @@ local function visualizeEnemyDog(sceneGroup)
   findThePathToATree()
 end
 
-
-
-
-
 local function frameUpdate()
   if buttonPressed['Down'] == true and player.y <
     (gridRows * heightFrame) - heightFrame/2 then
@@ -450,6 +452,7 @@ function scene:create( event )
 	local sceneGroup = self.view
   physics.start()
   physics.setGravity(0,0)
+  --physics.setDrawMode( "debug" )
 
   -- init game vars
   initLevelSettings()
