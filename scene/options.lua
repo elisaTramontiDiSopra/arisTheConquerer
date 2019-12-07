@@ -57,12 +57,13 @@ function scene:create( event )
   background.x = 0 + display.screenOriginX
   background.y = 0 + display.screenOriginY
 
-	-- get what is the last level passed
+	-- get the last control option saved
   controlSystem = progress.loadControlOptions()
 
 	print('options')
 	print(controlSystem)
 
+	-- create and visualize buttons
   padBtn = widget.newButton(
     {
         width = buttonWidth,

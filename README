@@ -1,3 +1,21 @@
+------------------------------------------
+STRUCTURE
+------------------------------------------
+grid.lua            >> handles the creation of the grid, graphics and tiles/cell properties, as well as the
+                       grids used by jumper for the path finding
+player.lua          >> handles the player creation and some functions (like pee)
+otherCharacter.lua  >> handles enemy creation and some function
+levels.lua          >> visualizes the levels before starting the game
+progress.lua        >> handles saving and loading progress
+nextLevel.lua       >> handles the view if yo win or lose the level
+constants.lua       >> configuration file for all the game variables, level variables included
+
+main.lua            >> music and sounds loading, checking controls mode then takes you to the menu
+menu.lua            >> view that allows you to choose to go to other pages
+options.lua         >> allows to changes controls from pad to accelerometer
+credits.lua         >> credits page, static
+
+
 Game.lua
 
 - The enemy dog is created using otherCharacter.lua 5 seconds after the start of the game
@@ -7,7 +25,7 @@ Game.lua
 
 
 ------------------------------------------
-GRID LOGIC -------------------------------  otherCharacter.lua
+GRID LOGIC -------------------------------
 ------------------------------------------
 
 --The grid is created in grid.lua at the beginning of the level (it's called in game.lua)
@@ -31,17 +49,24 @@ GRID LOGIC -------------------------------  otherCharacter.lua
 
 
 ------------------------------------------
-ENEMY LOGIC ------------------------------  otherCharacter.lua
+ENEMY LOGIC ------------------------------
 ------------------------------------------
 
---The enemy dog is created in game.lua only if visualizeEnemy = true in the level constants
+--The enemy dog is created in game.lua only if visualizeEnemy = true in the level constants. It enters the
+  screen, looks for a tree, goes there and pees on it till pee level reaches 0, then repeats the actions for as
+  many trees as are setted in the configuration of the level (enemyPeeTrees). Pee velocity and stream are
+  also configured in the level configuration (enemyPeeVelocity, peeStream)
+
   visualizeEnemyDog()
     whereToEnterTheEnemyDog()    >> chooses the first free cell on the grid to enter the dog
     findThePathToATree()         >> finds a random tree
     findClosestAvailableCell()   >> finds a free cell close to the tree (otherwise jumper doesn't work)
     findPath()                   >> finds the path to the tree/close-cell
     moveBasedOnPath()            >> moves the enemy dog to the tree/close-cell
-    enemyDogPees()               >>
+                                    calcultes directions and the animation related to it with checkDirectionForAnimation()
+    enemyDogPees()               >> repeats the pee action till the pee level is 0
+    checkIfEnemyDogIsDone()      >> if the dog has done all the trees required goes back to the entry point
+                                    and disappears otherwise looks for another target tree and goes there
 
 --Pathfinding
   I used jumper
@@ -54,3 +79,12 @@ ENEMY LOGIC ------------------------------  otherCharacter.lua
 --collision with other dog
   This is handled on the main char function (player) since it already checks if it does collide with trees
   If it collides with the other dog it stops the level, visualizes another screen similar to the "lose" one
+
+
+------------------------------------------
+PROGRESS LOGIC ---------------------------
+------------------------------------------
+
+save()        >> checks last level saved if the current level is higher saves it otherwise not
+                 (this allows replayability without deleating progresses)
+load()        >> loads higher level saved

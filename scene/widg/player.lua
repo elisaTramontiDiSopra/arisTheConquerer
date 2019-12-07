@@ -65,22 +65,17 @@ local function playerCollision(self, event)
   if (event.phase == "began" ) then
 
     -- if you hit the enemy dog lose the game and go to the appropriate scene
-    if (event.phase == "began" ) then
+
       if event.other.name == 'enemy' then
         composer.setVariable('winOrLose', 'lose' )
         composer.gotoScene("scene.brawl", "fade", 500 )
       end
-    end
 
     -- check if we're close to the tree, less then 1 row and 1 col away
     nexToObject = checkIfPlayerIsClose(event.other)
 
     if nexToObject == true and event.other.type == 'tree' then
       collidedWith = event.other
-    elseif nexToObject == true and event.other.type == 'char' then
-      -- dog collided with other dog
-      -- NOTHING BECAUSE IT'S NOT A TREE
-      -- collidedWith.type = event.other.type
     end
   end
   return true --limit event propagation
