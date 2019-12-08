@@ -33,28 +33,4 @@ end
 local playerCollidedWithEnemy = false
 
 
-function M.loadControlOptions()
-  print('LOAD')
-  local controlSystem = system.getPreference( "app", "controlSystem", "string" )
-  print(controlSystem)
-  if controlSystem == nil then
-    return 'accel'
-  else
-    -- if there is no data is the first load and return controlSystem = 'accel'
-    return controlSystem
-  end
-end
-
-function M.saveControlOptions(opt)
-  print(opt)
-  print(type(opt))
-  local saved = system.setPreferences( "app", { controlSystem = opt } ) -- save in local storage under currentLevel
-  print(saved)
-  if ( saved == false ) then
-    print( "ERROR: could not save score" )
-  end
-end
-
-
-
 return M

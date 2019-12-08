@@ -74,9 +74,6 @@ function scene:create( event )
   background.x = 0 + display.screenOriginX
   background.y = 0 + display.screenOriginY
 
-	-- get the last control option saved
-  controlSystem = progress.loadControlOptions()
-
 	print('options')
 	print(controlSystem)
 
