@@ -47,6 +47,10 @@ that are played on the views that show if you have passed the level or not. Othe
 barking sounds. All music and sounds are free resources found online. No changes or edits, other than cuts to
 select just what I neede, were made to them.
 
+I created a custom timer using an image I made for graphic purposes. I wanted to be able to change the color
+and make it different from the standard one and since this doesn't seem to be possible with the ready-to-use
+bar that Corona has I created one of my own and I used the same idea to create the pee bar under the trees
+
 
 ------------------------------------------
 STRUCTURE --------------------------------
