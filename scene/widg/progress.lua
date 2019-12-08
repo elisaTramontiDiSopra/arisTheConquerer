@@ -1,6 +1,7 @@
--- progress.lua handles saving and loading of highest game level
+-- progress.lua handles saving and loading of highest game level, some "fake" global variables that are not _G
 local M = {}
 
+-- function to save and load progress
 function M.save(lvl)
   -- get the load level and the current played level
   highestSavedLevel = M.load()
@@ -27,6 +28,10 @@ function M.load()
     return 1
   end
 end
+
+-- fake global vars to help passing data between modules in case of player collision
+local playerCollidedWithEnemy = false
+
 
 function M.loadControlOptions()
   print('LOAD')

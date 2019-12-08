@@ -22,6 +22,7 @@ local scene = composer.newScene()
 local entryEnemyCel = {}
 local entryPoint = {}
 local path
+local countDownTimer
 local lastPath = false
 local steps = 1
 local movementGrid = {}
@@ -66,8 +67,10 @@ local function initLevelSettings()
   timerBarOptions = constants.timerBarOptions
   timerSeconds = constants.levelVars[lvl].timerSeconds     -- seconds to decrease
   totalTimerSeconds = constants.levelVars[lvl].timerSeconds -- to compute the perc for the timer bar
-
   timerBarSheet = graphics.newImageSheet(timerBarSrc, timerBarOptions)
+
+  -- reset global var for player hitting enemy
+  progress.playerCollidedWithEnemy = false
 
   -- vars to calculate if level is passed
   totalLevelTrees = constants.levelVars[lvl].totalLevelTrees
@@ -96,6 +99,8 @@ local function initLevelSettings()
   enemyPeeTrees = constants.levelVars[lvl].enemyPeeTrees
   enemyDogTreesDone = 0
 
+  print('timerSeconds')
+  print(timerSeconds)
 end
 
 local findPath -- placed here because I call it on higher functions
@@ -150,17 +155,25 @@ local function checkIfLevelIsPassed()
 end
 
 local function updateTime()
-  timerSeconds = timerSeconds - 1
-  minutes = math.floor( timerSeconds / 60 )
-  seconds = timerSeconds % 60
-  timerDisplay = string.format( "%02d:%02d", minutes, seconds )
-  timerText.text = timerDisplay
-  timerPerc = timerSeconds / totalTimerSeconds
-  timerBar:setProgress(timerPerc)
+  -- check if the player collided with the enemy and in that case stop timer and go to brawl page
+  if countDownTimer and progress.playerCollidedWithEnemy == true then -- countDownTimer is needed because when it gets called the first time countDownTimer is nil
+    timerSeconds = 0
+    timer.cancel(countDownTimer) -- stop the count down
+    composer.gotoScene("scene.brawl", "fade", 150 )
+  else
+    timerSeconds = timerSeconds - 1
+    minutes = math.floor( timerSeconds / 60 )
+    seconds = timerSeconds % 60
+    timerDisplay = string.format( "%02d:%02d", minutes, seconds )
+    timerText.text = timerDisplay
+    timerPerc = timerSeconds / totalTimerSeconds
+    timerBar:setProgress(timerPerc)
 
-  if timerSeconds == 0 then
-    checkIfLevelIsPassed()
-    return
+    if timerSeconds == 0 then
+      checkIfLevelIsPassed()
+      return
+    end
+
   end
 
 end
@@ -343,7 +356,9 @@ local function moveBasedOnPath(path, lastPath)
   movementGrid = {}
   -- populate movementGrid with new path
   for node, count in path:nodes() do
-    movementGrid[count] = { x = node:getX() * widthFrame, y = node:getY() * heightFrame }
+    movementGrid[count] = { x = (node:getX() * heightFrame) , y = (node:getY() * widthFrame) }
+    print('X '..node:getX()..' y '..node:getY()  )
+
     -- add movment direction for animation
     if count == 1 then
       -- this is the first step, the default start animation is walkingDown
@@ -409,6 +424,8 @@ local function visualizeEnemyDog(sceneGroup)
   -- calculate where to make the dog enter: 1 column, down row till you find an empty one
   whereToEnterTheEnemyDog()
   -- create the enemy dog
+  print('entro row and col')
+  print(entryEnemyCel.row..' '..entryEnemyCel.col)
   enemyDog = char.new(gridRows, gridCols, entryEnemyCel.row, entryEnemyCel.col, lvl, sceneToPass, enemyDogSrc, pathFinderGrid, gridTree, gridMatrix)
   findThePathToATree()
 end
@@ -417,19 +434,19 @@ local function frameUpdate()
   if buttonPressed['Down'] == true and player.y <
     (gridRows * heightFrame) - heightFrame/2 then
     player.y = player.y + playerSpeed
-    lastDirection = 'Down'
+    --lastDirection = 'Down'
   elseif buttonPressed['Up'] == true and player.y >
     (0 + heightFrame/4) then
     player.y = player.y - playerSpeed
-    lastDirection = 'Up'
+    --lastDirection = 'Up'
   elseif buttonPressed['Right'] == true and player.x <
     (gridCols * widthFrame) then
     player.x = player.x + playerSpeed
-    lastDirection = 'Right'
+    --lastDirection = 'Right'
   elseif buttonPressed['Left'] == true and player.x >
     (0 + widthFrame) then
     player.x = player.x - playerSpeed
-    lastDirection = 'Left'
+    --lastDirection = 'Left'
   end
 end
 
@@ -447,7 +464,7 @@ function scene:create( event )
 	local sceneGroup = self.view
   physics.start()
   physics.setGravity(0,0)
-  --physics.setDrawMode( "hybrid" )
+  physics.setDrawMode( "hybrid" )
 
   -- init game vars
   initLevelSettings()
@@ -469,7 +486,9 @@ function scene:create( event )
 
   -- create the timer
   createTimer(sceneGroup)
-  local countDownTimer = timer.performWithDelay( 1000, updateTime, timerSeconds)
+  countDownTimer = timer.performWithDelay( 1000, updateTime, timerSeconds) -- countDownTimer is the handler to cancel, it's a tab
+  print('countDownTimer CREATED')
+  print(countDownTimer)
 
   -- create the level text
   createLevelWriting(sceneGroup)
@@ -481,7 +500,6 @@ function scene:create( event )
   if arrowPadOn then
     createUI(sceneGroup)
   end
-  --sceneGroup:insert(player)
 
 end
 
@@ -491,8 +509,9 @@ function scene:show( event )
 	if phase == "will" then
     -- Called when the scene is still off screen and is about to move on screen
 	elseif phase == "did" then
-		-- Called when the scene is now on screen INSERT code here to make the scene come alive
-    -- randomly play bark sounds during the game
+    -- Called when the scene is now on screen INSERT code here to make the scene come alive
+
+    -- play bark sounds during the game
     audio.play( barkSound, {channel = 2})
 
     Runtime:addEventListener("enterFrame", frameUpdate) -- if the move buttons are pressed MOVE!

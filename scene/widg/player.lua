@@ -1,6 +1,7 @@
 local M = {}
 local physics = require "physics"
 local constants = require("scene.const.constants")
+local progress = require("scene.widg.progress")
 local composer = require( "composer" )
 
 -- PLAYER VARS
@@ -46,7 +47,7 @@ end
 local function checkIfPlayerIsClose(tree)
   findPlayerRowCol()
 
-  -- if it hit the enemy exit otherwise it might throw an
+  -- if it hit the enemy exit otherwise it might throw an error
   if tree.name == 'enemy' then return end
 
   local diffRow = math.abs(playerRow - tree.row)
@@ -66,8 +67,10 @@ local function playerCollision(self, event)
 
     -- if you hit the enemy dog lose the game and go to the appropriate scene
     if event.other.name == 'enemy' then
-      composer.setVariable('winOrLose', 'lose' )
-      composer.gotoScene("scene.brawl", "fade", 150 )
+      -- set the global var to false
+      progress.playerCollidedWithEnemy = true
+      --[[ composer.setVariable('winOrLose', 'lose' )
+      composer.gotoScene("scene.brawl", "fade", 150 ) ]]
     end
 
     -- check if we're close to the tree, less then 1 row and 1 col away
