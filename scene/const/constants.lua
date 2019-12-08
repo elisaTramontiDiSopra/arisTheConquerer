@@ -10,6 +10,9 @@ local M = {
   loseBg = 'screens/lose.jpg',
   brawlBg = 'screens/brawl.jpg',
   levelsBg = 'screens/levels.jpg',
+  splashBg = 'screens/menu.jpg',
+  bgHeight = 480,
+  bgWidth = 320,
   -- buttons
   playBtn = 'buttons/play.png',
   creditsBtn = 'buttons/credits.png',
@@ -25,12 +28,14 @@ local M = {
   replayBtn = 'buttons/replay.png',
   levelDoneBtn = 'buttons/levels/done.png',
   levelToDoBtn = 'buttons/levels/todo.png',
-  -- menu screen vars
-  logoWidth = 280,
-  logoHeight = 85,
-  buttonSrc = "scene/img/play.png",
   buttonWidth = 176,
   buttonHeight = 57,
+  -- splash screen vars
+  cloudOne = 'scene/img/clouds/cloud1.png',
+  cloudTwo = 'scene/img/clouds/cloud2.png',
+  logo = 'scene/img/logo.png',
+  logoWidth = 280,
+  logoHeight = 85,
   -- timer vars
   timerBarFrameWidth = 20,
   timerBarFrameHeight = 25,

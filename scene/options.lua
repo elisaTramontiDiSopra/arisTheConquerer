@@ -55,7 +55,6 @@ end
 
 function scene:create( event )
   -- init vars
-  buttonSrc = constants.buttonSrc
   buttonWidth = constants.buttonWidth
 	buttonHeight = constants.buttonHeight
 	padBgOn = constants.padBtn

@@ -84,12 +84,13 @@ function M.new(gridRows, gridCols, charRow, charCol, lvl, sceneGroup, imageSrc, 
   char = display.newSprite(imageSheet, playerSequenceData)
   char.anchorX = anchorXPoint
   char.anchorY = anchorYPoint
-  char.x = charCol * widthFrame + marginX -- -1 is for the anchorPoin 1
-  char.y = (charRow - 1 )* heightFrame + marginY
+  char.x = (charCol)* widthFrame -- + marginX -- -1 is for the anchorPoin 1
+  char.y = (charRow - 0.5)* heightFrame  -- + marginY -- -0.5 is for the anchorPoint 1
   char.name = 'enemy'
   char:setSequence("walkingDown")
   char.objectType = char   -- is itusefeul??? can I delete it???
   char.type = 'enemy'
+  print(char.x)
 
   physics.addBody(char, "dynamic", playerBodyOptions)
 

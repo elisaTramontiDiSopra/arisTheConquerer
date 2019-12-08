@@ -27,7 +27,6 @@ function scene:create( event )
 	loseSound = audio.loadSound( "audio/lose.mp3" )
 
   -- init vars
-  buttonSrc = constants.buttonSrc
   buttonWidth = constants.buttonWidth
 	buttonHeight = constants.buttonHeight
 	brawlBg = constants.brawlBg

@@ -33,7 +33,6 @@ end
 
 function scene:create( event )
   -- init vars
-  buttonSrc = constants.buttonSrc
   buttonWidth = constants.buttonWidth
 	buttonHeight = constants.buttonHeight
 	playBtnBg = constants.playBtn
@@ -41,6 +40,8 @@ function scene:create( event )
 	tutorialBtnBg = constants.tutorialBtn
 	optionBtnBg = constants.optionBtn
 	menuBg = constants.menuBg
+	bgWidth = constants.bgWidth
+	bgHeight = constants.bgHeight
 
 	local sceneGroup = self.view
 
