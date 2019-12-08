@@ -54,7 +54,7 @@ function scene:create( event )
 	background.x = 0 + display.screenOriginX
 	background.y = 0 + display.screenOriginY
 
-  -- create a widget button (which will loads level1.lua on release)
+  -- create a widget button
   playBtn = widget.newButton(
     {
         width = buttonWidth,
@@ -77,7 +77,7 @@ function scene:create( event )
 	creditsBtn.x = display.contentCenterX
 	creditsBtn.y = 365
 
-	-- create a widget button (which will loads level1.lua on release)
+	-- create a widget button
   tutorialBtn = widget.newButton(
     {
         width = buttonWidth,
@@ -89,7 +89,7 @@ function scene:create( event )
 	tutorialBtn.x = display.contentCenterX
 	tutorialBtn.y = 295
 
--- create a widget button (which will loads level1.lua on release)
+-- create a widget button
   optionBtn = widget.newButton(
     {
         width = buttonWidth,

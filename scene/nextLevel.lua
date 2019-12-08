@@ -67,7 +67,7 @@ function scene:create( event )
 	background.x = 0 + display.screenOriginX
 	background.y = 0 + display.screenOriginY
 
-  -- create a widget button (which will loads level1.lua on release)
+  -- create a widget button
   nextBtn = widget.newButton(
     {
         width = buttonWidth,
@@ -79,7 +79,7 @@ function scene:create( event )
 	nextBtn.x = display.contentCenterX
 	nextBtn.y = display.contentHeight - 85
 
-	-- create a widget button (which will loads level1.lua on release)
+	-- create a widget button
   homeBtn = widget.newButton(
     {
         width = buttonWidth,
