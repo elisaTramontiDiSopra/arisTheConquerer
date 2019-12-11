@@ -1,6 +1,6 @@
 local M = {
   -- options
-  musicOn = false,
+  musicOn = true,
   arrowPadOn = true, -- initially padOn
   -- bg
   optionsBg = 'screens/options.jpg',
