@@ -303,12 +303,12 @@ local function checkIfEnemyDogIsDone()
   if enemyDog == nil then return end -- safe escape for problems if hitting the player when the scene is deleting
 
   -- if the tree is empty mark it as done
-  if enemyCollidedWith.peeLevel == 0 then
+  --[[ if enemyCollidedWith.peeLevel == 0 then
     enemyDogTreesDone = enemyDogTreesDone + 1
     lastPath = true
     findPath(entryPoint.row, entryPoint.col)
     return
-  end
+  end ]]
 
   -- if you've done the trees youre supposed to visit then return to the entry point
   if enemyDogTreesDone == enemyPeeTrees then
@@ -378,7 +378,7 @@ local function moveBasedOnPath(path, lastPath)
   movementGrid = {}
   -- populate movementGrid with new path
   for node, count in path:nodes() do
-    movementGrid[count] = { x = (node:getX() * heightFrame), y = (node:getY() * widthFrame)  }
+    movementGrid[count] = { x = (node:getX() * heightFrame), y = (node:getY() * widthFrame) - (heightFrame /2)  }
     print('X '..node:getX()..' y '..node:getY()  )
 
     -- add movment direction for animation
@@ -526,9 +526,10 @@ function scene:create( event )
   end
 
 
-  local myBox = display.newRect( widthFrame, widthFrame, widthFrame,heightFrame )
+  --[[ local myBox = display.newRect( widthFrame, widthFrame, widthFrame,heightFrame )
   myBox.anchorX = 1
-  myBox.anchorY = 0
+  myBox.anchorY = 1
+  myBox.y = myBox.y - (heightFrame /2) ]]
 
 end
 
