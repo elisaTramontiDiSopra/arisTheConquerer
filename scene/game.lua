@@ -251,7 +251,18 @@ local function createUI(sceneGroup)
   sceneGroup:insert( peeBtn )
 end
 
+local function createPeeButton(sceneGroup)
+  peeBtn = display.newCircle(display.contentWidth / 2, display.contentHeight / 2, padButtonDimension, padButtonDimension / 1.5)
+  peeBtn:setFillColor(0)
+  peeBtn.alpha = 0.3
+  peeBtn.name = "Pee"
+  peeBtn:addEventListener("touch",pee)
+
+  sceneGroup:insert( peeBtn )
+end
+
 local function onTilt( event )
+
   animation = 'walkDown'
   if event.xGravity > 0 then animation = 'walkLeft'
   elseif event.yGravity > 0 then animation = 'walkUp'
@@ -286,7 +297,18 @@ local function enemyDogPees()
 end
 
 local function checkIfEnemyDogIsDone()
+  print('check if done')
+  print('enemyDogTreesDone '..enemyDogTreesDone )
+  print('enemyPeeTrees '..enemyPeeTrees )
   if enemyDog == nil then return end -- safe escape for problems if hitting the player when the scene is deleting
+
+  -- if the tree is empty mark it as done
+  if enemyCollidedWith.peeLevel == 0 then
+    enemyDogTreesDone = enemyDogTreesDone + 1
+    lastPath = true
+    findPath(entryPoint.row, entryPoint.col)
+    return
+  end
 
   -- if you've done the trees youre supposed to visit then return to the entry point
   if enemyDogTreesDone == enemyPeeTrees then
@@ -323,7 +345,8 @@ end
 local function followPath()
 
   if steps <= #movementGrid then
-    transition.to(enemyDog, { x = movementGrid[steps].x, y = movementGrid[steps].y, time = enemyTransitionTime, onComplete = followPath })
+    local ypos = movementGrid[steps].y
+    transition.to(enemyDog, { x = movementGrid[steps].x, y = ypos, time = enemyTransitionTime, onComplete = followPath })
     if enemyDog == nil then return end -- safe escape for problems if hitting the player when the scene is deleting
     enemyDog:animate(movementGrid[steps].animation)
     steps = steps + 1
@@ -331,16 +354,15 @@ local function followPath()
     -- if it was the lastPath then make enemyDog disappear
     if lastPath == true then
       -- play the puff! animation then remove the enemy from the game
-      --print('PUF!')
       local anim = 'puff'
       enemyDog:animate(anim)
-
       timer.performWithDelay( 1000, removeEnemy)
       return
     end
 
     -- you're arrived, pee till peelevel reaches 0
     for i = 0, enemyPeeActions do
+      print('peee')
       timer.performWithDelay( enemyPeeVelocity, enemyDogPees)
       i = i + 1
     end
@@ -356,7 +378,7 @@ local function moveBasedOnPath(path, lastPath)
   movementGrid = {}
   -- populate movementGrid with new path
   for node, count in path:nodes() do
-    movementGrid[count] = { x = (node:getX() * heightFrame) , y = (node:getY() * widthFrame) }
+    movementGrid[count] = { x = (node:getX() * heightFrame), y = (node:getY() * widthFrame)  }
     print('X '..node:getX()..' y '..node:getY()  )
 
     -- add movment direction for animation
@@ -464,7 +486,7 @@ function scene:create( event )
 	local sceneGroup = self.view
   physics.start()
   physics.setGravity(0,0)
-  --physics.setDrawMode( "hybrid" )
+  physics.setDrawMode( "hybrid" )
 
   -- init game vars
   initLevelSettings()
@@ -499,7 +521,14 @@ function scene:create( event )
   -- create the ui or activate gyroscope
   if arrowPadOn then
     createUI(sceneGroup)
+  else
+    createPeeButton(sceneGroup)
   end
+
+
+  local myBox = display.newRect( widthFrame, widthFrame, widthFrame,heightFrame )
+  myBox.anchorX = 1
+  myBox.anchorY = 0
 
 end
 
