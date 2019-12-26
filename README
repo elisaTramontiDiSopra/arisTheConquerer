@@ -51,6 +51,15 @@ I created a custom timer using an image I made for graphic purposes. I wanted to
 and make it different from the standard one and since this doesn't seem to be possible with the ready-to-use
 bar that Corona has I created one of my own and I used the same idea to create the pee bar under the trees
 
+------------------------------------------
+DEBUGGING --------------------------------
+------------------------------------------
+At the actual state of the code there are some issues with the accelerometer functions. I found out just later
+during development that using accelerometer might create some problems with collision. If I'd have to pubblish
+the app right now I would simply take out this option and leave the pad as the one and only form of controlling
+the dog. Giving that the code is done and intertwined with the rest of the app I decided to leave it there
+anyway.
+
 
 ------------------------------------------
 STRUCTURE --------------------------------
