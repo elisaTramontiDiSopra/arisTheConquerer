@@ -303,24 +303,23 @@ local function checkIfEnemyDogIsDone()
   if enemyDog == nil then return end -- safe escape for problems if hitting the player when the scene is deleting
 
   -- if the tree is empty mark it as done
-  --[[ if enemyCollidedWith.peeLevel == 0 then
+  if enemyCollidedWith.peeLevel == 0 then
     enemyDogTreesDone = enemyDogTreesDone + 1
-    lastPath = true
-    findPath(entryPoint.row, entryPoint.col)
-    return
-  end ]]
+    print('empty')
+  end
 
   -- if you've done the trees youre supposed to visit then return to the entry point
-  if enemyDogTreesDone == enemyPeeTrees then
-    -- find the path to the point where you entered, use true as third parameter to say this is the exit path
-    lastPath = true
-    findPath(entryPoint.row, entryPoint.col)
-  else
+  if enemyDogTreesDone < enemyPeeTrees then
     -- reset the position and find another tree
     enemyDogTreesDone = enemyDogTreesDone + 1
     entryEnemyCel.row = math.floor(enemyDog.y/heightFrame)
     entryEnemyCel.col = math.floor(enemyDog.x/widthFrame)
     findThePathToATree()
+  else
+    print('done')
+    -- find the path to the point where you entered, use true as third parameter to say this is the exit path
+    lastPath = true
+    findPath(entryPoint.row, entryPoint.col)
   end
 end
 
@@ -365,6 +364,9 @@ local function followPath()
       print('peee')
       timer.performWithDelay( enemyPeeVelocity, enemyDogPees)
       i = i + 1
+      print('enemyPeeActions '..enemyPeeActions)
+
+      print('i '..i)
     end
 
     checkIfEnemyDogIsDone()
@@ -524,12 +526,6 @@ function scene:create( event )
   else
     createPeeButton(sceneGroup)
   end
-
-
-  --[[ local myBox = display.newRect( widthFrame, widthFrame, widthFrame,heightFrame )
-  myBox.anchorX = 1
-  myBox.anchorY = 1
-  myBox.y = myBox.y - (heightFrame /2) ]]
 
 end
 
