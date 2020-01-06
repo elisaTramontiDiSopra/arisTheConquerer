@@ -37,10 +37,10 @@ local function updateTreePeeBar(peeBar, peeLevel)
   peeBar:setProgress(peePerc) -- percentage
 end
 
-local function findCharRowCol()
+--[[ local function findCharRowCol()
   charRow = math.ceil((char.y) / widthFrame)
   charCol = math.ceil((char.x) / widthFrame)
-end
+end ]]
 
 local function checkIfPlayerIsClose(tree)
   findPlayerRowCol()
@@ -84,11 +84,11 @@ function M.new(gridRows, gridCols, charRow, charCol, lvl, sceneGroup, imageSrc, 
   char = display.newSprite(imageSheet, playerSequenceData)
   char.anchorX = anchorXPoint
   char.anchorY = anchorYPoint
-  char.x = (charCol)* widthFrame -- + marginX -- -1 is for the anchorPoin 1
-  char.y = (charRow - 0.5)* heightFrame  -- + marginY -- -0.5 is for the anchorPoint 1
+  char.x = charCol * heightFrame -- initial position
+  char.y = (charRow) * heightFrame  -- -1 is the same as in the grid
   char.name = 'enemy'
   char:setSequence("walkingDown")
-  char.objectType = char   -- is itusefeul??? can I delete it???
+  char.objectType = char   -- is it usefeul??? can I delete it???
   char.type = 'enemy'
   print(char.x)
 
@@ -121,9 +121,9 @@ function M.new(gridRows, gridCols, charRow, charCol, lvl, sceneGroup, imageSrc, 
     char:pee(collidedWith)
   end
 
-  function char:move(path)
+  --[[ function char:move(path)
     --printPairs(path)
-  end
+  end ]]
 
   return char
 end

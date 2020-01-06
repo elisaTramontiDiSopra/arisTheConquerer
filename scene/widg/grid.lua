@@ -53,7 +53,8 @@ end
 -- create the single tile with all the properties
 local function createSingleTile(classTile, row, col, graphicGroup)
   xPos = col * widthFrame
-  yPos = (row - 1) * heightFrame
+  --yPos = (row) * heightFrame
+  yPos = (row - 1) * heightFrame -- -1 to bring up everything, this -1 will be there also in the other coords
   myImage = display.newImage(graphicGroup, obstaclesSrc..classTile..'.jpg')
   myImage.anchorX = anchorXPoint
   myImage.anchorY = anchorYPoint
