@@ -488,7 +488,7 @@ function scene:create( event )
 	local sceneGroup = self.view
   physics.start()
   physics.setGravity(0,0)
-  physics.setDrawMode( "hybrid" )
+  --physics.setDrawMode( "hybrid" )
 
   -- init game vars
   initLevelSettings()
