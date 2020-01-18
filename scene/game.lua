@@ -59,6 +59,7 @@ local function initLevelSettings()
   -- UI vars
   arrowPadOn = composer.getVariable('arrowPadOn')
   padButtonDimension = constants.padButtonDimension
+  arrowBg = constants.arrowBg
 
   -- timer vars
   timerBarFrameWidth = constants.timerBarFrameWidth
@@ -217,24 +218,39 @@ end
 
 local function createUI(sceneGroup)
 
-  upBtn = display.newRect(display.contentWidth - 2 * padButtonDimension, display.contentHeight - 3 * padButtonDimension, padButtonDimension, padButtonDimension)
-  upBtn:setFillColor(0, 0, 0, 0.3)
+  --upBtn = display.newRect(display.contentWidth - 2 * padButtonDimension, display.contentHeight - 3 * padButtonDimension, padButtonDimension, padButtonDimension)
+  --upBtn:setFillColor(0, 0, 0, 0.3)
+  upBtn = display.newImageRect(arrowBg, padButtonDimension, padButtonDimension)
+  upBtn.rotation = 90
+  upBtn.x = display.contentWidth - 2 * padButtonDimension
+  upBtn.y = display.contentHeight - 2 * padButtonDimension
   upBtn.name = "Up"
   upBtn:addEventListener("touch", move)
 
-  downBtn = display.newRect(display.contentWidth - 2 * padButtonDimension,  display.contentHeight - padButtonDimension, padButtonDimension, padButtonDimension)
+  --downBtn = display.newRect(display.contentWidth - 2 * padButtonDimension,  display.contentHeight - padButtonDimension, padButtonDimension, padButtonDimension)
+  --downBtn:setFillColor(0, 0, 0, 0.3)
+  downBtn = display.newImageRect(arrowBg, padButtonDimension, padButtonDimension)
+  downBtn.rotation = 270
+  downBtn.x = display.contentWidth - 2 * padButtonDimension
+  downBtn.y = display.contentHeight - padButtonDimension
   downBtn.name = "Down"
-  downBtn:setFillColor(0, 0, 0, 0.3)
   downBtn:addEventListener("touch", move)
 
-  leftBtn = display.newRect(display.contentWidth - 3 * padButtonDimension, display.contentHeight - 2 * padButtonDimension, padButtonDimension, padButtonDimension)
+  --leftBtn = display.newRect(display.contentWidth - 3 * padButtonDimension, display.contentHeight - 2 * padButtonDimension, padButtonDimension, padButtonDimension)
+  --leftBtn:setFillColor(0, 0, 0, 0.3)
+  leftBtn = display.newImageRect(arrowBg, padButtonDimension, padButtonDimension)
+  leftBtn.x = display.contentWidth - 3 * padButtonDimension
+  leftBtn.y = display.contentHeight - 1.5 * padButtonDimension
   leftBtn.name = "Left"
-  leftBtn:setFillColor(0, 0, 0, 0.3)
   leftBtn:addEventListener("touch", move)
 
-  rightBtn = display.newRect(display.contentWidth - padButtonDimension, display.contentHeight - 2 * padButtonDimension, padButtonDimension, padButtonDimension)
+  --rightBtn = display.newRect(display.contentWidth - padButtonDimension, display.contentHeight - 2 * padButtonDimension, padButtonDimension, padButtonDimension)
+  --rightBtn:setFillColor(0, 0, 0, 0.3)
+  rightBtn = display.newImageRect(arrowBg, padButtonDimension, padButtonDimension)
+  rightBtn.rotation = 180
+  rightBtn.x = display.contentWidth - padButtonDimension
+  rightBtn.y = display.contentHeight - 1.5 * padButtonDimension
   rightBtn.name = "Right"
-  rightBtn:setFillColor(0, 0, 0, 0.3)
   rightBtn:addEventListener("touch", move)
 
   peeBtn = display.newCircle(display.contentWidth / 2, display.contentHeight / 2, padButtonDimension, padButtonDimension / 1.5)
