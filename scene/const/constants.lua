@@ -50,6 +50,9 @@ local M = {
   peeBarOptions = {width = 10, height = 10, numFrames = 6, sheetContentWidth = 60, sheetContentHeight = 10},
   -- ui vars
   padButtonDimension = 50,
+  arrowBg = 'buttons/arrow.png',
+  peeBtnBg = 'buttons/pee.png',
+  peeButtonDimensions = 100,
   -- tiles vars
   widthFrame = 64,
   heightFrame = 64,
