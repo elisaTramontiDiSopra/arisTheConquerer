@@ -224,6 +224,7 @@ local function createUI(sceneGroup)
   --upBtn:setFillColor(0, 0, 0, 0.3)
   upBtn = display.newImageRect(arrowBg, padButtonDimension, padButtonDimension)
   upBtn.rotation = 90
+  upBtn.alpha = 0.7
   upBtn.x = display.contentWidth - 2 * padButtonDimension
   upBtn.y = display.contentHeight - 2 * padButtonDimension
   upBtn.name = "Up"
@@ -233,6 +234,7 @@ local function createUI(sceneGroup)
   --downBtn:setFillColor(0, 0, 0, 0.3)
   downBtn = display.newImageRect(arrowBg, padButtonDimension, padButtonDimension)
   downBtn.rotation = 270
+  downBtn.alpha = 0.7
   downBtn.x = display.contentWidth - 2 * padButtonDimension
   downBtn.y = display.contentHeight - padButtonDimension
   downBtn.name = "Down"
@@ -241,6 +243,7 @@ local function createUI(sceneGroup)
   --leftBtn = display.newRect(display.contentWidth - 3 * padButtonDimension, display.contentHeight - 2 * padButtonDimension, padButtonDimension, padButtonDimension)
   --leftBtn:setFillColor(0, 0, 0, 0.3)
   leftBtn = display.newImageRect(arrowBg, padButtonDimension, padButtonDimension)
+  leftBtn.alpha = 0.7
   leftBtn.x = display.contentWidth - 3 * padButtonDimension
   leftBtn.y = display.contentHeight - 1.5 * padButtonDimension
   leftBtn.name = "Left"
@@ -250,6 +253,7 @@ local function createUI(sceneGroup)
   --rightBtn:setFillColor(0, 0, 0, 0.3)
   rightBtn = display.newImageRect(arrowBg, padButtonDimension, padButtonDimension)
   rightBtn.rotation = 180
+  rightBtn.alpha = 0.7
   rightBtn.x = display.contentWidth - padButtonDimension
   rightBtn.y = display.contentHeight - 1.5 * padButtonDimension
   rightBtn.name = "Right"
