@@ -60,6 +60,8 @@ local function initLevelSettings()
   arrowPadOn = composer.getVariable('arrowPadOn')
   padButtonDimension = constants.padButtonDimension
   arrowBg = constants.arrowBg
+  peeBtnBg = constants.peeBtnBg
+  peeButtonDimensions = constants.peeButtonDimensions
 
   -- timer vars
   timerBarFrameWidth = constants.timerBarFrameWidth
@@ -253,9 +255,12 @@ local function createUI(sceneGroup)
   rightBtn.name = "Right"
   rightBtn:addEventListener("touch", move)
 
-  peeBtn = display.newCircle(display.contentWidth / 2, display.contentHeight / 2, padButtonDimension, padButtonDimension / 1.5)
-  peeBtn:setFillColor(0)
-  peeBtn.alpha = 0.3
+  --peeBtn = display.newCircle(display.contentWidth / 2, display.contentHeight / 2, padButtonDimension, padButtonDimension / 1.5)
+  --peeBtn:setFillColor(0)
+  peeBtn = display.newImageRect(peeBtnBg, peeButtonDimensions, peeButtonDimensions)
+  peeBtn.alpha = 0.7
+  peeBtn.x = display.contentWidth / 2
+  peeBtn.y = display.contentHeight / 2
   peeBtn.name = "Pee"
   peeBtn:addEventListener("touch",pee)
 
