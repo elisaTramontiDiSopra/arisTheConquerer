@@ -26,6 +26,7 @@ local countDownTimer
 local lastPath = false
 local steps = 1
 local movementGrid = {}
+local gameOver = false
 
 function printPairs(grid)
   for k,v in pairs(grid) do
@@ -147,8 +148,10 @@ local function checkIfLevelIsPassed()
 
   -- based on the conquered trees visualize the right page
   if conqueredTrees < totalLevelTrees then
+    gameOver = true
     composer.setVariable('winOrLose', 'lose' )
   else
+    gameOver = true
     composer.setVariable('winOrLose', 'win' )
     lvl = lvl + 1
     progress.save(lvl)
@@ -483,6 +486,8 @@ local function visualizeEnemyDog(sceneGroup)
 end
 
 local function frameUpdate()
+  if gameOver == true then return end --safe escape if the button is pressed when the game is ending
+
   if buttonPressed['Down'] == true and player.y <
     (gridRows * heightFrame) - heightFrame/2 then
     player.y = player.y + playerSpeed
