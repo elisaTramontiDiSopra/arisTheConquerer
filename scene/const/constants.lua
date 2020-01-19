@@ -61,12 +61,12 @@ local M = {
   obstacles = {'flower','rock','tree'},
   -- player vars
   playerSpeed = 2,
-  playerSrc = "scene/img/mainDog.png",
-  playerSheetOptions = {width = 50, height = 50, numFrames = 32}, -- use widthFrame & heightFrame
-  playerBodyOptions = {radius = 20}, -- to add a physics body, use circle or it wouldn't be realistic
-  --playerSrc = "scene/img/mainDog_64.png",                         -- 64PX VERSION
-  --playerSheetOptions = {width = 64, height = 64, numFrames = 32}, -- 64PX VERSION
-  --playerBodyOptions = {radius = 30},                              -- 64PX VERSION
+  --playerSrc = "scene/img/mainDog.png",
+  --playerSheetOptions = {width = 50, height = 50, numFrames = 32}, -- use widthFrame & heightFrame
+  --playerBodyOptions = {radius = 20}, -- to add a physics body, use circle or it wouldn't be realistic
+  playerSrc = "scene/img/mainDog_64.png",                         -- 64PX VERSION
+  playerSheetOptions = {width = 64, height = 64, numFrames = 32}, -- 64PX VERSION
+  playerBodyOptions = {radius = 30},                              -- 64PX VERSION
   playerSequenceData = {
     {name = "walkingDown", start = 1, count = 4, time = 100, loopCount = 0, loopDirection = "forward"},
     {name = "walkingLeft", start = 5, count = 4, time = 100, loopCount = 0, loopDirection = "forward"},
@@ -78,9 +78,10 @@ local M = {
     {name = "peeUp", start = 29, count = 4, time = 100, loopCount = 0, loopDirection = "forward"}
   },
   -- meanDog vars
-  enemyDogSrc = "scene/img/mainDogMean.png",
-  --enemyDogSrc = "scene/img/mainDogMean_64.png",                   -- 64PX VERSION
-  enemySheetOptions = {width = 50, height = 50, numFrames = 36}, -- use widthFrame & heightFrame
+  --enemyDogSrc = "scene/img/mainDogMean.png",
+  --enemySheetOptions = {width = 50, height = 50, numFrames = 36}, -- use widthFrame & heightFrame
+  enemyDogSrc = "scene/img/mainDogMean_64.png",                   -- 64PX VERSION
+  enemySheetOptions = {width = 64, height = 64, numFrames = 36}, -- 64PX VERSION
   enemySequenceData = {
     {name = "walkingDown", start = 1, count = 4, time = 100, loopCount = 0, loopDirection = "forward"},
     {name = "walkingLeft", start = 5, count = 4, time = 100, loopCount = 0, loopDirection = "forward"},
@@ -103,12 +104,12 @@ local M = {
     { lvl = 2, timerSeconds = 20, pathTracerMoves = 100,
       obstaclesSrc = "scene/img/tiles/isle/", obstacleTile = 'obstacle', treeTile = 'tree', pathTile = 'path',
       totalLevelTrees = 2, minPeeLevel = 5, maxPeeLevel = 100, peeStream = 6, vanishingPee = 2,
-      enemyPeeVelocity = 300, enemyPeeTrees = 1,  visualizeEnemy = false, enemyTransitionTime = 500
+      enemyPeeVelocity = 300, enemyPeeTrees = 1,  visualizeEnemy = true, enemyTransitionTime = 500
     },
     { lvl = 3, timerSeconds = 20, pathTracerMoves = 100,
       obstaclesSrc = "scene/img/tiles/pole/", obstacleTile = 'obstacle', treeTile = 'tree', pathTile = 'path',
       totalLevelTrees = 3, minPeeLevel = 5, maxPeeLevel = 100, peeStream = 6, vanishingPee = 2,
-      enemyPeeVelocity = 300, enemyPeeTrees = 1,  visualizeEnemy = false, enemyTransitionTime = 500
+      enemyPeeVelocity = 300, enemyPeeTrees = 1,  visualizeEnemy = true, enemyTransitionTime = 500
     },
     { lvl = 4, timerSeconds = 20, pathTracerMoves = 100,
       obstaclesSrc = "scene/img/tiles/isle/", obstacleTile = 'obstacle', treeTile = 'tree', pathTile = 'path',
