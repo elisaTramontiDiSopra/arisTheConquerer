@@ -104,7 +104,7 @@ local M = {
     { lvl = 2, timerSeconds = 20, pathTracerMoves = 100,
       obstaclesSrc = "scene/img/tiles/isle/", obstacleTile = 'obstacle', treeTile = 'tree', pathTile = 'path',
       totalLevelTrees = 2, minPeeLevel = 5, maxPeeLevel = 100, peeStream = 6, vanishingPee = 2,
-      enemyPeeVelocity = 300, enemyPeeTrees = 1,  visualizeEnemy = true, enemyTransitionTime = 500
+      enemyPeeVelocity = 300, enemyPeeTrees = 2,  visualizeEnemy = true, enemyTransitionTime = 500
     },
     { lvl = 3, timerSeconds = 20, pathTracerMoves = 100,
       obstaclesSrc = "scene/img/tiles/pole/", obstacleTile = 'obstacle', treeTile = 'tree', pathTile = 'path',

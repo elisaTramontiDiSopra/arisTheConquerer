@@ -265,7 +265,7 @@ local function createUI(sceneGroup)
   peeBtn = display.newCircle(display.contentWidth / 2, display.contentHeight / 2, padButtonDimension, padButtonDimension / 1.5)
   peeBtn:setFillColor(0, 0, 0, 0.2)
   --peeBtn = display.newImageRect(peeBtnBg, peeButtonDimensions, peeButtonDimensions)
-  --peeBtn.alpha = 0.7
+  --peeBtn.alpha = 0.3
   --peeBtn.x = display.contentWidth / 2
   --peeBtn.y = display.contentHeight / 2
   peeBtn.name = "Pee"
@@ -303,6 +303,12 @@ end
 -- ENEMY DOG FUNCTIONS
 -----------------------------------------------
 local findThePathToATree
+
+local function removeEnemy()
+  print('remove')
+  display.remove(enemyDog)
+end
+
 local function whereToEnterTheEnemyDog()
 
   for c = 1, gridCols do
@@ -321,6 +327,11 @@ end
 
 local function enemyDogPees()
   if enemyDog == nil then return end -- safe escape for problems if hitting the player when the scene is deleting
+  print('enemyCollidedWith.peeLevel'..enemyCollidedWith.peeLevel)
+  -- escape for the case where the dog reaches a tree with no tree
+  if enemyCollidedWith.peeLevel == 0 then
+    return
+  end
   enemyDog:pee(enemyCollidedWith)
 end
 
@@ -328,15 +339,11 @@ local function checkIfEnemyDogIsDone()
   print('check if done')
   print('enemyDogTreesDone '..enemyDogTreesDone )
   print('enemyPeeTrees '..enemyPeeTrees )
-
-  print('enemyDog ')
-  print(enemyDog )
   if enemyDog == nil then return end -- safe escape for problems if hitting the player when the scene is deleting
 
   -- if the tree is empty mark it as done
   if enemyCollidedWith.peeLevel == 0 then
     enemyDogTreesDone = enemyDogTreesDone + 1
-    print('empty')
   end
 
   -- if you've done the trees youre supposed to visit then return to the entry point
@@ -347,10 +354,14 @@ local function checkIfEnemyDogIsDone()
     entryEnemyCel.col = math.floor(enemyDog.x/widthFrame)
     findThePathToATree()
   else
-    print('done')
+    -- if you're done puff away
+    local anim = 'puff'
+    enemyDog:animate(anim)
+    timer.performWithDelay( 1000, removeEnemy)
+    return
     -- find the path to the point where you entered, use true as third parameter to say this is the exit path
-    lastPath = true
-    findPath(entryPoint.row, entryPoint.col)
+    --lastPath = true
+    --findPath(entryPoint.row, entryPoint.col, true)
   end
 end
 
@@ -366,10 +377,6 @@ local function checkDirectionForAnimation(steps)
     animation = 'walkingUp'
   end
   return animation
-end
-
-local function removeEnemy()
-  display.remove(enemyDog)
 end
 
 local function followPath()
@@ -391,11 +398,11 @@ local function followPath()
     end
 
     -- you're arrived, pee till peelevel reaches 0
-    for i = 0, enemyPeeActions do
-      print('peee')
+    --for i = 0, enemyPeeActions do
+    local i = 0
+    while i < enemyPeeActions do
       timer.performWithDelay( enemyPeeVelocity, enemyDogPees)
       i = i + 1
-      --print('enemyPeeActions '..enemyPeeActions)
     end
 
     checkIfEnemyDogIsDone()
@@ -467,7 +474,7 @@ function findThePathToATree()
   treeCol = gridTree[r].col
   enemyCollidedWith = gridMatrix[treeRow][treeCol]
   -- calculate how many pee actions are needed to take the pee level to 0
-  enemyPeeActions = (enemyCollidedWith.peeLevel / peeStream ) + 1 -- +1 is to cover if there is an eventual reminder
+  enemyPeeActions = (enemyCollidedWith.peeLevel / peeStream ) + 1 -- +1 is to cover if there is an eventual rest
 
   -- find the closest available cell to make it the end path cell
   local endPathCell = findClosestAvailableCell(gridTree[r].row, gridTree[r].col)
